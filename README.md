@@ -1,4 +1,4 @@
-# Infotrygd Barnetrygd
+# Infotrygd Enslig Forsørger
 
 Dette er en REST-tjeneste som gir tilgang til historiske data fra Infotrygd
 via replikert database.
