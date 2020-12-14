@@ -8,7 +8,7 @@ import no.nav.infotrygd.ef.rest.api.StønadType
 import no.nav.infotrygd.ef.testutil.TestData
 import no.nav.infotrygd.ef.testutil.restClient
 import no.nav.infotrygd.ef.testutil.restClientNoAuth
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -35,11 +35,12 @@ class StønadControllerTest {
     @Autowired
     lateinit var stønadRepository: StønadRepository
 
-    private val uri = "/infotrygd/enslig-forsoerger/personsok"
-    private val uri2 = "/infotrygd/enslig-forsoerger/lopendeSak"
+    private val personsøkPath = "/infotrygd/enslig-forsoerger/personsok"
+    private val løpendeSakPath = "/infotrygd/enslig-forsoerger/lopendeSak"
 
     @Test
     fun `infotrygd historikk søk`() {
+
         val person = TestData.person()
         val ukjentPerson = TestData.person()
 
@@ -50,13 +51,11 @@ class StønadControllerTest {
 
         val client = restClient(port)
 
-        val res1 = kallStønadController(uri, client, requestMedPersonSomFinnes).responseBody()
-        val res2 = kallStønadController(uri, client, requestMedUkjentPerson).responseBody()
-        val resFraTomRequest = kallStønadController(uri, client).responseBody()
+        val res1 = kallStønadController(personsøkPath, client, requestMedPersonSomFinnes).responseBody()
+        val res2 = kallStønadController(personsøkPath, client, requestMedUkjentPerson).responseBody()
 
-        Assertions.assertThat(res1.ingenTreff).isFalse()
-        Assertions.assertThat(res2.ingenTreff).isTrue()
-        Assertions.assertThat(resFraTomRequest.ingenTreff).isTrue()
+        assertThat(res1.ingenTreff).isFalse()
+        assertThat(res2.ingenTreff).isTrue()
     }
 
     @Test
@@ -74,27 +73,32 @@ class StønadControllerTest {
 
         val client = restClient(port)
 
-        val res1 = kallStønadController(uri2, client, requestMedPersonMedLøpendeSak).responseBody()
-        val res2 = kallStønadController(uri2, client, requestMedUkjentPerson).responseBody()
-        val resFraTomRequest = kallStønadController(uri2, client).responseBody()
+        val res1 = kallStønadController(løpendeSakPath, client, requestMedPersonMedLøpendeSak).responseBody()
+        val res2 = kallStønadController(løpendeSakPath, client, requestMedUkjentPerson).responseBody()
 
-        Assertions.assertThat(res1.ingenTreff).isFalse()
-        Assertions.assertThat(res2.ingenTreff).isTrue()
-        Assertions.assertThat(resFraTomRequest.ingenTreff).isTrue()
+        assertThat(res1.ingenTreff).isFalse()
+        assertThat(res2.ingenTreff).isTrue()
+    }
+
+    @Test
+    fun `request uten fnr skal kaste bad request`() {
+        val client = restClient(port)
+        assertThat(kallStønadController(personsøkPath, client).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST)
+        assertThat(kallStønadController(løpendeSakPath, client).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST)
     }
 
     @Test
     fun noAuth() {
         val client = restClientNoAuth(port)
-        val result = kallStønadController(uri, client)
-        Assertions.assertThat(result.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED)
+        val result = kallStønadController(personsøkPath, client)
+        assertThat(result.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED)
     }
 
     @Test
     fun clientAuth() {
         val client = restClient(port, subject = "wrong")
-        val result = kallStønadController(uri, client)
-        Assertions.assertThat(result.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED)
+        val result = kallStønadController(personsøkPath, client)
+        assertThat(result.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED)
     }
 
     private fun kallStønadController(
