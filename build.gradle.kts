@@ -74,7 +74,7 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.testcontainers:oracle-xe:1.12.1")
-    compile("com.h2database:h2")
+    testImplementation("com.h2database:h2")
 }
 
 tasks.withType<KotlinCompile> {
