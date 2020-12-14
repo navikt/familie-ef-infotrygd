@@ -18,23 +18,6 @@ object TestData {
         )
     }
 
-    fun barn(
-        person: Person,
-        barnetrygdTom: String = "000000",
-        barnFnr: FoedselsNr = foedselsNr(),
-        region: String = "X"
-    ): Barn {
-        return Barn(
-            id = nextId(),
-            fnr = person.fnr,
-            tkNr = person.tkNr,
-            personKey = person.personKey,
-            barnFnr = barnFnr,
-            barnetrygdTom = barnetrygdTom,
-            region = region
-        )
-    }
-
     fun person(
         fnr: FoedselsNr = foedselsNr(),
         tkNr: String = "1000",
