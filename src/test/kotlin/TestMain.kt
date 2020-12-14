@@ -1,4 +1,4 @@
 
 fun main() {
-    no.nav.infotrygd.barnetrygd.main(arrayOf("--spring.profiles.active=dev,test,demoData,noauth"))
+    no.nav.infotrygd.ef.main(arrayOf("--spring.profiles.active=dev,test,demoData,noauth"))
 }
