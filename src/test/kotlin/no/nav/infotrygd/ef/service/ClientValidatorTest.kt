@@ -20,7 +20,7 @@ import org.springframework.web.server.ResponseStatusException
 @RunWith(SpringRunner::class)
 @ContextConfiguration(classes = [ClientValidator::class])
 @TestPropertySource(properties = [
-    "app.security.clientWhitelist=sts/sub-claim,azure/sub-claim,azure/azp-claim,azure/appid-claim"
+    "app.security.clientWhitelist=azure/sub-claim,azure/azp-claim,azure/appid-claim"
 ])
 internal class ClientValidatorTest {
 
@@ -50,18 +50,6 @@ internal class ClientValidatorTest {
         `when`(validationContext.getClaims(issuer)).thenReturn(claims)
 
         `when`(oidcRequestContextHolder.tokenValidationContext).thenReturn(validationContext)
-    }
-
-    @Test
-    fun `Autorisert STS token`() {
-        setupMocks("sts", "sub", "sub-claim")
-        clientValidator.authorizeClient()
-    }
-
-    @Test(expected = ResponseStatusException::class)
-    fun `Uautorisert STS token`() {
-        setupMocks("sts", "sub", "ikke-whitelisted")
-        clientValidator.authorizeClient()
     }
 
     @Test
