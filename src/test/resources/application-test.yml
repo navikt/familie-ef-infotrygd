@@ -23,12 +23,7 @@ no.nav.security.jwt:
       accepted_audience: aud-localhost
       proxyurl: ~
       cookiename: localhost-idtoken
-    sts:
-      discoveryurl: http://metadata
-      accepted_audience: aud-localhost
-      proxyurl: ~
-      cookiename: localhost-idtoken
 
 app:
   security:
-    clientWhitelist: "azure/12345678910,sts/12345678910"
+    clientWhitelist: "azure/12345678910"

@@ -69,11 +69,5 @@ spec:
       value: fadafa61-0d49-43d4-b256-8a589b215da5
     - name: APP_AZURE_PROXY_URL
       value: https://webproxy-nais.nav.no:8088
-    - name: APP_STS_DISCOVERY_URL
-      value: https://isso.adeo.no/isso/oauth2/.well-known/openid-configuration
-    - name: APP_STS_AUD
-      value: familie-ba-sak-p
-    - name: APP_STS_PROXY_URL
-      value: ""
     - name: APP_CLIENT_WHITELIST
       value: azure/0412f3eb-b22a-4d3f-99aa-319321eb340f
