@@ -23,7 +23,3 @@ no.nav.security.jwt:
       accepted_audience: aud-localhost
       proxyurl: ~
       cookiename: localhost-idtoken
-
-app:
-  security:
-    clientWhitelist: "azure/12345678910"
