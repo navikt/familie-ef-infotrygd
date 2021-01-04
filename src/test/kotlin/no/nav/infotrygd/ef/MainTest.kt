@@ -26,7 +26,7 @@ class MainTest {
     fun health() {
         val response = restClientNoAuth(port)
             .get()
-            .uri("/actuator/health")
+            .uri("/internal/health")
             .exchange()
             .block() !!
 
