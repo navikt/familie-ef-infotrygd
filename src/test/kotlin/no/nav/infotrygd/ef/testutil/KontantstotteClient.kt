@@ -19,10 +19,14 @@ fun restClientNoAuth(port: Int): WebClient {
 fun authToken(port: Int, subject: String? = null): String {
     val url = baseUrl(port)
     val subjectQuery = subject?.let { "?subject=$it" } ?: ""
-    return WebClient.create("$url/local/jwt$subjectQuery").get()
+    return WebClient.create("$url/local/cookie$subjectQuery").get()
         .retrieve()
         .bodyToMono(String::class.java)
-        .block() !!
+        .block() !!.let { tokenFraRespons(it) }
+}
+
+private fun tokenFraRespons(cookie: String): String {
+    return cookie.split("value\":\"".toRegex()).toTypedArray()[1].split("\"".toRegex()).toTypedArray()[0]
 }
 
 private fun baseUrl(port: Int) = "http://localhost:$port"
