@@ -2,26 +2,24 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: infotrygd-enslig-forsoerger
-  namespace: default
+  namespace: infotrygd
   labels:
     team: infotrygd
 
 spec:
   image: {{ image }}
   port: 8080 # Required. The port number which is exposed by the container and should receive HTTP traffic.
-  liveness: # HTTP endpoint that signals 200 OK when the application is running.
-    path: /actuator/health
-    initialDelay: 120
-    timeout: 1
-    periodSeconds: 5     # How often (in seconds) to perform the probe. Default to 10 seconds
-    failureThreshold: 10 # when a Pod starts and the probe fails,
-      # nais will try failureThreshold times before giving up and restarting the Pod
-    # Defaults to 3
-  readiness: # HTTP endpoint that signals 200 OK when it is okay to start routing traffic to the application.
-    path: /actuator/health
-    # /rest/internal/isAlive
-    initialDelay: 120
-    timeout: 1
+  liveness:
+    path: /internal/status/isAlive
+    initialDelay: 20
+    failureThreshold: 10
+  readiness:
+    path: /internal/status/isAlive
+    initialDelay: 20
+    failureThreshold: 10
+  prometheus:
+    enabled: true
+    path: /internal/prometheus
   replicas: # Optional. Set min = max to disable autoscaling.
     min: 2 # minimum number of replicas.
     max: 5 # maximum number of replicas.
@@ -30,10 +28,6 @@ spec:
   # Compare this value with the $HOSTNAME to see if the current instance is the leader
   preStopHookPath: "" # Optional. A HTTP GET will be issued to this endpoint at least once before the pod is terminated.
   # See https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
-  prometheus: # Optional.
-    enabled: true # if true the pod will be scraped for metrics by prometheus
-    path: /actuator/prometheus # Path to prometheus-metrics
-    # /actuator/prometheus
   istio: # Optional.
     enabled: false # Optional. When true, envoy-proxy sidecar will be injected into pod and https urls envvars will be rewritten
   resources: # Optional. See: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -44,13 +38,22 @@ spec:
       cpu: 500m
       memory: 256Mi
   ingresses: # Optional. List of ingress URLs that will route HTTP traffic to the application.
-    - "https://infotrygd-enslig-forsoerger.nais.preprod.local/"
-    - "https://infotrygd-enslig-forsoerger.dev-fss.nais.io/"
+    - https://infotrygd-enslig-forsoerger.nais.preprod.local
+    - https://infotrygd-enslig-forsoerger.dev.adeo.no
   logformat: accesslog # Optional. The format of the logs from the container if the logs should be handled differently than plain text or json
   logtransform: dns_loglevel # Optional. The transformation of the logs, if they should be handled differently than plain text or json
   webproxy: false # Optional. Expose web proxy configuration to the application using the HTTP_PROXY, HTTPS_PROXY and NO_PROXY environment variables.
   vault:
     enabled: true # Optional. If set to true fetch secrets from Secret Service and inject into the pods. todo link to doc.
+  azure:
+    application:
+      enabled: true
+      tenant: trygdeetaten.no
+  accessPolicy:
+    inbound:
+      rules:
+        - application: familie-ef-sak
+          namespace: default
   env:
     - name: APP_DATASOURCE_URL
       value: jdbc:oracle:thin:@a01dbfl033.adeo.no:1521/cdcq
@@ -62,13 +65,5 @@ spec:
       value: org.hibernate.dialect.Oracle10gDialect
     - name: APP_DEFAULT_SCHEMA
       value: REST_READ_Q1
-    - name: APP_DDL_AUTO
-      value: none
-    - name: APP_AZURE_DISCOVERY_URL
-      value: https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0/.well-known/openid-configuration
-    - name: APP_AZURE_AUD
-      value: 32551525-c4dd-44ae-b906-2f8d8a00bb03
     - name: APP_AZURE_PROXY_URL
       value: https://webproxy-nais.nav.no:8088
-    - name: APP_CLIENT_WHITELIST
-      value: azure/146ccc69-7cd0-4b8e-86a5-144534e53a00

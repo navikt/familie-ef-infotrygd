@@ -94,13 +94,6 @@ class StønadControllerTest {
         assertThat(result.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED)
     }
 
-    @Test
-    fun clientAuth() {
-        val client = restClient(port, subject = "wrong")
-        val result = kallStønadController(personsøkPath, client)
-        assertThat(result.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED)
-    }
-
     private fun kallStønadController(
         uri: String,
         client: WebClient,

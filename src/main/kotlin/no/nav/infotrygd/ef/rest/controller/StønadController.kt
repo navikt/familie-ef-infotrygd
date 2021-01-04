@@ -6,9 +6,9 @@ import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import no.nav.infotrygd.ef.rest.api.InfotrygdSøkRequest
 import no.nav.infotrygd.ef.rest.api.InfotrygdSøkResponse
-import no.nav.infotrygd.ef.service.ClientValidator
 import no.nav.infotrygd.ef.service.StønadService
 import no.nav.security.token.support.core.api.Protected
+import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -18,10 +18,8 @@ import org.springframework.web.bind.annotation.RestController
 @Protected
 @RestController
 @Timed(value = "infotrygd_historikk_enslig_forsoerger_controller", percentiles = [0.5, 0.95])
-class StønadController(
-    private val stønadService: StønadService,
-    private val clientValidator: ClientValidator
-) {
+@ProtectedWithClaims(issuer = "azure")
+class StønadController(private val stønadService: StønadService) {
 
     @ApiOperation("søker etter oppgitte fødselssnummere med stønadstype og gir svar 'ingenTreff=true/false' ang")
     @PostMapping(path = ["/infotrygd/enslig-forsoerger/personsok"], consumes = ["application/json"])
@@ -33,8 +31,6 @@ class StønadController(
         )
     )
     fun finnesIInfotrygd(@RequestBody request: InfotrygdSøkRequest): ResponseEntity<Any> {
-        clientValidator.authorizeClient()
-
         if (request.brukere.isEmpty()) {
             return ResponseEntity.badRequest().build()
         }
@@ -53,8 +49,6 @@ class StønadController(
         )
     )
     fun harLopendeSak(@RequestBody request: InfotrygdSøkRequest): ResponseEntity<Any> {
-        clientValidator.authorizeClient()
-
         if (request.brukere.isEmpty()) {
             return ResponseEntity.badRequest().build()
         }
