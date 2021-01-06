@@ -3,7 +3,7 @@ package no.nav.infotrygd.ef.rest.controller
 import no.nav.infotrygd.ef.repository.PersonRepository
 import no.nav.infotrygd.ef.repository.StønadRepository
 import no.nav.infotrygd.ef.rest.api.InfotrygdSøkRequest
-import no.nav.infotrygd.ef.rest.api.InfotrygdSøkResponse
+import no.nav.infotrygd.ef.rest.api.SøkResponse
 import no.nav.infotrygd.ef.rest.api.StønadType
 import no.nav.infotrygd.ef.testutil.TestData
 import no.nav.infotrygd.ef.testutil.restClient
@@ -35,8 +35,8 @@ class StønadControllerTest {
     @Autowired
     lateinit var stønadRepository: StønadRepository
 
-    private val personsøkPath = "/infotrygd/enslig-forsoerger/personsok"
-    private val løpendeSakPath = "/infotrygd/enslig-forsoerger/lopendeSak"
+    private val personsøkPath = "/stonad/personsok"
+    private val løpendeSakPath = "/stonad/lopendeSak"
 
     @Test
     fun `infotrygd historikk søk`() {
@@ -108,6 +108,6 @@ class StønadControllerTest {
     }
 }
 
-private fun ClientResponse.responseBody(): InfotrygdSøkResponse {
-    return this.bodyToMono(InfotrygdSøkResponse::class.java).block()!!
+private fun ClientResponse.responseBody(): SøkResponse {
+    return this.bodyToMono(SøkResponse::class.java).block()!!
 }
