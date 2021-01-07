@@ -12,6 +12,8 @@ import java.time.LocalDate
 class PeriodeRepository(private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
 
     /**
+     * Forenkled versjon av spørringen på https://confluence.adeo.no/pages/viewpage.action?pageId=395741283
+     *
      * INFO: Det er riktig att det står
      *      AND V.DATO_INNV_FOM <= :tom
      *      AND V.DATO_INNV_TOM >= :fom
