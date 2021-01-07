@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @Protected
 @RestController
-@RequestMapping("/stonad",
+@RequestMapping("/api/stonad",
         consumes = [MediaType.APPLICATION_JSON_VALUE],
         produces = [MediaType.APPLICATION_JSON_VALUE])
 @Timed(value = "infotrygd_historikk_enslig_forsoerger_controller", percentiles = [0.5, 0.95])

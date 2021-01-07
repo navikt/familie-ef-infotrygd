@@ -100,7 +100,7 @@ class StønadControllerTest {
         request: InfotrygdSøkRequest = InfotrygdSøkRequest(listOf(), StønadType.OVERGANGSSTØNAD)
     ): ClientResponse {
         return client.post()
-            .uri(uri)
+            .uri("/api$uri")
             .contentType(MediaType.APPLICATION_JSON)
             .syncBody(request)
             .exchange()

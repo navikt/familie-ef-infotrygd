@@ -1,8 +1,8 @@
 package no.nav.infotrygd.ef.repository
 
 import no.nav.commons.foedselsnummer.FoedselsNr
-import no.nav.infotrygd.ef.rest.api.OvergangsstønadPeriode
-import no.nav.infotrygd.ef.rest.api.OvergangsstønadPeriodeRequest
+import no.nav.infotrygd.ef.rest.api.PeriodeOvergangsstønad
+import no.nav.infotrygd.ef.rest.api.PeriodeOvergangsstønadRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
@@ -38,11 +38,11 @@ internal class PeriodeRepositoryTest {
             """INSERT INTO T_STONAD (STONAD_ID, OPPDRAG_ID, PERSON_LOPENR, DATO_START, DATO_OPPHOR)
                                      VALUES (1, 1, 1, sysdate, sysdate)"""
         )
-        jdbcTemplate.update("INSERT INTO T_DELYTELSE (VEDTAK_ID, TYPE_SATS, BELOP) VALUES (1, '', 100)")
+        jdbcTemplate.update("INSERT INTO T_DELYTELSE (VEDTAK_ID, TYPE_SATS, BELOP) VALUES (1, '', 100.34)")
         jdbcTemplate.update("INSERT INTO T_ENDRING (VEDTAK_ID, KODE) VALUES (1, 'A')")
-        jdbcTemplate.update("INSERT INTO T_STONADSKLASSE (VEDTAK_ID, KODE_NIVAA, KODE_KLASSE) VALUES (1, 'EF', 'EF')")
-        jdbcTemplate.update("INSERT INTO T_STONADSKLASSE (VEDTAK_ID, KODE_NIVAA, KODE_KLASSE) VALUES (1, 'OG', 'OG')")
-        jdbcTemplate.update("INSERT INTO T_STONADSKLASSE (VEDTAK_ID, KODE_NIVAA, KODE_KLASSE) VALUES (1, 'NY', 'NY')")
+        jdbcTemplate.update("INSERT INTO T_STONADSKLASSE (VEDTAK_ID, KODE_NIVAA, KODE_KLASSE) VALUES (1, '01', 'EF')")
+        jdbcTemplate.update("INSERT INTO T_STONADSKLASSE (VEDTAK_ID, KODE_NIVAA, KODE_KLASSE) VALUES (1, '02', 'OG')")
+        jdbcTemplate.update("INSERT INTO T_STONADSKLASSE (VEDTAK_ID, KODE_NIVAA, KODE_KLASSE) VALUES (1, '03', 'NY')")
     }
 
     @After
@@ -55,6 +55,13 @@ internal class PeriodeRepositoryTest {
     @Test
     fun `uten datoer`() {
         assertThat(hentPerioder()).hasSize(1)
+    }
+
+    @Test
+    fun `beløp er riktig`() {
+        val perioder = hentPerioder()
+        assertThat(perioder).hasSize(1)
+        assertThat(perioder.first().beløp).isEqualTo(100.34f)
     }
 
     @Test
@@ -114,9 +121,9 @@ internal class PeriodeRepositoryTest {
             .hasSize(1)
     }
 
-    private fun hentPerioder(fomDato: LocalDate? = null, tomDato: LocalDate? = null): List<OvergangsstønadPeriode> =
-        periodeRepository.hentOvergangsstønadPerioder(
-            OvergangsstønadPeriodeRequest(
+    private fun hentPerioder(fomDato: LocalDate? = null, tomDato: LocalDate? = null): List<PeriodeOvergangsstønad> =
+        periodeRepository.hentPerioderForOvergangsstønad(
+                PeriodeOvergangsstønadRequest(
                 identer = setOf(FoedselsNr("01234567890")),
                 fomDato,
                 tomDato
