@@ -13,12 +13,12 @@ class StønadService(
 
     fun finnes(request: InfotrygdSøkRequest): Boolean {
         //TODO må legge til stønadstype
-        return personRepository.findByFnrList(request.identer).isNotEmpty()
+        return personRepository.findByFnrList(request.brukere).isNotEmpty()
     }
 
     fun mottarStønad(request: InfotrygdSøkRequest): Boolean {
         //TODO må legge til stønadstype
-        return personRepository.findByFnrList(request.identer)
+        return personRepository.findByFnrList(request.brukere)
             .flatMap { stonadRepository.findByPersonKeyAndRegion(it.personKey, it.region) }
             .isNotEmpty()
     }
