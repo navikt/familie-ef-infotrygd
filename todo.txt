@@ -1,0 +1,10 @@
+Hva er forholdet mellan
+T_DELYTELSE fom/tom
+T_VEDTAK DATO_INNV_FOM/DATO_INNV_TOM
+
+Når man skal hente aktive perioder, burde vi merge med T_ENDRING og filtrere på
+AND E.KODE <> 'AN'
+AND E.KODE <> 'UA'
+
+Om man har 2 perioder, så virker det som att ma har 2st T_STONAD
+Hva skjer hvis man får en endring/opphør i den andre perioden?
