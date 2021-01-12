@@ -64,7 +64,7 @@ internal class StønadServiceTest {
         assertThat(finnes.keys).containsOnly(StønadType.OVERGANGSSTØNAD)
 
         val stønadTreff = finnes[StønadType.OVERGANGSSTØNAD]!!
-        assertThat(stønadTreff.harStønad).isTrue
+        assertThat(stønadTreff.finnes).isTrue
         assertThat(stønadTreff.harAktivStønad).isFalse
     }
 
@@ -75,7 +75,7 @@ internal class StønadServiceTest {
         assertThat(finnes.keys).containsOnly(StønadType.OVERGANGSSTØNAD)
 
         val stønadTreff = finnes[StønadType.OVERGANGSSTØNAD]!!
-        assertThat(stønadTreff.harStønad).isTrue
+        assertThat(stønadTreff.finnes).isTrue
         assertThat(stønadTreff.harAktivStønad).isTrue
     }
 
@@ -86,7 +86,7 @@ internal class StønadServiceTest {
         assertThat(finnes.keys).containsOnly(StønadType.OVERGANGSSTØNAD)
 
         val stønadTreff = finnes[StønadType.OVERGANGSSTØNAD]!!
-        assertThat(stønadTreff.harStønad).isTrue
+        assertThat(stønadTreff.finnes).isTrue
         assertThat(stønadTreff.harAktivStønad).isTrue
     }
 
@@ -98,7 +98,7 @@ internal class StønadServiceTest {
         assertThat(finnes.keys).containsExactlyInAnyOrder(StønadType.BARNETILSYN, StønadType.SKOLEPENGER)
 
         finnes.values.forEach {
-            assertThat(it.harStønad).isFalse
+            assertThat(it.finnes).isFalse
             assertThat(it.harAktivStønad).isFalse
         }
     }

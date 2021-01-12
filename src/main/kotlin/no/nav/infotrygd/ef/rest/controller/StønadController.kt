@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import no.nav.infotrygd.ef.rest.api.SøkFlereStønaderRequest
-import no.nav.infotrygd.ef.rest.api.HarStønadResponse
+import no.nav.infotrygd.ef.rest.api.FinnesResponse
 import no.nav.infotrygd.ef.service.StønadService
 import no.nav.security.token.support.core.api.Protected
 import no.nav.security.token.support.core.api.ProtectedWithClaims
@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController
 class StønadController(private val stønadService: StønadService) {
 
     @ApiOperation("Søker etter oppgitte fødselssnummere med stønadstype")
-    @PostMapping(path = ["/har-stonad"])
+    @PostMapping(path = ["/finnes"])
     @ApiImplicitParams(ApiImplicitParam(
             name = "request",
             dataType = "SøkFlereStønaderRequest",
@@ -39,7 +39,7 @@ class StønadController(private val stønadService: StønadService) {
         }
 
         val stønader = stønadService.harStønad(request)
-        return ResponseEntity.ok(HarStønadResponse(stønader))
+        return ResponseEntity.ok(FinnesResponse(stønader))
     }
 
 }

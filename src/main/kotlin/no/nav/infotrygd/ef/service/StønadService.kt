@@ -13,7 +13,7 @@ class StønadService(private val infotrygdRepository: InfotrygdRepository) {
         val harStønad = infotrygdRepository.harStønad(request.identer, request.stønader)
         val harAktivStønad = infotrygdRepository.harStønad(request.identer, request.stønader, kunAktive = true)
         return request.stønader.map {
-            it to StønadTreff(harStønad = harStønad.getOrDefault(it, false),
+            it to StønadTreff(finnes = harStønad.getOrDefault(it, false),
                               harAktivStønad = harAktivStønad.getOrDefault(it, false))
         }.toMap()
     }
