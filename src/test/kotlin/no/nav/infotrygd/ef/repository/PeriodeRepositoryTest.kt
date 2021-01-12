@@ -38,14 +38,11 @@ internal class PeriodeRepositoryTest {
         )
         jdbcTemplate.update("INSERT INTO T_DELYTELSE (VEDTAK_ID, TYPE_SATS, BELOP) VALUES (1, '', 100.34)")
         jdbcTemplate.update("INSERT INTO T_ENDRING (VEDTAK_ID, KODE) VALUES (1, 'A')")
-        jdbcTemplate.update("INSERT INTO T_STONADSKLASSE (VEDTAK_ID, KODE_NIVAA, KODE_KLASSE) VALUES (1, '01', 'EF')")
-        jdbcTemplate.update("INSERT INTO T_STONADSKLASSE (VEDTAK_ID, KODE_NIVAA, KODE_KLASSE) VALUES (1, '02', 'OG')")
-        jdbcTemplate.update("INSERT INTO T_STONADSKLASSE (VEDTAK_ID, KODE_NIVAA, KODE_KLASSE) VALUES (1, '03', 'NY')")
     }
 
     @After
     fun tearDown() {
-        listOf("T_LOPENR_FNR", "T_VEDTAK", "T_STONAD", "T_DELYTELSE", "T_STONADSKLASSE").forEach {
+        listOf("T_LOPENR_FNR", "T_VEDTAK", "T_STONAD", "T_DELYTELSE").forEach {
             jdbcTemplate.update("TRUNCATE TABLE $it")
         }
     }

@@ -22,7 +22,7 @@ class LogFilter(@Value("\${spring.application.name}") private val applicationNam
     private val consumerIdHeader = "Nav-Consumer-Id"
     private val callIdHeader = "Nav-CallId"
 
-    private val dontLog = setOf("/internal/health", "/internal/prometheus")
+    private val dontLog = setOf("/internal/status/isAlive", "/internal/prometheus")
 
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
         putValues(HttpServletRequest::class.java.cast(request))
