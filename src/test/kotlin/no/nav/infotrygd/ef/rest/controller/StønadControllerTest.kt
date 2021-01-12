@@ -26,7 +26,7 @@ class StønadControllerTest {
     @LocalServerPort
     private var port: Int = 0
 
-    private val personsøkPath = "/stonad/har-stonad"
+    private val personsøkPath = "/stonad/finnes"
 
     private val fnr = TestData.person().fnr.asString
 
