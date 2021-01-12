@@ -1,17 +1,14 @@
 package no.nav.infotrygd.ef.rest.controller
 
-import no.nav.infotrygd.ef.repository.PersonRepository
-import no.nav.infotrygd.ef.repository.StønadRepository
-import no.nav.infotrygd.ef.rest.api.InfotrygdSøkRequest
-import no.nav.infotrygd.ef.rest.api.InfotrygdSøkResponse
-import no.nav.infotrygd.ef.rest.api.StønadType
+import no.nav.infotrygd.ef.model.StønadType
+import no.nav.infotrygd.ef.rest.api.EksistererStønadResponse
+import no.nav.infotrygd.ef.rest.api.SøkFlereStønaderRequest
 import no.nav.infotrygd.ef.testutil.TestData
 import no.nav.infotrygd.ef.testutil.restClient
 import no.nav.infotrygd.ef.testutil.restClientNoAuth
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.HttpStatus
@@ -29,85 +26,57 @@ class StønadControllerTest {
     @LocalServerPort
     private var port: Int = 0
 
-    @Autowired
-    lateinit var personRepository: PersonRepository
+    private val personsøkPath = "/stonad/eksisterer"
 
-    @Autowired
-    lateinit var stønadRepository: StønadRepository
-
-    private val personsøkPath = "/infotrygd/enslig-forsoerger/personsok"
-    private val løpendeSakPath = "/infotrygd/enslig-forsoerger/lopendeSak"
+    private val fnr = TestData.person().fnr.asString
 
     @Test
-    fun `infotrygd historikk søk`() {
-
-        val person = TestData.person()
-        val ukjentPerson = TestData.person()
-
-        personRepository.saveAndFlush(person)
-
-        val requestMedPersonSomFinnes = InfotrygdSøkRequest(listOf(person.fnr), StønadType.OVERGANGSSTØNAD)
-        val requestMedUkjentPerson = InfotrygdSøkRequest(listOf(ukjentPerson.fnr), StønadType.OVERGANGSSTØNAD)
+    fun `request for HarStønad uten match`() {
+        val request = SøkFlereStønaderRequest(setOf(fnr), setOf(StønadType.OVERGANGSSTØNAD))
 
         val client = restClient(port)
 
-        val res1 = kallStønadController(personsøkPath, client, requestMedPersonSomFinnes).responseBody()
-        val res2 = kallStønadController(personsøkPath, client, requestMedUkjentPerson).responseBody()
+        val res1 = kallStønadController(personsøkPath, client, request).responseBody()
 
-        assertThat(res1.ingenTreff).isFalse()
-        assertThat(res2.ingenTreff).isTrue()
+        val stønad = res1.stønader.get(StønadType.OVERGANGSSTØNAD) ?: error("Forventet att få tilbake data for forespurt type")
+        assertThat(stønad.eksisterer).isFalse
+        assertThat(stønad.harAktivStønad).isFalse
     }
 
     @Test
-    fun `infotrygdsøk etter løpende barnetrygd`() {
-        val person = TestData.person()
-        val ukjentPerson = TestData.person()
-        val stønad = TestData.stønad(person)
-        val stønad2 = TestData.stønad(ukjentPerson, opphørtFom = "111111")
-
-        personRepository.saveAndFlush(person)
-        stønadRepository.saveAll(listOf(stønad, stønad2))
-
-        val requestMedPersonMedLøpendeSak = InfotrygdSøkRequest(listOf(person.fnr), StønadType.OVERGANGSSTØNAD)
-        val requestMedUkjentPerson = InfotrygdSøkRequest(listOf(ukjentPerson.fnr), StønadType.OVERGANGSSTØNAD)
-
+    fun `request for HarStønad uten fnr skal kaste bad request`() {
         val client = restClient(port)
-
-        val res1 = kallStønadController(løpendeSakPath, client, requestMedPersonMedLøpendeSak).responseBody()
-        val res2 = kallStønadController(løpendeSakPath, client, requestMedUkjentPerson).responseBody()
-
-        assertThat(res1.ingenTreff).isFalse()
-        assertThat(res2.ingenTreff).isTrue()
+        val request = SøkFlereStønaderRequest(emptySet(), setOf(StønadType.OVERGANGSSTØNAD))
+        assertThat(kallStønadController(personsøkPath, client, request).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST)
     }
 
     @Test
-    fun `request uten fnr skal kaste bad request`() {
+    fun `request for HarStønad uten stønader skal kaste bad request`() {
         val client = restClient(port)
-        assertThat(kallStønadController(personsøkPath, client).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST)
-        assertThat(kallStønadController(løpendeSakPath, client).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST)
+        val request = SøkFlereStønaderRequest(setOf(fnr), emptySet())
+        assertThat(kallStønadController(personsøkPath, client, request).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST)
     }
 
     @Test
     fun noAuth() {
         val client = restClientNoAuth(port)
-        val result = kallStønadController(personsøkPath, client)
+        val result = kallStønadController(personsøkPath, client, SøkFlereStønaderRequest(emptySet(), emptySet()))
         assertThat(result.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED)
     }
 
-    private fun kallStønadController(
-        uri: String,
-        client: WebClient,
-        request: InfotrygdSøkRequest = InfotrygdSøkRequest(listOf(), StønadType.OVERGANGSSTØNAD)
-    ): ClientResponse {
+    private fun kallStønadController(uri: String,
+                                     client: WebClient,
+                                     request: SøkFlereStønaderRequest): ClientResponse {
         return client.post()
-            .uri(uri)
-            .contentType(MediaType.APPLICATION_JSON)
-            .syncBody(request)
-            .exchange()
-            .block()!!
+                .uri("/api$uri")
+                .contentType(MediaType.APPLICATION_JSON)
+                .syncBody(request)
+                .exchange()
+                .block()!!
     }
+
 }
 
-private fun ClientResponse.responseBody(): InfotrygdSøkResponse {
-    return this.bodyToMono(InfotrygdSøkResponse::class.java).block()!!
+private fun ClientResponse.responseBody(): EksistererStønadResponse {
+    return this.bodyToMono(EksistererStønadResponse::class.java).block()!!
 }

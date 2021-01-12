@@ -1,101 +1,113 @@
 package no.nav.infotrygd.ef.service
 
-import no.nav.infotrygd.ef.repository.PersonRepository
-import no.nav.infotrygd.ef.repository.StønadRepository
-import no.nav.infotrygd.ef.rest.api.InfotrygdSøkRequest
-import no.nav.infotrygd.ef.rest.api.StønadType
-import no.nav.infotrygd.ef.testutil.TestData
+import no.nav.infotrygd.ef.model.StønadType
+import no.nav.infotrygd.ef.rest.api.SøkFlereStønaderRequest
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
-@DataJpaTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 internal class StønadServiceTest {
 
-    @Autowired
-    private lateinit var personRepository: PersonRepository
+    @Autowired lateinit var jdbcTemplate: JdbcTemplate
 
     @Autowired
-    private lateinit var stonadRepository: StønadRepository
-
     private lateinit var stønadService: StønadService
 
     @Before
     fun setup() {
-        stønadService = StønadService(personRepository, stonadRepository)
+        jdbcTemplate.update("INSERT INTO T_LOPENR_FNR (PERSON_LOPENR, PERSONNR) VALUES (1, '${IDENT}')")
+        jdbcTemplate.update("INSERT INTO T_LOPENR_FNR (PERSON_LOPENR, PERSONNR) VALUES (2, '${IDENT2}')")
+        jdbcTemplate.update("INSERT INTO T_LOPENR_FNR (PERSON_LOPENR, PERSONNR) VALUES (3, '${IDENT3}')")
+
+        // Legger inn enn opphør bak i tid
+        jdbcTemplate.update(
+                """INSERT INTO T_STONAD (STONAD_ID, OPPDRAG_ID, PERSON_LOPENR, KODE_RUTINE, DATO_START, DATO_OPPHOR)
+                                     VALUES (1, 1, 1, 'EO', sysdate, sysdate - 100)"""
+        )
+
+        // Legger inn enn opphør bak i tid
+        jdbcTemplate.update(
+                """INSERT INTO T_STONAD (STONAD_ID, OPPDRAG_ID, PERSON_LOPENR, KODE_RUTINE, DATO_START, DATO_OPPHOR)
+                                     VALUES (2, 2, 2, 'EO', sysdate, null)"""
+        )
+
+        // Legger inn enn opphør bak i tid og med nulldato
+        jdbcTemplate.update(
+                """INSERT INTO T_STONAD (STONAD_ID, OPPDRAG_ID, PERSON_LOPENR, KODE_RUTINE, DATO_START, DATO_OPPHOR)
+                                     VALUES (3, 3, 3, 'EO', sysdate, sysdate - 100)"""
+        )
+        jdbcTemplate.update(
+                """INSERT INTO T_STONAD (STONAD_ID, OPPDRAG_ID, PERSON_LOPENR, KODE_RUTINE, DATO_START, DATO_OPPHOR)
+                                     VALUES (3, 3, 3, 'EO', sysdate, null)"""
+        )
+    }
+
+    @After
+    fun tearDown() {
+        listOf("T_LOPENR_FNR", "T_STONAD").forEach { jdbcTemplate.update("TRUNCATE TABLE $it") }
     }
 
     @Test
-    fun `finnes skal returnere true`() {
-        val soeker = TestData.person()
+    fun `opphør bak i tid - har stønad men har ikke aktiv stønad`() {
+        val finnes = stønadService.eksistererStønad(SøkFlereStønaderRequest(setOf(IDENT), setOf(StønadType.OVERGANGSSTØNAD)))
 
-        personRepository.saveAndFlush(soeker)
+        assertThat(finnes.keys).containsOnly(StønadType.OVERGANGSSTØNAD)
 
-        val soekerResult = stønadService.finnes(InfotrygdSøkRequest(listOf(soeker.fnr), StønadType.OVERGANGSSTØNAD))
-
-        assertThat(soekerResult).isTrue()
+        val stønadTreff = finnes[StønadType.OVERGANGSSTØNAD]!!
+        assertThat(stønadTreff.eksisterer).isTrue
+        assertThat(stønadTreff.harAktivStønad).isFalse
     }
 
     @Test
-    fun `finnes skal returnere false`() {
-        val soekerFnr = TestData.foedselsNr()
+    fun `opphør er null - har stønad og har aktiv stønad`() {
+        val finnes = stønadService.eksistererStønad(SøkFlereStønaderRequest(setOf(IDENT2), setOf(StønadType.OVERGANGSSTØNAD)))
 
-        val resultEmptyEmpty = stønadService.finnes(InfotrygdSøkRequest(listOf(soekerFnr), StønadType.OVERGANGSSTØNAD))
-        val resultEmptyNull = stønadService.finnes(InfotrygdSøkRequest(listOf(soekerFnr), StønadType.OVERGANGSSTØNAD))
+        assertThat(finnes.keys).containsOnly(StønadType.OVERGANGSSTØNAD)
 
-        assertThat(resultEmptyEmpty).isFalse()
-        assertThat(resultEmptyNull).isFalse()
+        val stønadTreff = finnes[StønadType.OVERGANGSSTØNAD]!!
+        assertThat(stønadTreff.eksisterer).isTrue
+        assertThat(stønadTreff.harAktivStønad).isTrue
     }
 
     @Test
-    fun `mottar stønad skal returnere true når en av personene har en løpende sak`() {
-        val person = TestData.person()
-        val person2 = TestData.person()
-        val stønad = TestData.stønad(person2)
-        val stønad2 = TestData.stønad(person, opphørtFom = "111111")
+    fun `har opphør bak i tid og opphør som er null - har stønad og har aktiv stønad`() {
+        val finnes = stønadService.eksistererStønad(SøkFlereStønaderRequest(setOf(IDENT3), setOf(StønadType.OVERGANGSSTØNAD)))
 
-        personRepository.saveAll(listOf(person, person2))
-        stonadRepository.saveAll(listOf(stønad, stønad2))
+        assertThat(finnes.keys).containsOnly(StønadType.OVERGANGSSTØNAD)
 
-        val mottarStønad =
-            stønadService.mottarStønad(InfotrygdSøkRequest(listOf(person.fnr, person2.fnr), StønadType.OVERGANGSSTØNAD))
-
-        assertThat(mottarStønad).isTrue()
+        val stønadTreff = finnes[StønadType.OVERGANGSSTØNAD]!!
+        assertThat(stønadTreff.eksisterer).isTrue
+        assertThat(stønadTreff.harAktivStønad).isTrue
     }
 
     @Test
-    fun `mottarStønad skal returnere false for opphørt stønad`() {
-        val person = TestData.person()
-        val person2 = TestData.person()
-        val stønad = TestData.stønad(person, opphørtFom = "111111")
-        val stønad2 = TestData.stønad(person2, opphørtFom = "111111")
+    fun `har ikke noen stønader for disse typene men retunrerer likevel treff i resultatet`() {
+        val finnes = stønadService.eksistererStønad(SøkFlereStønaderRequest(setOf(IDENT, IDENT2, IDENT3),
+                                                                            setOf(StønadType.BARNETILSYN, StønadType.SKOLEPENGER)))
 
-        personRepository.saveAll(listOf(person, person2))
-        stonadRepository.saveAll(listOf(stønad, stønad2))
+        assertThat(finnes.keys).containsExactlyInAnyOrder(StønadType.BARNETILSYN, StønadType.SKOLEPENGER)
 
-        val case1 = stønadService.mottarStønad(InfotrygdSøkRequest(listOf(person.fnr), StønadType.OVERGANGSSTØNAD))
-        val case2 = stønadService.mottarStønad(InfotrygdSøkRequest(listOf(), StønadType.OVERGANGSSTØNAD))
-        assertThat(case1).isFalse()
-        assertThat(case2).isFalse()
+        finnes.values.forEach {
+            assertThat(it.eksisterer).isFalse
+            assertThat(it.harAktivStønad).isFalse
+        }
     }
 
-    @Test
-    fun `mottarStønad skal returnere false når region ikke matcher`() {
-        val person = TestData.person()
-        val stønad = TestData.stønad(person, opphørtFom = "000000", region = "A")
+    companion object {
 
-        personRepository.saveAndFlush(person)
-        stonadRepository.saveAndFlush(stønad)
-
-        val mottarStønad =
-            stønadService.mottarStønad(InfotrygdSøkRequest(listOf(person.fnr), StønadType.OVERGANGSSTØNAD))
-        assertThat(mottarStønad).isFalse()
+        const val IDENT = "01234567890"
+        const val IDENT2 = "01234567891"
+        const val IDENT3 = "01234567892"
     }
+
 }
