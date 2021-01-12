@@ -22,29 +22,22 @@ class LogFilter(@Value("\${spring.application.name}") private val applicationNam
     private val consumerIdHeader = "Nav-Consumer-Id"
     private val callIdHeader = "Nav-CallId"
 
-    private val dontLog = setOf("/actuator/health", "/actuator/prometheus")
+    private val dontLog = setOf("/internal/health", "/internal/prometheus")
 
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
         putValues(HttpServletRequest::class.java.cast(request))
         val req = request as HttpServletRequest
         val res = response as HttpServletResponse
+        val t0 = System.nanoTime()
         try {
-            val millis = time { chain.doFilter(request, response) }
-
+            chain.doFilter(request, response)
+        } finally {
             if(!dontLog.contains(req.requestURI)) {
+                val millis = (System.nanoTime() - t0) / 1_000_000
                 log.info("[${millis}ms]\t${res.status} ${req.method} ${req.requestURI}")
             }
-
-        } finally {
             MDC.clear()
         }
-    }
-
-    private fun time(block: () -> Unit): Long {
-        val t0 = System.nanoTime()
-        block()
-        val t1 = System.nanoTime()
-        return (t1 - t0) / 1_000_000
     }
 
     private fun putValues(request: HttpServletRequest) {
