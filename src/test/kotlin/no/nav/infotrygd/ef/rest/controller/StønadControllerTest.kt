@@ -28,7 +28,7 @@ class StønadControllerTest {
 
     private val personsøkPath = "/stonad/eksisterer"
 
-    private val fnr = TestData.person().fnr.asString
+    private val fnr = TestData.fnrGenerator.foedselsnummer().asString
 
     @Test
     fun `request for HarStønad uten match`() {

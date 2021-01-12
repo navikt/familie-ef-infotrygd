@@ -1,30 +1,29 @@
 package no.nav.infotrygd.ef.model
 
-import no.nav.commons.foedselsnummer.FoedselsNr
-import no.nav.infotrygd.ef.model.converters.ReversedFoedselNrConverter
-import javax.persistence.*
+import java.time.LocalDate
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.Table
 
+@Suppress("unused") // brukes av hibernate for å generere hvilke tabeller som brukes
 @Entity
-@Table(name = "BA_STOENAD_20")
-data class Stønad(
-    @Id
-    @Column(name = "ID_BA_STOENAD", columnDefinition = "DECIMAL")
-    val id: Long,
+@Table(name = "T_STONAD")
+data class Stønad(@Id
+                  @Column(name = "STONAD_ID")
+                  val id: Long,
 
-    @Column(name = "B01_PERSONKEY", columnDefinition = "DECIMAL")
-    val personKey: Long,
+                  @Column(name = "PERSON_LOPENR")
+                  val personKey: Long,
 
-    @Column(name = "F_NR", columnDefinition = "VARCHAR2")
-    @Convert(converter = ReversedFoedselNrConverter::class)
-    val fnr: FoedselsNr,
+                  @Column(name = "OPPDRAG_ID")
+                  val oppdragId: Long,
 
-    @Column(name = "TK_NR", columnDefinition = "VARCHAR2")
-    val tkNr: String,
+                  @Column(name = "KODE_RUTINE")
+                  val kodeRutine: String,
 
-    @Column(name = "REGION", columnDefinition = "CHAR(1 CHAR)")
-    val region: String,
+                  @Column(name = "DATO_START")
+                  val datoStart: LocalDate,
 
-    @Column(name = "B20_OPPHOERT_VFOM", columnDefinition = "VARCHAR2")
-    val opphørtFom: String
-
-)
+                  @Column(name = "DATO_OPPHOR")
+                  val datoOpphør: LocalDate)
