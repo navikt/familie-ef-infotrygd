@@ -59,46 +59,46 @@ internal class StønadServiceTest {
 
     @Test
     fun `opphør bak i tid - har stønad men har ikke aktiv stønad`() {
-        val finnes = stønadService.harStønad(SøkFlereStønaderRequest(setOf(IDENT), setOf(StønadType.OVERGANGSSTØNAD)))
+        val finnes = stønadService.eksistererStønad(SøkFlereStønaderRequest(setOf(IDENT), setOf(StønadType.OVERGANGSSTØNAD)))
 
         assertThat(finnes.keys).containsOnly(StønadType.OVERGANGSSTØNAD)
 
         val stønadTreff = finnes[StønadType.OVERGANGSSTØNAD]!!
-        assertThat(stønadTreff.finnes).isTrue
+        assertThat(stønadTreff.eksisterer).isTrue
         assertThat(stønadTreff.harAktivStønad).isFalse
     }
 
     @Test
     fun `opphør er null - har stønad og har aktiv stønad`() {
-        val finnes = stønadService.harStønad(SøkFlereStønaderRequest(setOf(IDENT2), setOf(StønadType.OVERGANGSSTØNAD)))
+        val finnes = stønadService.eksistererStønad(SøkFlereStønaderRequest(setOf(IDENT2), setOf(StønadType.OVERGANGSSTØNAD)))
 
         assertThat(finnes.keys).containsOnly(StønadType.OVERGANGSSTØNAD)
 
         val stønadTreff = finnes[StønadType.OVERGANGSSTØNAD]!!
-        assertThat(stønadTreff.finnes).isTrue
+        assertThat(stønadTreff.eksisterer).isTrue
         assertThat(stønadTreff.harAktivStønad).isTrue
     }
 
     @Test
     fun `har opphør bak i tid og opphør som er null - har stønad og har aktiv stønad`() {
-        val finnes = stønadService.harStønad(SøkFlereStønaderRequest(setOf(IDENT3), setOf(StønadType.OVERGANGSSTØNAD)))
+        val finnes = stønadService.eksistererStønad(SøkFlereStønaderRequest(setOf(IDENT3), setOf(StønadType.OVERGANGSSTØNAD)))
 
         assertThat(finnes.keys).containsOnly(StønadType.OVERGANGSSTØNAD)
 
         val stønadTreff = finnes[StønadType.OVERGANGSSTØNAD]!!
-        assertThat(stønadTreff.finnes).isTrue
+        assertThat(stønadTreff.eksisterer).isTrue
         assertThat(stønadTreff.harAktivStønad).isTrue
     }
 
     @Test
     fun `har ikke noen stønader for disse typene men retunrerer likevel treff i resultatet`() {
-        val finnes = stønadService.harStønad(SøkFlereStønaderRequest(setOf(IDENT, IDENT2, IDENT3),
-                                                                     setOf(StønadType.BARNETILSYN, StønadType.SKOLEPENGER)))
+        val finnes = stønadService.eksistererStønad(SøkFlereStønaderRequest(setOf(IDENT, IDENT2, IDENT3),
+                                                                            setOf(StønadType.BARNETILSYN, StønadType.SKOLEPENGER)))
 
         assertThat(finnes.keys).containsExactlyInAnyOrder(StønadType.BARNETILSYN, StønadType.SKOLEPENGER)
 
         finnes.values.forEach {
-            assertThat(it.finnes).isFalse
+            assertThat(it.eksisterer).isFalse
             assertThat(it.harAktivStønad).isFalse
         }
     }

@@ -1,7 +1,7 @@
 package no.nav.infotrygd.ef.rest.controller
 
 import no.nav.infotrygd.ef.model.StønadType
-import no.nav.infotrygd.ef.rest.api.FinnesResponse
+import no.nav.infotrygd.ef.rest.api.EksistererStønadResponse
 import no.nav.infotrygd.ef.rest.api.SøkFlereStønaderRequest
 import no.nav.infotrygd.ef.testutil.TestData
 import no.nav.infotrygd.ef.testutil.restClient
@@ -26,7 +26,7 @@ class StønadControllerTest {
     @LocalServerPort
     private var port: Int = 0
 
-    private val personsøkPath = "/stonad/finnes"
+    private val personsøkPath = "/stonad/eksisterer"
 
     private val fnr = TestData.person().fnr.asString
 
@@ -39,7 +39,7 @@ class StønadControllerTest {
         val res1 = kallStønadController(personsøkPath, client, request).responseBody()
 
         val stønad = res1.stønader.get(StønadType.OVERGANGSSTØNAD) ?: error("Forventet att få tilbake data for forespurt type")
-        assertThat(stønad.finnes).isFalse
+        assertThat(stønad.eksisterer).isFalse
         assertThat(stønad.harAktivStønad).isFalse
     }
 
@@ -77,6 +77,6 @@ class StønadControllerTest {
 
 }
 
-private fun ClientResponse.responseBody(): FinnesResponse {
-    return this.bodyToMono(FinnesResponse::class.java).block()!!
+private fun ClientResponse.responseBody(): EksistererStønadResponse {
+    return this.bodyToMono(EksistererStønadResponse::class.java).block()!!
 }

@@ -2,7 +2,7 @@ package no.nav.infotrygd.ef.rest.api
 
 import no.nav.infotrygd.ef.model.StønadType
 
-data class FinnesResponse(val stønader: Map<StønadType, StønadTreff>)
+data class EksistererStønadResponse(val stønader: Map<StønadType, StønadTreff>)
 
-data class StønadTreff(val finnes: Boolean,
+data class StønadTreff(val eksisterer: Boolean,
                        val harAktivStønad: Boolean)
