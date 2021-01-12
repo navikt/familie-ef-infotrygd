@@ -1,6 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val mockkVersion = "1.10.3"
+val mockkVersion = "1.10.4"
 val filformatVersion = "1.2019.06.26-14.50-746e7610cb12"
 val tokenSupportVersion = "1.3.2"
 val springfoxVersion = "3.0.0"
@@ -77,6 +77,7 @@ dependencies {
     testImplementation("org.testcontainers:oracle-xe:1.12.1")
     testImplementation("com.h2database:h2")
     testImplementation("org.flywaydb:flyway-core")
+    testImplementation("io.mockk:mockk:$mockkVersion")
 }
 
 tasks.withType<KotlinCompile> {

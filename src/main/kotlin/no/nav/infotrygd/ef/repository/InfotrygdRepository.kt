@@ -16,7 +16,7 @@ class InfotrygdRepository(private val namedParameterJdbcTemplate: NamedParameter
                 .addValue("kodeRutiner", typer.map { it.kodeRutine })
         val filter: String = if (kunAktive) {
             values.addValue("dagensDato", LocalDate.now()) //TODO
-            " AND (DATO_OPPHOR IS NULL OR DATO_OPPHOR > :dagensDato) "
+            " AND (S.DATO_OPPHOR IS NULL OR S.DATO_OPPHOR > :dagensDato) "
         } else {
             ""
         }
