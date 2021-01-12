@@ -76,6 +76,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.testcontainers:oracle-xe:1.12.1")
     testImplementation("com.h2database:h2")
+    testImplementation("org.flywaydb:flyway-core")
 }
 
 tasks.withType<KotlinCompile> {
