@@ -20,8 +20,8 @@ class ApiExceptionHandler : ResponseEntityExceptionHandler() {
     private val logger = LoggerFactory.getLogger(ApiExceptionHandler::class.java)
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
-    private fun rootCause(throwable: Throwable): String {
-        return NestedExceptionUtils.getMostSpecificCause(throwable).javaClass.simpleName
+    private fun rootCause(throwable: Throwable): Throwable {
+        return NestedExceptionUtils.getMostSpecificCause(throwable)
     }
 
     override fun handleExceptionInternal(ex: Exception,
@@ -30,7 +30,7 @@ class ApiExceptionHandler : ResponseEntityExceptionHandler() {
                                          status: HttpStatus,
                                          request: WebRequest): ResponseEntity<Any> {
         secureLogger.error("En feil har oppstått", ex)
-        logger.error("En feil har oppstått - throwable=${rootCause(ex)} status=${status.value()}")
+        logger.error("En feil har oppstått - throwable=${rootCause(ex).javaClass.simpleName} status=${status.value()}")
         return super.handleExceptionInternal(ex, body, headers, status, request)
     }
 
@@ -44,25 +44,31 @@ class ApiExceptionHandler : ResponseEntityExceptionHandler() {
     }
 
     private fun uventetFeil(throwable: Throwable): ResponseEntity<ErrorResponse> {
+        val rootCause = rootCause(throwable)
         secureLogger.error("En feil har oppstått", throwable)
-        logger.error("En feil har oppstått - throwable=${rootCause(throwable)} ")
+        logger.error("En feil har oppstått - throwable=${rootCause.javaClass.simpleName} ")
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ErrorResponse("Uventet feil ${throwable.stackTraceToString()})"))
+                .body(errorResponse(throwable, rootCause))
     }
 
     // Denne håndterer eks JwtTokenUnauthorizedException
     private fun håndtertResponseStatusFeil(throwable: Throwable,
                                            responseStatus: ResponseStatus): ResponseEntity<ErrorResponse> {
+        val rootCause = rootCause(throwable)
         val status = if (responseStatus.value != HttpStatus.INTERNAL_SERVER_ERROR) responseStatus.value else responseStatus.code
         val loggMelding = "En håndtert feil har oppstått" +
-                          " throwable=${rootCause(throwable)}" +
-                          " reason=${responseStatus.reason}" +
-                          " status=$status"
+                " throwable=${rootCause.javaClass.simpleName}" +
+                " reason=${responseStatus.reason}" +
+                " status=$status"
 
         loggFeil(throwable, loggMelding)
-        return ResponseEntity.status(status).body(ErrorResponse("Uventet feil ${throwable.stackTraceToString()})"))
+        return ResponseEntity.status(status).body(errorResponse(throwable, rootCause))
     }
+
+    private fun errorResponse(throwable: Throwable, rootCause: Throwable) =
+            ErrorResponse("Uventet feil ${rootCause.javaClass.simpleName}" +
+                    " - ${throwable.message} - ${rootCause.message})")
 
     private fun loggFeil(throwable: Throwable, loggMelding: String) {
         when (throwable) {

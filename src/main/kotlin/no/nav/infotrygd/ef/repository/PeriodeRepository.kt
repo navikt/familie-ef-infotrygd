@@ -17,6 +17,12 @@ class PeriodeRepository(private val namedParameterJdbcTemplate: NamedParameterJd
      * INFO: Det er riktig att det står
      *      AND V.DATO_INNV_FOM <= :tom
      *      AND V.DATO_INNV_TOM >= :fom
+     *
+     *      KODE_RUTINE
+     *        EO: Overgangsstønad
+     *      E.KODE
+     *        AN: Annulert
+     *        UA: UAVKLART
      */
     fun hentPerioderForOvergangsstønad(periodeOvergangsstønadRequest: PeriodeOvergangsstønadRequest): List<PeriodeOvergangsstønad> {
         val values = MapSqlParameterSource()
@@ -38,19 +44,15 @@ class PeriodeRepository(private val namedParameterJdbcTemplate: NamedParameterJd
             JOIN T_STONAD S ON S.PERSON_LOPENR = L.PERSON_LOPENR
             JOIN T_VEDTAK V ON V.STONAD_ID = S.STONAD_ID
             JOIN T_DELYTELSE D ON D.VEDTAK_ID = V.VEDTAK_ID
-            JOIN T_ENDRING E ON E.VEDTAK_ID = V.VEDTAK_ID
-            JOIN T_STONADSKLASSE K1 ON K1.VEDTAK_ID = V.VEDTAK_ID AND K1.KODE_NIVAA = '01'
-            JOIN T_STONADSKLASSE K2 ON K2.VEDTAK_ID = V.VEDTAK_ID AND K2.KODE_NIVAA = '02' 
+            JOIN T_ENDRING E ON E.VEDTAK_ID = V.VEDTAK_ID 
            WHERE L.PERSONNR IN (:fnr)
               AND S.OPPDRAG_ID IS NOT NULL
-              AND V.KODE_RUTINE IN ('EO') 
+              AND V.KODE_RUTINE = 'EO' 
               AND E.KODE <> 'AN'
               AND E.KODE <> 'UA'
               AND V.DATO_INNV_FOM <= :tom
               AND V.DATO_INNV_TOM >= :fom
               AND V.DATO_INNV_FOM < V.DATO_INNV_TOM
-              AND K1.KODE_KLASSE = 'EF'
-              AND K2.KODE_KLASSE = 'OG'
       """, values
         ) { rs, _ ->
             PeriodeOvergangsstønad(
