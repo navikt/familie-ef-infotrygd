@@ -26,7 +26,7 @@ class PeriodeRepository(private val namedParameterJdbcTemplate: NamedParameterJd
      */
     fun hentPerioderForOvergangsstønad(periodeOvergangsstønadRequest: PeriodeOvergangsstønadRequest): List<PeriodeOvergangsstønad> {
         val values = MapSqlParameterSource()
-            .addValue("fnr", periodeOvergangsstønadRequest.identer.map { it.asString })
+            .addValue("personIdenter", periodeOvergangsstønadRequest.personIdenter.map { it.asString })
             .addValue("fom", periodeOvergangsstønadRequest.fomDato ?: LocalDate.of(1, 1, 1))
             .addValue("tom", periodeOvergangsstønadRequest.tomDato ?: LocalDate.of(9999, 1, 1))
         return namedParameterJdbcTemplate.query(
@@ -45,7 +45,7 @@ class PeriodeRepository(private val namedParameterJdbcTemplate: NamedParameterJd
             JOIN T_VEDTAK V ON V.STONAD_ID = S.STONAD_ID
             JOIN T_DELYTELSE D ON D.VEDTAK_ID = V.VEDTAK_ID
             JOIN T_ENDRING E ON E.VEDTAK_ID = V.VEDTAK_ID 
-           WHERE L.PERSONNR IN (:fnr)
+           WHERE L.PERSONNR IN (:personIdenter)
               AND S.OPPDRAG_ID IS NOT NULL
               AND V.KODE_RUTINE = 'EO' 
               AND E.KODE <> 'AN'

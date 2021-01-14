@@ -10,9 +10,9 @@ import java.time.LocalDate
 @Repository
 class InfotrygdRepository(private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
 
-    fun harStønad(identer: Set<String>, typer: Set<StønadType>, kunAktive: Boolean = false): Map<StønadType, Boolean> {
+    fun harStønad(personIdenter: Set<String>, typer: Set<StønadType>, kunAktive: Boolean = false): Map<StønadType, Boolean> {
         val values = MapSqlParameterSource()
-                .addValue("identer", identer)
+                .addValue("personIdenter", personIdenter)
                 .addValue("kodeRutiner", typer.map { it.kodeRutine })
         val filter: String = if (kunAktive) {
             values.addValue("dagensDato", LocalDate.now()) //TODO
@@ -26,7 +26,7 @@ class InfotrygdRepository(private val namedParameterJdbcTemplate: NamedParameter
             SELECT S.KODE_RUTINE, count(*) cn 
               FROM T_LOPENR_FNR L
               JOIN T_STONAD S ON S.PERSON_LOPENR = L.PERSON_LOPENR
-            WHERE L.PERSONNR IN (:identer)
+            WHERE L.PERSONNR IN (:personIdenter)
               AND S.KODE_RUTINE IN (:kodeRutiner)
               $filter
             GROUP BY S.KODE_RUTINE
