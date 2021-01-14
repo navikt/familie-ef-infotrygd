@@ -66,5 +66,4 @@ spec:
     - name: APP_AZURE_PROXY_URL
       value: https://webproxy-nais.nav.no:8088
     - name: APP_CLIENT_WHITELIST
-      value: 1da8f976-2cc4-43a4-91f7-11d2e27e593c
-      #, 56242d34-609b-4a7a-bdb2-79841f2e53c4
+      value: 1da8f976-2cc4-43a4-91f7-11d2e27e593c, 56242d34-609b-4a7a-bdb2-79841f2e53c4
