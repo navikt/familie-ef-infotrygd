@@ -36,7 +36,7 @@ class PeriodeController(private val periodeRepository: PeriodeRepository) {
                     " \"fomDato\": \"2020-01-01\",\n  \"tomDato\": \"2021-01-01\"\n}"
     ))
     fun hentPerioder(@RequestBody request: PeriodeOvergangsstønadRequest): ResponseEntity<Any> {
-        if (request.identer.isEmpty()) {
+        if (request.personIdenter.isEmpty()) {
             return ResponseEntity.badRequest().build()
         }
 

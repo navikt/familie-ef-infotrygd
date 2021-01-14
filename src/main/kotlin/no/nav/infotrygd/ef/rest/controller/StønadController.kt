@@ -34,7 +34,7 @@ class StønadController(private val stønadService: StønadService) {
             value = "{\n  \"identer\": [\n\"01015450301\"\n]," + "\n  \"stønader\": [\n\"OVERGANGSSTØNAD\"\n]\n}"
     ))
     fun eksisterer(@RequestBody request: SøkFlereStønaderRequest): ResponseEntity<Any> {
-        if (request.identer.isEmpty() || request.stønader.isEmpty()) {
+        if (request.personIdenter.isEmpty() || request.stønader.isEmpty()) {
             return ResponseEntity.badRequest().build()
         }
 

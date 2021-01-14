@@ -119,9 +119,9 @@ internal class PeriodeRepositoryTest {
     private fun hentPerioder(fomDato: LocalDate? = null, tomDato: LocalDate? = null): List<PeriodeOvergangsstønad> =
         periodeRepository.hentPerioderForOvergangsstønad(
                 PeriodeOvergangsstønadRequest(
-                identer = setOf(FoedselsNr("01234567890")),
-                fomDato,
-                tomDato
+                        personIdenter = setOf(FoedselsNr("01234567890")),
+                        fomDato,
+                        tomDato
             )
         )
 }

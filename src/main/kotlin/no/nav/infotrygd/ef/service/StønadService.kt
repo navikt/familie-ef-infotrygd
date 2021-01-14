@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service
 class StønadService(private val infotrygdRepository: InfotrygdRepository) {
 
     fun eksistererStønad(request: SøkFlereStønaderRequest): Map<StønadType, StønadTreff> {
-        val harStønad = infotrygdRepository.harStønad(request.identer, request.stønader)
-        val harAktivStønad = infotrygdRepository.harStønad(request.identer, request.stønader, kunAktive = true)
+        val harStønad = infotrygdRepository.harStønad(request.personIdenter, request.stønader)
+        val harAktivStønad = infotrygdRepository.harStønad(request.personIdenter, request.stønader, kunAktive = true)
         return request.stønader.map {
             it to StønadTreff(eksisterer = harStønad.getOrDefault(it, false),
                               harAktivStønad = harAktivStønad.getOrDefault(it, false))
