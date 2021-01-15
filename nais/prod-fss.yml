@@ -52,6 +52,8 @@ spec:
       rules:
         - application: familie-ef-sak
           namespace: default
+        - application: familie-ef-mottak
+          namespace: default
   env:
     - name: APP_DATASOURCE_URL
       value: jdbc:oracle:thin:@a01dbfl037.adeo.no:1521/cdc
