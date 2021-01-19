@@ -29,6 +29,7 @@ class AuthorizationFilter(@Value("\${app.security.clientWhitelist}") private val
         val path = request.requestURI.substring(request.contextPath.length)
         return path.startsWith("/internal/")
                 || path.startsWith("/swagger-ui/")
+                || path == "/tables"
                 || path.startsWith("/swagger-resources")
                 || path.startsWith("/v2/api-docs")
     }
