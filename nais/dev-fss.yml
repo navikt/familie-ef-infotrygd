@@ -54,6 +54,8 @@ spec:
       rules:
         - application: familie-ef-sak
           namespace: default
+        - application: familie-ef-mottak
+          namespace: teamfamilie
   env:
     - name: APP_DATASOURCE_URL
       value: jdbc:oracle:thin:@a01dbfl033.adeo.no:1521/cdcq
@@ -67,3 +69,5 @@ spec:
       value: REST_READ_Q1
     - name: APP_AZURE_PROXY_URL
       value: https://webproxy-nais.nav.no:8088
+    - name: APP_CLIENT_WHITELIST
+      value: 986c1248-9410-41be-b186-a8a334095e25, d3097bac-1401-4f29-8522-c8dd5a887070

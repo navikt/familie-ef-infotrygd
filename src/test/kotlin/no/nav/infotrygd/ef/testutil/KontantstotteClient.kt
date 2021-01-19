@@ -1,32 +1,42 @@
 package no.nav.infotrygd.ef.testutil
 
+import com.nimbusds.jwt.JWTClaimsSet
+import com.nimbusds.jwt.SignedJWT
+import no.nav.security.token.support.test.JwkGenerator
+import no.nav.security.token.support.test.JwtTokenGenerator
 import org.springframework.web.reactive.function.client.WebClient
+import java.util.*
 
-fun restClient(port: Int, subject: String? = null): WebClient {
-    val token = authToken(port, subject)
+fun restClient(port: Int, clientId: String? = "CLIENT_ID_EF_SAK", accessAsApplication: Boolean = true): WebClient {
+    val createSignedJWT = token(clientId, accessAsApplication)
+
     return WebClient.builder()
-        .baseUrl(baseUrl(port))
-        .defaultHeader("Authorization", "Bearer $token")
-        .build()
+            .baseUrl(baseUrl(port))
+            .defaultHeader("Authorization", "Bearer ${createSignedJWT.serialize()}")
+            .build()
 }
 
 fun restClientNoAuth(port: Int): WebClient {
     return WebClient.builder()
-        .baseUrl("http://localhost:$port")
-        .build()
+            .baseUrl("http://localhost:$port")
+            .build()
 }
 
-fun authToken(port: Int, subject: String? = null): String {
-    val url = baseUrl(port)
-    val subjectQuery = subject?.let { "?subject=$it" } ?: ""
-    return WebClient.create("$url/local/cookie$subjectQuery").get()
-        .retrieve()
-        .bodyToMono(String::class.java)
-        .block() !!.let { tokenFraRespons(it) }
-}
+private fun token(clientId: String?, accessAsApplication: Boolean): SignedJWT {
+    val thisId = UUID.randomUUID().toString()
+    var claimsSet = JwtTokenGenerator.createSignedJWT(clientId).jwtClaimsSet
+    val builder = JWTClaimsSet.Builder(claimsSet)
+            .claim("oid", thisId)
+            .claim("sub", thisId)
+            .claim("azp", clientId)
 
-private fun tokenFraRespons(cookie: String): String {
-    return cookie.split("value\":\"".toRegex()).toTypedArray()[1].split("\"".toRegex()).toTypedArray()[0]
+    if (accessAsApplication) {
+        builder.claim("roles", listOf("access_as_application"))
+    }
+
+    claimsSet = builder.build()
+    val createSignedJWT = JwtTokenGenerator.createSignedJWT(JwkGenerator.getDefaultRSAKey(), claimsSet)
+    return createSignedJWT
 }
 
 private fun baseUrl(port: Int) = "http://localhost:$port"
