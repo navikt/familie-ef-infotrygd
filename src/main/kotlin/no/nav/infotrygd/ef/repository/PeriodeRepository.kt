@@ -59,6 +59,7 @@ class PeriodeRepository(private val namedParameterJdbcTemplate: NamedParameterJd
                 FoedselsNr(rs.getString("PERSONNR")),
                 rs.getDate("DATO_INNV_FOM").toLocalDate(),
                 rs.getDate("DATO_INNV_TOM").toLocalDate(),
+                rs.getDate("DATO_OPPHOR")?.toLocalDate(),
                 rs.getFloat("BELOP")
             )
         }

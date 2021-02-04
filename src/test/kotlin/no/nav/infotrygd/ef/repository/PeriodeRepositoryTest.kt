@@ -34,7 +34,7 @@ internal class PeriodeRepositoryTest {
         )
         jdbcTemplate.update(
             """INSERT INTO T_STONAD (STONAD_ID, OPPDRAG_ID, PERSON_LOPENR, DATO_START, DATO_OPPHOR)
-                                     VALUES (1, 1, 1, sysdate, sysdate)"""
+                                     VALUES (1, 1, 1, sysdate, null)"""
         )
         jdbcTemplate.update("INSERT INTO T_DELYTELSE (VEDTAK_ID, TYPE_SATS, BELOP) VALUES (1, '', 100.34)")
         jdbcTemplate.update("INSERT INTO T_ENDRING (VEDTAK_ID, KODE) VALUES (1, 'A')")
