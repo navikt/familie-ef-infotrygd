@@ -12,5 +12,5 @@ data class PeriodeOvergangsstønadResponse(val perioder: List<PeriodeOvergangsst
 data class PeriodeOvergangsstønad(val personIdent: FoedselsNr,
                                   val fomDato: LocalDate,
                                   val tomDato: LocalDate,
-                                  val opphørDato: LocalDate?,
+                                  val opphørsdato: LocalDate?,
                                   val beløp: Float)
