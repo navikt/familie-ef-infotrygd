@@ -1,7 +1,6 @@
 FROM navikt/java:11
 
 COPY init.sh /init-scripts/init.sh
-RUN chmod +x /init-scripts/init.sh
 
 ENV JAVA_OPTS="${JAVA_OPTS} -Xms270M"
 
