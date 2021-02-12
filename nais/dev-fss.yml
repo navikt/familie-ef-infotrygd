@@ -40,6 +40,7 @@ spec:
   ingresses: # Optional. List of ingress URLs that will route HTTP traffic to the application.
     - https://infotrygd-enslig-forsoerger.nais.preprod.local
     - https://infotrygd-enslig-forsoerger.dev.adeo.no
+    - https://infotrygd-enslig-forsoerger.dev-fss-pub.nais.io
   logformat: accesslog # Optional. The format of the logs from the container if the logs should be handled differently than plain text or json
   logtransform: dns_loglevel # Optional. The transformation of the logs, if they should be handled differently than plain text or json
   webproxy: false # Optional. Expose web proxy configuration to the application using the HTTP_PROXY, HTTPS_PROXY and NO_PROXY environment variables.
@@ -59,6 +60,9 @@ spec:
       rules:
         - application: familie-ef-sak
           namespace: default
+        - application: familie-ef-sak
+          namespace: teamfamilie
+          cluster: dev-gcp
         - application: familie-ef-mottak
           namespace: teamfamilie
   env:
