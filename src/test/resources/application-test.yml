@@ -25,5 +25,3 @@ no.nav.security.jwt:
       accepted_audience: aud-localhost
       proxyurl: ~
       cookiename: localhost-idtoken
-
-APP_CLIENT_WHITELIST: CLIENT_ID_EF_SAK

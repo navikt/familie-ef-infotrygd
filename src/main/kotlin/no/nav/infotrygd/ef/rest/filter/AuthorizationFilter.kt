@@ -11,10 +11,7 @@ import javax.servlet.http.HttpServletResponse
 
 @Component
 @Order(0)
-class AuthorizationFilter(@Value("\${app.security.clientWhitelist}") private val clientWhitelistStr: String) :
-        OncePerRequestFilter() {
-
-    private val acceptedClients = clientWhitelistStr.split(',').map(String::trim).toSet()
+class AuthorizationFilter : OncePerRequestFilter() {
 
     override fun doFilterInternal(request: HttpServletRequest,
                                   response: HttpServletResponse,
@@ -43,11 +40,10 @@ class AuthorizationFilter(@Value("\${app.security.clientWhitelist}") private val
                     ?: emptyList()).contains("access_as_application")
             val clientId = claims?.get("azp") as String?
 
-            val result = accessAsApplication && clientId != null && acceptedClients.contains(clientId)
-            if (!result) {
+            if (!accessAsApplication) {
                 logger.error("Mangler noe i token accessAsApplication=$accessAsApplication clientId=$clientId")
             }
-            result
+            accessAsApplication
         } catch (e: Exception) {
             logger.error("Feilet med å hente azp fra token")
             false

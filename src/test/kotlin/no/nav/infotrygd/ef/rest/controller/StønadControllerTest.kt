@@ -65,13 +65,6 @@ class StønadControllerTest {
     }
 
     @Test
-    fun `noAuth - feil system som kaller`() {
-        val client = restClient(port, "Annet_System")
-        val result = kallStønadController(personsøkPath, client, SøkFlereStønaderRequest(emptySet(), emptySet()))
-        assertThat(result.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED)
-    }
-
-    @Test
     fun `noAuth - ikke client credentials`() {
         val client = restClient(port, accessAsApplication = false)
         val result = kallStønadController(personsøkPath, client, SøkFlereStønaderRequest(emptySet(), emptySet()))
