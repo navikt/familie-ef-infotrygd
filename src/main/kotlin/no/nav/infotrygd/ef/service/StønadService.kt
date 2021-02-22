@@ -11,7 +11,7 @@ class StønadService(private val infotrygdRepository: InfotrygdRepository) {
 
     fun eksistererStønad(request: SøkFlereStønaderRequest): Map<StønadType, StønadTreff> {
         val harStønad = infotrygdRepository.harStønad(request.personIdenter, request.stønader)
-        val harAktivStønad = infotrygdRepository.harStønad(request.personIdenter, request.stønader, kunAktive = true)
+        val harAktivStønad = infotrygdRepository.harAktivStønad(request.personIdenter, request.stønader)
         return request.stønader.map {
             it to StønadTreff(eksisterer = harStønad.getOrDefault(it, false),
                               harAktivStønad = harAktivStønad.getOrDefault(it, false))

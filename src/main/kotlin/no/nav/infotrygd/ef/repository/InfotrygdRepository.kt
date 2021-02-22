@@ -10,12 +10,14 @@ import java.time.LocalDate
 @Repository
 class InfotrygdRepository(private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
 
+    fun harAktivStønad(personIdenter: Set<String>, typer: Set<StønadType>) = harStønad(personIdenter, typer, kunAktive = true)
+
     fun harStønad(personIdenter: Set<String>, typer: Set<StønadType>, kunAktive: Boolean = false): Map<StønadType, Boolean> {
         val values = MapSqlParameterSource()
                 .addValue("personIdenter", personIdenter)
                 .addValue("kodeRutiner", typer.map { it.kodeRutine })
         val filter: String = if (kunAktive) {
-            values.addValue("dagensDato", LocalDate.now()) //TODO
+            values.addValue("dagensDato", LocalDate.now())
             " AND (S.DATO_OPPHOR IS NULL OR S.DATO_OPPHOR > :dagensDato) "
         } else {
             ""

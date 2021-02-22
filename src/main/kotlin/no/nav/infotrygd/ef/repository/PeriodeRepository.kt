@@ -18,17 +18,22 @@ class PeriodeRepository(private val namedParameterJdbcTemplate: NamedParameterJd
      *      AND V.DATO_INNV_FOM <= :tom
      *      AND V.DATO_INNV_TOM >= :fom
      *
+     *      FOM < TOM - Det finnes perioder med TOM < FOM og denne filtrerer bort de.
+     *
      *      KODE_RUTINE
      *        EO: Overgangsstønad
+     *        EB, EU, FL: Stønad til barnetilsyn, Skolepenger og Tilskudd. Grunnen til att disse hentes er under avklaring, burde være tilsrekkelig att man kun henter EO
      *      E.KODE
      *        AN: Annulert
-     *        UA: UAVKLART
+     *        UA: Uavklart
+     *
+     *      fom/tom settes til dagens dato som default, det er slik InfotrygdVedtak_v1 gjorde det.
      */
     fun hentPerioderForOvergangsstønad(periodeOvergangsstønadRequest: PeriodeOvergangsstønadRequest): List<PeriodeOvergangsstønad> {
         val values = MapSqlParameterSource()
             .addValue("personIdenter", periodeOvergangsstønadRequest.personIdenter.map { it.asString })
-            .addValue("fom", periodeOvergangsstønadRequest.fomDato ?: LocalDate.of(1, 1, 1))
-            .addValue("tom", periodeOvergangsstønadRequest.tomDato ?: LocalDate.of(9999, 1, 1))
+            .addValue("fom", periodeOvergangsstønadRequest.fomDato ?: LocalDate.now())
+            .addValue("tom", periodeOvergangsstønadRequest.tomDato ?: LocalDate.now())
         return namedParameterJdbcTemplate.query(
             """
             SELECT DISTINCT L.PERSONNR
@@ -47,7 +52,7 @@ class PeriodeRepository(private val namedParameterJdbcTemplate: NamedParameterJd
             JOIN T_ENDRING E ON E.VEDTAK_ID = V.VEDTAK_ID 
            WHERE L.PERSONNR IN (:personIdenter)
               AND S.OPPDRAG_ID IS NOT NULL
-              AND V.KODE_RUTINE = 'EO' 
+              AND V.KODE_RUTINE IN ('EO','EB','EU','FL')  
               AND E.KODE <> 'AN'
               AND E.KODE <> 'UA'
               AND V.DATO_INNV_FOM <= :tom
