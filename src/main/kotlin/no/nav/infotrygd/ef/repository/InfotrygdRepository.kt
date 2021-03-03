@@ -27,7 +27,7 @@ class InfotrygdRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) 
 
         val result = jdbcTemplate.query(
                 """
-            SELECT L.PERSONNR, S.KODE_RUTINE cn 
+            SELECT L.PERSONNR, S.KODE_RUTINE 
               FROM T_LOPENR_FNR L
               JOIN T_STONAD S ON S.PERSON_LOPENR = L.PERSON_LOPENR
               JOIN T_VEDTAK V ON V.stonad_id = S.stonad_id
