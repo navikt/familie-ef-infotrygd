@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository
 import java.time.LocalDate
 
 @Repository
-class PeriodeRepository(private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
+class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
 
     /**
      * Forenkled versjon av spørringen på https://confluence.adeo.no/pages/viewpage.action?pageId=395741283
@@ -34,7 +34,7 @@ class PeriodeRepository(private val namedParameterJdbcTemplate: NamedParameterJd
             .addValue("personIdenter", periodeOvergangsstønadRequest.personIdenter.map { it.asString })
             .addValue("fom", periodeOvergangsstønadRequest.fomDato ?: LocalDate.now())
             .addValue("tom", periodeOvergangsstønadRequest.tomDato ?: LocalDate.now())
-        return namedParameterJdbcTemplate.query(
+        return jdbcTemplate.query(
             """
             SELECT DISTINCT L.PERSONNR
               ,V.TKNR

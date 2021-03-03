@@ -1,7 +1,8 @@
 package no.nav.infotrygd.ef.service
 
 import no.nav.infotrygd.ef.model.StønadType
-import no.nav.infotrygd.ef.rest.api.SøkFlereStønaderRequest
+import no.nav.infotrygd.ef.rest.api.InfotrygdSøkRequest
+import no.nav.infotrygd.ef.utils.reverserFnr
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
@@ -12,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
+import java.time.LocalDate
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -23,32 +25,47 @@ internal class StønadServiceTest {
     @Autowired
     private lateinit var stønadService: StønadService
 
+    private val startdato = LocalDate.now().minusDays(50)
+    private val sluttdato = LocalDate.now().plusDays(50)
+
     @Before
     fun setup() {
-        jdbcTemplate.update("INSERT INTO T_LOPENR_FNR (PERSON_LOPENR, PERSONNR) VALUES (1, '${IDENT}')")
-        jdbcTemplate.update("INSERT INTO T_LOPENR_FNR (PERSON_LOPENR, PERSONNR) VALUES (2, '${IDENT2}')")
-        jdbcTemplate.update("INSERT INTO T_LOPENR_FNR (PERSON_LOPENR, PERSONNR) VALUES (3, '${IDENT3}')")
+        // Legger inn en med opphør bak i tid
+        jdbcTemplate.update("INSERT INTO T_LOPENR_FNR (PERSON_LOPENR, PERSONNR) VALUES (1, '$IDENT')")
+        leggInnStønad(1, StønadType.OVERGANGSSTØNAD, LocalDate.now().minusDays(100))
+        leggInnVedtak(1, StønadType.OVERGANGSSTØNAD)
 
-        // Legger inn enn opphør bak i tid
-        jdbcTemplate.update(
-                """INSERT INTO T_STONAD (STONAD_ID, OPPDRAG_ID, PERSON_LOPENR, KODE_RUTINE, DATO_START, DATO_OPPHOR)
-                                     VALUES (1, 1, 1, 'EO', sysdate, sysdate - 100)"""
-        )
+        // Legger inn en med opphør frem i tid
+        jdbcTemplate.update("INSERT INTO T_LOPENR_FNR (PERSON_LOPENR, PERSONNR) VALUES (2, '$IDENT2')")
+        leggInnStønad(2, StønadType.SKOLEPENGER, LocalDate.now().plusDays(100))
+        leggInnVedtak(2, StønadType.SKOLEPENGER)
 
-        // Legger inn enn opphør bak i tid
-        jdbcTemplate.update(
-                """INSERT INTO T_STONAD (STONAD_ID, OPPDRAG_ID, PERSON_LOPENR, KODE_RUTINE, DATO_START, DATO_OPPHOR)
-                                     VALUES (2, 2, 2, 'EO', sysdate, null)"""
-        )
+        // Legger inn en uten opphør
+        jdbcTemplate.update("INSERT INTO T_LOPENR_FNR (PERSON_LOPENR, PERSONNR) VALUES (3, '$IDENT3')")
+        leggInnStønad(3, StønadType.BARNETILSYN, null)
+        leggInnVedtak(3, StønadType.BARNETILSYN)
 
-        // Legger inn enn opphør bak i tid og med nulldato
+        jdbcTemplate.update("INSERT INTO sa_sak_10 (f_nr, s10_kapittelnr, s10_valg) VALUES ('${IDENT4.reverserFnr()}', 'EF', 'OG')")
+    }
+
+    private fun leggInnStønad(id: Int, stønadType: StønadType, opphørsdato: LocalDate?) {
         jdbcTemplate.update(
                 """INSERT INTO T_STONAD (STONAD_ID, OPPDRAG_ID, PERSON_LOPENR, KODE_RUTINE, DATO_START, DATO_OPPHOR)
-                                     VALUES (3, 3, 3, 'EO', sysdate, sysdate - 100)"""
+                                         VALUES (?, ?, ?, ?, sysdate, ?)""",
+                id, id, id,
+                stønadType.kodeRutine,
+                opphørsdato
         )
+    }
+
+    private fun leggInnVedtak(id: Int, stønadType: StønadType) {
         jdbcTemplate.update(
-                """INSERT INTO T_STONAD (STONAD_ID, OPPDRAG_ID, PERSON_LOPENR, KODE_RUTINE, DATO_START, DATO_OPPHOR)
-                                     VALUES (3, 3, 3, 'EO', sysdate, null)"""
+                """INSERT INTO T_VEDTAK (VEDTAK_ID, PERSON_LOPENR, STONAD_ID, KODE_RUTINE, DATO_INNV_FOM,
+                             DATO_INNV_TOM) VALUES (?,?,?,?,?,?)""",
+                id, id, id,
+                stønadType.kodeRutine,
+                startdato,
+                sluttdato
         )
     }
 
@@ -58,49 +75,54 @@ internal class StønadServiceTest {
     }
 
     @Test
-    fun `opphør bak i tid - har stønad men har ikke aktiv stønad`() {
-        val finnes = stønadService.eksistererStønad(SøkFlereStønaderRequest(setOf(IDENT), setOf(StønadType.OVERGANGSSTØNAD)))
+    fun `opphør bak i tid - har vedtak, men ikke aktiv`() {
+        val stønadType = StønadType.OVERGANGSSTØNAD
+        val finnes = stønadService.finnesIInfotrygd(InfotrygdSøkRequest(setOf(IDENT)))
 
-        assertThat(finnes.keys).containsOnly(StønadType.OVERGANGSSTØNAD)
+        assertThat(finnes.vedtak).hasSize(1)
+        assertThat(finnes.saker).isEmpty()
 
-        val stønadTreff = finnes[StønadType.OVERGANGSSTØNAD]!!
-        assertThat(stønadTreff.eksisterer).isTrue
-        assertThat(stønadTreff.harAktivStønad).isFalse
+        val vedtakstreff = finnes.vedtak.first()
+        assertThat(vedtakstreff.stønadType).isEqualTo(stønadType)
+        assertThat(vedtakstreff.harLøpendeVedtak).isFalse
     }
 
     @Test
-    fun `opphør er null - har stønad og har aktiv stønad`() {
-        val finnes = stønadService.eksistererStønad(SøkFlereStønaderRequest(setOf(IDENT2), setOf(StønadType.OVERGANGSSTØNAD)))
+    fun `opphør frem i tid - har aktiv vedtak`() {
+        val stønadType = StønadType.SKOLEPENGER
+        val finnes = stønadService.finnesIInfotrygd(InfotrygdSøkRequest(setOf(IDENT2)))
 
-        assertThat(finnes.keys).containsOnly(StønadType.OVERGANGSSTØNAD)
+        assertThat(finnes.vedtak).hasSize(1)
+        assertThat(finnes.saker).isEmpty()
 
-        val stønadTreff = finnes[StønadType.OVERGANGSSTØNAD]!!
-        assertThat(stønadTreff.eksisterer).isTrue
-        assertThat(stønadTreff.harAktivStønad).isTrue
+        val vedtakstreff = finnes.vedtak.first()
+        assertThat(vedtakstreff.stønadType).isEqualTo(stønadType)
+        assertThat(vedtakstreff.harLøpendeVedtak).isTrue
     }
 
     @Test
-    fun `har opphør bak i tid og opphør som er null - har stønad og har aktiv stønad`() {
-        val finnes = stønadService.eksistererStønad(SøkFlereStønaderRequest(setOf(IDENT3), setOf(StønadType.OVERGANGSSTØNAD)))
+    fun `opphør er null - har aktiv vedtak`() {
+        val stønadType = StønadType.BARNETILSYN
+        val finnes = stønadService.finnesIInfotrygd(InfotrygdSøkRequest(setOf(IDENT3)))
 
-        assertThat(finnes.keys).containsOnly(StønadType.OVERGANGSSTØNAD)
+        assertThat(finnes.vedtak).hasSize(1)
+        assertThat(finnes.saker).isEmpty()
 
-        val stønadTreff = finnes[StønadType.OVERGANGSSTØNAD]!!
-        assertThat(stønadTreff.eksisterer).isTrue
-        assertThat(stønadTreff.harAktivStønad).isTrue
+        val vedtakstreff = finnes.vedtak.first()
+        assertThat(vedtakstreff.stønadType).isEqualTo(stønadType)
+        assertThat(vedtakstreff.harLøpendeVedtak).isTrue
     }
 
     @Test
-    fun `har ikke noen stønader for disse typene men retunrerer likevel treff i resultatet`() {
-        val finnes = stønadService.eksistererStønad(SøkFlereStønaderRequest(setOf(IDENT, IDENT2, IDENT3),
-                                                                            setOf(StønadType.BARNETILSYN, StønadType.SKOLEPENGER)))
+    fun `ident4 har ikke noen vedtak, men har en sak`() {
+        val finnes = stønadService.finnesIInfotrygd(InfotrygdSøkRequest(setOf(IDENT4)))
 
-        assertThat(finnes.keys).containsExactlyInAnyOrder(StønadType.BARNETILSYN, StønadType.SKOLEPENGER)
+        assertThat(finnes.vedtak).isEmpty()
+        assertThat(finnes.saker).hasSize(1)
 
-        finnes.values.forEach {
-            assertThat(it.eksisterer).isFalse
-            assertThat(it.harAktivStønad).isFalse
-        }
+        val sak = finnes.saker.first()
+        assertThat(sak.personIdent).isEqualTo(IDENT4)
+        assertThat(sak.stønadType).isEqualTo(StønadType.OVERGANGSSTØNAD)
     }
 
     companion object {
@@ -108,6 +130,7 @@ internal class StønadServiceTest {
         const val IDENT = "01234567890"
         const val IDENT2 = "01234567891"
         const val IDENT3 = "01234567892"
+        const val IDENT4 = "01234567893"
     }
 
 }

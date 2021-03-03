@@ -8,35 +8,38 @@ import java.time.LocalDate
 
 
 @Repository
-class InfotrygdRepository(private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
+class InfotrygdRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
 
-    fun harAktivStønad(personIdenter: Set<String>, typer: Set<StønadType>) = harStønad(personIdenter, typer, kunAktive = true)
+    fun harAktivStønad(personIdenter: Set<String>) = harStønad(personIdenter, kunAktive = true)
 
-    fun harStønad(personIdenter: Set<String>, typer: Set<StønadType>, kunAktive: Boolean = false): Map<StønadType, Boolean> {
+    fun harStønad(personIdenter: Set<String>,
+                  kunAktive: Boolean = false,
+                  dagensDato: LocalDate = LocalDate.now()): List<Pair<String, StønadType>> {
         val values = MapSqlParameterSource()
                 .addValue("personIdenter", personIdenter)
-                .addValue("kodeRutiner", typer.map { it.kodeRutine })
+                .addValue("kodeRutiner", StønadType.values().map { it.kodeRutine })
         val filter: String = if (kunAktive) {
-            values.addValue("dagensDato", LocalDate.now())
-            " AND (S.DATO_OPPHOR IS NULL OR S.DATO_OPPHOR > :dagensDato) "
+            values.addValue("dagensDato", dagensDato)
+            " AND nvl(S.DATO_OPPHOR,V.DATO_INNV_TOM) > :dagensDato "
         } else {
             ""
         }
 
-        val result = namedParameterJdbcTemplate.query(
+        val result = jdbcTemplate.query(
                 """
-            SELECT S.KODE_RUTINE, count(*) cn 
+            SELECT L.PERSONNR, S.KODE_RUTINE cn 
               FROM T_LOPENR_FNR L
               JOIN T_STONAD S ON S.PERSON_LOPENR = L.PERSON_LOPENR
+              JOIN T_VEDTAK V ON V.stonad_id = S.stonad_id
             WHERE L.PERSONNR IN (:personIdenter)
               AND S.KODE_RUTINE IN (:kodeRutiner)
               $filter
-            GROUP BY S.KODE_RUTINE
+            GROUP BY L.personnr, S.KODE_RUTINE
         """, values
         ) { resultSet, _ ->
-            Pair(StønadType.fraKodeRutine(resultSet.getString("KODE_RUTINE")),
-                 resultSet.getLong("cn") > 0)
+            Pair(resultSet.getString("PERSONNR"),
+                 StønadType.fraKodeRutine(resultSet.getString("KODE_RUTINE")))
         }
-        return result.toMap()
+        return result.toList()
     }
 }

@@ -12,6 +12,11 @@ fun FoedselsNr.Companion.fraReversert(reversert: String): FoedselsNr {
     return FoedselsNr(reverse(reversert))
 }
 
+fun String.reverserFnr() = reverse(this)
+
+/**
+ * Dette er formatet på fnr i noen kolonner i sa_ tabellene
+ */
 private val regex = """(\d\d)(\d\d)(\d\d)(\d{5})""".toRegex()
 
 private fun reverse(fnr: String): String {
