@@ -71,7 +71,9 @@ internal class StønadServiceTest {
 
     @After
     fun tearDown() {
-        listOf("T_LOPENR_FNR", "T_STONAD").forEach { jdbcTemplate.update("TRUNCATE TABLE $it") }
+        listOf("T_LOPENR_FNR", "T_STONAD", "T_VEDTAK", "sa_sak_10").forEach {
+            jdbcTemplate.update("TRUNCATE TABLE $it")
+        }
     }
 
     @Test
