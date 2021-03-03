@@ -60,6 +60,8 @@ spec:
           cluster: prod-gcp
         - application: familie-ef-mottak
           namespace: teamfamilie
+        - application: familie-ef-mottak
+          namespace: default
   env:
     - name: APP_DATASOURCE_URL
       value: jdbc:oracle:thin:@a01dbfl037.adeo.no:1521/cdc

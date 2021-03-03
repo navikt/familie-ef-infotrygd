@@ -65,6 +65,8 @@ spec:
           cluster: dev-gcp
         - application: familie-ef-mottak
           namespace: teamfamilie
+        - application: familie-ef-mottak
+          namespace: default
   env:
     - name: APP_DATASOURCE_URL
       value: jdbc:oracle:thin:@a01dbfl033.adeo.no:1521/infotrygd_efq
