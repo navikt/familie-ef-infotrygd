@@ -30,7 +30,7 @@ class StønadController(private val stønadService: StønadService) {
     @ApiImplicitParams(ApiImplicitParam(
             name = "request",
             dataType = "InfotrygdSøkRequest",
-            value = "{\n  \"identer\": [\n\"01015450301\"\n]}"
+            value = "{\n  \"personIdenter\": [\n\"12345612345\"\n]}"
     ))
     fun eksisterer(@RequestBody request: InfotrygdSøkRequest): ResponseEntity<Any> {
         if (request.personIdenter.isEmpty()) {
