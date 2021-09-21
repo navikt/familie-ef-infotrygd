@@ -5,8 +5,8 @@ import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import no.nav.infotrygd.ef.repository.PeriodeRepository
-import no.nav.infotrygd.ef.rest.api.PeriodeOvergangsstønadRequest
-import no.nav.infotrygd.ef.rest.api.PeriodeOvergangsstønadResponse
+import no.nav.infotrygd.ef.rest.api.PeriodeArenaRequest
+import no.nav.infotrygd.ef.rest.api.PeriodeResponse
 import no.nav.security.token.support.core.api.Protected
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.MediaType
@@ -27,21 +27,24 @@ import org.springframework.web.bind.annotation.RestController
 @ProtectedWithClaims(issuer = "azure")
 class PeriodeController(private val periodeRepository: PeriodeRepository) {
 
-    @ApiOperation("Henter perioder for overgangsstønad ")
-    @PostMapping(path = ["/overgangsstonad"])
+    /**
+     * Denne henter perioder for alle typer EF-stønader, då arena ønsker de sammenslåtte
+     */
+    @ApiOperation("Henter perioder")
+    @PostMapping(path = ["/arena", "/overgangsstonad"])
     @ApiImplicitParams(ApiImplicitParam(
             name = "request",
             dataType = "PeriodeOvergangsstønadRequest",
             value = "{\n  \"identer\": [\n\"01015450301\"\n],\n" +
                     " \"fomDato\": \"2020-01-01\",\n  \"tomDato\": \"2021-01-01\"\n}"
     ))
-    fun hentPerioder(@RequestBody request: PeriodeOvergangsstønadRequest): ResponseEntity<Any> {
+    fun hentPerioder(@RequestBody request: PeriodeArenaRequest): ResponseEntity<Any> {
         if (request.personIdenter.isEmpty()) {
             return ResponseEntity.badRequest().build()
         }
 
-        val perioder = periodeRepository.hentPerioderForOvergangsstønad(request)
-        return ResponseEntity.ok(PeriodeOvergangsstønadResponse(perioder))
+        val perioder = periodeRepository.hentPerioder(request)
+        return ResponseEntity.ok(PeriodeResponse(perioder))
     }
 
 }

@@ -1,8 +1,8 @@
 package no.nav.infotrygd.ef.repository
 
 import no.nav.commons.foedselsnummer.FoedselsNr
-import no.nav.infotrygd.ef.rest.api.PeriodeOvergangsstønad
-import no.nav.infotrygd.ef.rest.api.PeriodeOvergangsstønadRequest
+import no.nav.infotrygd.ef.rest.api.Periode
+import no.nav.infotrygd.ef.rest.api.PeriodeArenaRequest
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
@@ -29,11 +29,11 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
      *
      *      fom/tom settes til dagens dato som default, det er slik InfotrygdVedtak_v1 gjorde det.
      */
-    fun hentPerioderForOvergangsstønad(periodeOvergangsstønadRequest: PeriodeOvergangsstønadRequest): List<PeriodeOvergangsstønad> {
+    fun hentPerioder(request: PeriodeArenaRequest): List<Periode> {
         val values = MapSqlParameterSource()
-            .addValue("personIdenter", periodeOvergangsstønadRequest.personIdenter.map { it.asString })
-            .addValue("fom", periodeOvergangsstønadRequest.fomDato ?: LocalDate.now())
-            .addValue("tom", periodeOvergangsstønadRequest.tomDato ?: LocalDate.now())
+            .addValue("personIdenter", request.personIdenter.map { it.asString })
+            .addValue("fom", request.fomDato ?: LocalDate.now())
+            .addValue("tom", request.tomDato ?: LocalDate.now())
         return jdbcTemplate.query(
             """
             SELECT DISTINCT L.PERSONNR
@@ -60,7 +60,7 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
               AND V.DATO_INNV_FOM < V.DATO_INNV_TOM
       """, values
         ) { rs, _ ->
-            PeriodeOvergangsstønad(
+            Periode(
                 FoedselsNr(rs.getString("PERSONNR")),
                 rs.getDate("DATO_INNV_FOM").toLocalDate(),
                 rs.getDate("DATO_INNV_TOM").toLocalDate(),

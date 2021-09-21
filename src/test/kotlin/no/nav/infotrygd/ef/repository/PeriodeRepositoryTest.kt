@@ -1,8 +1,8 @@
 package no.nav.infotrygd.ef.repository
 
 import no.nav.commons.foedselsnummer.FoedselsNr
-import no.nav.infotrygd.ef.rest.api.PeriodeOvergangsstønad
-import no.nav.infotrygd.ef.rest.api.PeriodeOvergangsstønadRequest
+import no.nav.infotrygd.ef.rest.api.Periode
+import no.nav.infotrygd.ef.rest.api.PeriodeArenaRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
@@ -116,9 +116,9 @@ internal class PeriodeRepositoryTest {
             .hasSize(1)
     }
 
-    private fun hentPerioder(fomDato: LocalDate? = null, tomDato: LocalDate? = null): List<PeriodeOvergangsstønad> =
-        periodeRepository.hentPerioderForOvergangsstønad(
-                PeriodeOvergangsstønadRequest(
+    private fun hentPerioder(fomDato: LocalDate? = null, tomDato: LocalDate? = null): List<Periode> =
+        periodeRepository.hentPerioder(
+            PeriodeArenaRequest(
                         personIdenter = setOf(FoedselsNr("01234567890")),
                         fomDato,
                         tomDato
