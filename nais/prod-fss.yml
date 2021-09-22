@@ -45,9 +45,6 @@ spec:
   webproxy: false # Optional. Expose web proxy configuration to the application using the HTTP_PROXY, HTTPS_PROXY and NO_PROXY environment variables.
   vault:
     enabled: true # Optional. If set to true fetch secrets from Secret Service and inject into the pods. todo link to doc.
-    paths:
-      - kvPath: /oracle/data/prod/creds/infotrygd_efp-user
-        mountPath: /secret/oracle/creds
   azure:
     application:
       enabled: true
@@ -67,7 +64,7 @@ spec:
           namespace: default
   env:
     - name: APP_DATASOURCE_URL
-      value: jdbc:oracle:thin:@a01dbfl037.adeo.no:1521/infotrygd_efp
+      value: jdbc:oracle:thin:@a01dbfl037.adeo.no:1521/cdc
     - name: APP_DATASOURCE_PLATFORM
       value: org.hibernate.dialect.Oracle10gDialect
     - name: APP_DATASOURCE_DRIVER
@@ -75,10 +72,6 @@ spec:
     - name: APP_JPA_PLATFORM
       value: org.hibernate.dialect.Oracle10gDialect
     - name: APP_DEFAULT_SCHEMA
-      value: INFOTRYGD_EFP
+      value: REST_READ_P
     - name: APP_AZURE_PROXY_URL
       value: https://webproxy-nais.nav.no:8088
-    - name: APP_DATASOURCE_USERNAME_PATH
-      value: /secret/oracle/creds/username
-    - name: APP_DATASOURCE_PASSWORD_PATH
-      value: /secret/oracle/creds/password

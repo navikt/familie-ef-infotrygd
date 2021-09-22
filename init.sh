@@ -3,9 +3,6 @@ export APP_DATASOURCE_USERNAME=$(cat "$APP_DATASOURCE_USERNAME_PATH" 2> /dev/nul
 export APP_DATASOURCE_PASSWORD=$(cat "$APP_DATASOURCE_PASSWORD_PATH" 2> /dev/null || echo $APP_DATASOURCE_PASSWORD)
 echo "- exported APP_DATASOURCE_USERNAME og APP_DATASOURCE_PASSWORD for infotrygd-enslig-forsoerger "
 
-echo "brukernavn path: $APP_DATASOURCE_USERNAME_PATH"
-echo "brukernavn $(cat "$APP_DATASOURCE_USERNAME_PATH")"
-
 if [ -z "$APP_DATASOURCE_USERNAME" ]
 then
   echo "username har ikke verdi"
