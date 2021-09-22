@@ -6,7 +6,7 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/infotrygd-enslig-forsoerger:${{ github.sha }}
+  IMAGE: ghcr.io/navikt/${{ github.repository }}:${{ github.sha }}
 jobs:
   deploy-to-dev:
     name: Bygg app/image, push til github, deploy til dev-fss
@@ -27,7 +27,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "$GITHUB_TOKEN" | docker login --username "x-access-token" --password-stdin https://docker.pkg.github.com
+          echo ${GITHUB_TOKEN} | docker login ghcr.io --username ${GITHUB_REPOSITORY} --password-stdin
           docker push ${IMAGE}
       - name: Deploy to dev-fss
         uses: nais/deploy/actions/deploy@v1

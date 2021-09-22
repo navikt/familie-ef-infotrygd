@@ -38,7 +38,7 @@ repositories {
         url = uri("https://maven.pkg.github.com/navikt/nav-foedselsnummer")
         credentials {
             username = "x-access-token" //project.findProperty("gpr.user") as String? ?: System.getenv("GPR_USER")
-            password = System.getenv("GPR_API_KEY") ?: project.findProperty("gpr.key") as String?
+            password = System.getenv("GPR_API_KEY") ?: System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key") as String?
         }
     }
 }
