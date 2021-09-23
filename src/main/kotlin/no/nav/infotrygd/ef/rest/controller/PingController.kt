@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/ping", produces = [MediaType.TEXT_PLAIN_VALUE])
 @Unprotected
-class PingController(@Value("\${APP_DATASOURCE_USERNAME}") private val username: String,
-                     @Value("\${APP_DATASOURCE_USERNAME}") private val url: String) {
+class PingController(@Value("\${APP_DATASOURCE_USERNAME:username}") private val username: String,
+                     @Value("\${APP_DATASOURCE_URL:url}") private val url: String) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
     init {
-        logger.info("Username: ${username[0]}..${username.substringAfterLast("_")}")
+        logger.info("Username: ${username.get(0)}..${username.substringAfterLast("_")}")
         logger.info("url: $url")
     }
 
