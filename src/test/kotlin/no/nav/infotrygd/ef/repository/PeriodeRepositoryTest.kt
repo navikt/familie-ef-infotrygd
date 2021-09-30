@@ -1,8 +1,10 @@
 package no.nav.infotrygd.ef.repository
 
 import no.nav.commons.foedselsnummer.FoedselsNr
-import no.nav.infotrygd.ef.rest.api.Periode
+import no.nav.infotrygd.ef.model.StønadType
+import no.nav.infotrygd.ef.rest.api.ArenaPeriode
 import no.nav.infotrygd.ef.rest.api.PeriodeArenaRequest
+import no.nav.infotrygd.ef.rest.api.PeriodeRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
@@ -28,7 +30,7 @@ internal class PeriodeRepositoryTest {
         jdbcTemplate.update("INSERT INTO T_LOPENR_FNR (PERSON_LOPENR, PERSONNR) VALUES (1, '01234567890')")
         jdbcTemplate.update(
             """INSERT INTO T_VEDTAK (VEDTAK_ID, PERSON_LOPENR, STONAD_ID, KODE_RUTINE, DATO_INNV_FOM,
-                     DATO_INNV_TOM) VALUES (1,1,1,'EO',?,?)""",
+                     DATO_INNV_TOM, BRUKERID) VALUES (1,1,1,'EO',?,?, 'NISSEN')""",
             LocalDate.of(2020, 1, 1),
             LocalDate.of(2022, 1, 1)
         )
@@ -37,87 +39,96 @@ internal class PeriodeRepositoryTest {
                                      VALUES (1, 1, 1, sysdate, null)"""
         )
         jdbcTemplate.update("INSERT INTO T_DELYTELSE (VEDTAK_ID, TYPE_SATS, BELOP) VALUES (1, '', 100.34)")
-        jdbcTemplate.update("INSERT INTO T_ENDRING (VEDTAK_ID, KODE) VALUES (1, 'A')")
+        jdbcTemplate.update("INSERT INTO T_ENDRING (VEDTAK_ID, KODE) VALUES (1, 'NY')")
+        jdbcTemplate.update("INSERT INTO T_EF (VEDTAK_ID, STONAD_BELOP, INNT_FRADRAG, NETTO_BELOP, SAM_FRADRAG) VALUES (1,1,1,1,1)")
     }
 
     @After
     fun tearDown() {
-        listOf("T_LOPENR_FNR", "T_VEDTAK", "T_STONAD", "T_DELYTELSE", "T_ENDRING").forEach {
+        listOf("T_LOPENR_FNR", "T_VEDTAK", "T_STONAD", "T_DELYTELSE", "T_ENDRING", "T_EF").forEach {
             jdbcTemplate.update("TRUNCATE TABLE $it")
         }
     }
 
     @Test
+    fun `skal hente perioder`() {
+        val perioder = periodeRepository.hentPerioder(PeriodeRequest(setOf(FoedselsNr("01234567890")),
+                                                                     setOf(StønadType.OVERGANGSSTØNAD)))
+        assertThat(perioder).hasSize(1)
+        assertThat(perioder.first().first).isEqualTo(StønadType.OVERGANGSSTØNAD)
+    }
+
+    @Test
     fun `uten datoer`() {
-        assertThat(hentPerioder()).hasSize(1)
+        assertThat(hentPerioderForArena()).hasSize(1)
     }
 
     @Test
     fun `beløp er riktig`() {
-        val perioder = hentPerioder()
+        val perioder = hentPerioderForArena()
         assertThat(perioder).hasSize(1)
         assertThat(perioder.first().beløp).isEqualTo(100.34f)
     }
 
     @Test
     fun `fom og tom datoer`() {
-        assertThat(hentPerioder(LocalDate.of(1900, 1, 1), LocalDate.of(2021, 1, 1)))
+        assertThat(hentPerioderForArena(LocalDate.of(1900, 1, 1), LocalDate.of(2021, 1, 1)))
             .withFailMessage("FOM dato < TOM dato(db)")
             .hasSize(1)
 
-        assertThat(hentPerioder(LocalDate.of(1900, 1, 1), LocalDate.of(2030, 1, 1)))
+        assertThat(hentPerioderForArena(LocalDate.of(1900, 1, 1), LocalDate.of(2030, 1, 1)))
             .withFailMessage("FOM dato < TOM dato(db)")
             .hasSize(1)
 
-        assertThat(hentPerioder(LocalDate.of(2020, 6, 1), LocalDate.of(2020, 6, 1)))
+        assertThat(hentPerioderForArena(LocalDate.of(2020, 6, 1), LocalDate.of(2020, 6, 1)))
             .withFailMessage("FOM dato < TOM dato(db)")
             .hasSize(1)
 
-        assertThat(hentPerioder(LocalDate.of(2020, 6, 1), LocalDate.of(2030, 1, 1)))
+        assertThat(hentPerioderForArena(LocalDate.of(2020, 6, 1), LocalDate.of(2030, 1, 1)))
             .withFailMessage("FOM dato < TOM dato(db)")
             .hasSize(1)
 
-        assertThat(hentPerioder(LocalDate.of(1900, 1, 1), LocalDate.of(1901, 1, 1)))
+        assertThat(hentPerioderForArena(LocalDate.of(1900, 1, 1), LocalDate.of(1901, 1, 1)))
             .withFailMessage("TOM dato < FOM dato(db)")
             .isEmpty()
 
-        assertThat(hentPerioder(LocalDate.of(2030, 1, 1), LocalDate.of(2031, 1, 1)))
+        assertThat(hentPerioderForArena(LocalDate.of(2030, 1, 1), LocalDate.of(2031, 1, 1)))
             .withFailMessage("FOM dato > TOM dato(db)")
             .isEmpty()
     }
 
     @Test
     fun `uten tom dato`() {
-        assertThat(hentPerioder(LocalDate.of(1900, 1, 1), null))
+        assertThat(hentPerioderForArena(LocalDate.of(1900, 1, 1), null))
             .withFailMessage("FOM dato < TOM dato(db)")
             .hasSize(1)
 
-        assertThat(hentPerioder(LocalDate.of(2020, 6, 1), null))
+        assertThat(hentPerioderForArena(LocalDate.of(2020, 6, 1), null))
             .withFailMessage("FOM dato < TOM dato(db)")
             .hasSize(1)
 
-        assertThat(hentPerioder(LocalDate.of(2030, 1, 1), null))
+        assertThat(hentPerioderForArena(LocalDate.of(2030, 1, 1), null))
             .withFailMessage("FOM dato > TOM dato(db)")
             .isEmpty()
     }
 
     @Test
     fun `uten fom dato`() {
-        assertThat(hentPerioder(null, LocalDate.of(1901, 1, 1)))
+        assertThat(hentPerioderForArena(null, LocalDate.of(1901, 1, 1)))
             .withFailMessage("TOM dato < FOM dato(db)")
             .isEmpty()
 
-        assertThat(hentPerioder(null, LocalDate.of(2020, 6, 1)))
+        assertThat(hentPerioderForArena(null, LocalDate.of(2020, 6, 1)))
             .withFailMessage("FOM dato < TOM dato(db)")
             .hasSize(1)
 
-        assertThat(hentPerioder(null, LocalDate.of(2031, 1, 1)))
+        assertThat(hentPerioderForArena(null, LocalDate.of(2031, 1, 1)))
             .withFailMessage("FOM dato > TOM dato(db)")
             .hasSize(1)
     }
 
-    private fun hentPerioder(fomDato: LocalDate? = null, tomDato: LocalDate? = null): List<Periode> =
-        periodeRepository.hentPerioder(
+    private fun hentPerioderForArena(fomDato: LocalDate? = null, tomDato: LocalDate? = null): List<ArenaPeriode> =
+        periodeRepository.hentPerioderForArena(
             PeriodeArenaRequest(
                         personIdenter = setOf(FoedselsNr("01234567890")),
                         fomDato,

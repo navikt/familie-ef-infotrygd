@@ -8,7 +8,8 @@ enum class StønadType(val kodeRutine: String, val saS10Valg: String) {
 
     OVERGANGSSTØNAD("EO", "OG"),
     BARNETILSYN("EB", "BT"),
-    SKOLEPENGER("EU", "UT")
+    SKOLEPENGER("EU", "UT"),
+    TILSKUDD_TIL_FLYTTING("FL", "FL")
     ;
 
     companion object {

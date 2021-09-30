@@ -50,7 +50,7 @@ class RepoTest {
 
     @Test(expected = Throwable::class)
     fun `Når man kun sjekker en spørring feler testen`() {
-        verifiserAttAlleKolonnerFinnesOgErBrukt(listOf({ periodeRepository.hentPerioder(mockk(relaxed = true)) }))
+        verifiserAttAlleKolonnerFinnesOgErBrukt(listOf({ periodeRepository.hentPerioderForArena(mockk(relaxed = true)) }))
     }
 
     @Test
@@ -76,7 +76,7 @@ class RepoTest {
     }
 
 
-    private fun kombinasjonerAvQueries() = listOf({ periodeRepository.hentPerioder(mockk(relaxed = true)) },
+    private fun kombinasjonerAvQueries() = listOf({ periodeRepository.hentPerioderForArena(mockk(relaxed = true)) },
                                                   { sakRepository.finnesSaker(emptySet()) },
                                                   { infotrygdRepository.harStønad(emptySet(), true) },
                                                   { infotrygdRepository.harStønad(emptySet(), false) })
