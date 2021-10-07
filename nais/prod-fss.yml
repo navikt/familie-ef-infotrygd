@@ -47,7 +47,7 @@ spec:
     enabled: true # Optional. If set to true fetch secrets from Secret Service and inject into the pods. todo link to doc.
     paths:
       - kvPath: /oracle/data/prod/creds/ef_infotrygd_p-user
-        mountPath: /secret/oracle/creds
+        mountPath: /var/run/secrets/oracle/creds
   azure:
     application:
       enabled: true
