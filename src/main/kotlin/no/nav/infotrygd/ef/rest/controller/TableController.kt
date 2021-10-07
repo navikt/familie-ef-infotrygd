@@ -23,13 +23,13 @@ class TableController(private val tableIntegrator: TableIntegrator,
 
     @GetMapping(path = ["/tables2"])
     fun get2(): Map<String, Any?> {
-        return try {
-            tableIntegrator.tables.keys.associateWith {
+        return tableIntegrator.tables.keys.associateWith {
+            try {
                 jdbcTemplate.queryForObject("select count(*) from $it", emptyMap<String, Any>(), Int::class.java)
+            } catch (e: Exception) {
+                logger.error("Check mot tabeller feiler", e)
+                e.message
             }
-        } catch (e: Exception) {
-            logger.error("Check mot tabeller feiler", e)
-            emptyMap()
         }
     }
 }
