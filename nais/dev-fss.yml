@@ -81,6 +81,6 @@ spec:
     - name: APP_AZURE_PROXY_URL
       value: https://webproxy-nais.nav.no:8088
     - name: APP_DATASOURCE_USERNAME_PATH
-      value: /secret/oracle/creds/username
+      value: /var/run/secrets/oracle/creds/username
     - name: APP_DATASOURCE_PASSWORD_PATH
-      value: /secret/oracle/creds/password
+      value: /var/run/secrets/oracle/creds/password
