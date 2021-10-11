@@ -105,7 +105,7 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
             JOIN t_vedtak v ON v.stonad_id = s.stonad_id
             JOIN t_delytelse d ON d.vedtak_id = v.vedtak_id
             JOIN t_endring e ON e.vedtak_id = v.vedtak_id 
-            JOIN t_ef ef ON e.vedtak_id = v.vedtak_id
+            JOIN t_ef ef ON ef.vedtak_id = v.vedtak_id
            WHERE l.personnr IN (:personIdenter)
               AND s.oppdrag_id IS NOT NULL
               AND v.kode_rutine IN (:stønadskoder)
