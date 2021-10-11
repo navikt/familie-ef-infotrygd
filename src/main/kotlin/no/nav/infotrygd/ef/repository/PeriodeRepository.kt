@@ -115,7 +115,7 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
         ) { rs, _ ->
             StønadType.fraKodeRutine(rs.getString("kode_rutine")) to
                     Periode(personIdent = rs.getString("personnr"),
-                            kode = InfotrygdEndringKode.mapKodeTilEndringKode(rs.getString("kode")),
+                            kode = InfotrygdEndringKode.mapKodeTilEndringKode(rs.getString("kode").trim()),
                             brukerId = rs.getString("brukerid"),
                             stønadId = rs.getLong("stonad_id"),
                             vedtakId = rs.getLong("vedtak_id"),
