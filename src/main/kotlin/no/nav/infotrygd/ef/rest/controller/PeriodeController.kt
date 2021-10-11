@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController
 class PeriodeController(private val periodeRepository: PeriodeRepository) {
 
     @ApiOperation("Henter perioder")
-    @PostMapping(path = ["/"])
+    @PostMapping
     @ApiImplicitParams(ApiImplicitParam(
             name = "request",
             dataType = "PeriodeRequest",
