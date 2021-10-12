@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse
 class LogFilter(@Value("\${spring.application.name}") private val applicationName: String) : GenericFilterBean() {
     private val log = LoggerFactory.getLogger(javaClass)
     private val consumerIdHeader = "Nav-Consumer-Id"
-    private val callIdHeader = "Nav-CallId"
+    private val callIdHeader = "Nav-Call-Id"
 
     private val dontLog = setOf("/internal/status/isAlive",
                                 "/internal/prometheus",
