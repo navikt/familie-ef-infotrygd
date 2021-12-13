@@ -23,11 +23,6 @@ jobs:
       - name: Build docker image
         run: |
           docker build -t $IMAGE -t ${IMAGE_LATEST} .
-      - name: Check API rate limit
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          curl -s "https://api.github.com/rate_limit" -H "Authorization: token $GITHUB_TOKEN"
       - name: Push Docker image
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
