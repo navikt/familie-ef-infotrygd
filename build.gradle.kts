@@ -4,11 +4,9 @@ val mockkVersion = "1.10.4"
 val filformatVersion = "1.2019.06.26-14.50-746e7610cb12"
 val tokenSupportVersion = "1.3.2"
 val springfoxVersion = "3.0.0"
-val oracleusername = "richard.martinsen@nav.no"
-val oraclepassword = "Infotrygd1"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
 
-val mainClass = "no.nav.infotrygd.ef.Main"
+val mainClass = "no.nav.familie.ef.infotrygd.Main"
 
 
 plugins {
