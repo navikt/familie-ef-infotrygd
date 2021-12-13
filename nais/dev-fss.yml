@@ -1,10 +1,10 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: infotrygd-enslig-forsoerger
-  namespace: infotrygd
+  name: familie-ef-infotrygd
+  namespace: teamfamilie
   labels:
-    team: infotrygd
+    team: teamfamilie
 
 spec:
   image: {{ image }}
@@ -38,9 +38,9 @@ spec:
       cpu: 500m
       memory: 256Mi
   ingresses: # Optional. List of ingress URLs that will route HTTP traffic to the application.
-    - https://infotrygd-enslig-forsoerger.nais.preprod.local
-    - https://infotrygd-enslig-forsoerger.dev.adeo.no
-    - https://infotrygd-enslig-forsoerger.dev-fss-pub.nais.io
+    - https://familie-ef-infotrygd.nais.preprod.local
+    - https://familie-ef-infotrygd.dev.adeo.no
+    - https://familie-ef-infotrygd.dev-fss-pub.nais.io
   logformat: accesslog # Optional. The format of the logs from the container if the logs should be handled differently than plain text or json
   logtransform: dns_loglevel # Optional. The transformation of the logs, if they should be handled differently than plain text or json
   webproxy: false # Optional. Expose web proxy configuration to the application using the HTTP_PROXY, HTTPS_PROXY and NO_PROXY environment variables.
@@ -54,19 +54,12 @@ spec:
   azure:
     application:
       enabled: true
-      tenant: trygdeetaten.no
   accessPolicy:
     inbound:
       rules:
         - application: familie-ef-sak
-          namespace: default
-        - application: familie-ef-sak
-          namespace: teamfamilie
           cluster: dev-gcp
         - application: familie-ef-mottak
-          namespace: teamfamilie
-        - application: familie-ef-mottak
-          namespace: teamfamilie
           cluster: dev-gcp
   env:
     - name: APP_DATASOURCE_URL
