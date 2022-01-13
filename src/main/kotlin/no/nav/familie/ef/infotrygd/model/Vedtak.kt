@@ -22,6 +22,9 @@ data class Vedtak(@Id
                   @Column(name = "KODE_RUTINE")
                   val kodeRutine: String,
 
+                  @Column(name = "TYPE_SAK")
+                  val sakstype: String,
+
                   @Column(name = "DATO_INNV_FOM")
                   val datoFom: LocalDate,
 

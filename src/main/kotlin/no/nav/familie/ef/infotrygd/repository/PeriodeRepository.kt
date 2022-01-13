@@ -4,6 +4,7 @@ import no.nav.commons.foedselsnummer.FoedselsNr
 import no.nav.familie.ef.infotrygd.model.StønadType
 import no.nav.familie.ef.infotrygd.rest.api.ArenaPeriode
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdEndringKode
+import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSakstype
 import no.nav.familie.ef.infotrygd.rest.api.Periode
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeArenaRequest
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeRequest
@@ -92,14 +93,17 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
             v.brukerid,
             s.stonad_id,
             v.vedtak_id,
+            v.tidspunkt_reg,
             ef.stonad_belop,
             ef.innt_fradrag,
             ef.sam_fradrag,
             ef.netto_belop,
             s.dato_start,
+            v.type_sak,
             v.dato_innv_fom,
             v.dato_innv_tom,
-            s.dato_opphor
+            s.dato_opphor,
+            (SELECT SUM(bg.belop) FROM t_beregn_grl bg WHERE bg.vedtak_id = v.vedtak_id) inntektsgrunnlag
            FROM t_lopenr_fnr l
             JOIN t_stonad s ON s.person_lopenr = l.person_lopenr
             JOIN t_vedtak v ON v.stonad_id = s.stonad_id
@@ -114,27 +118,34 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
       """, values
         ) { rs, _ ->
             StønadType.fraKodeRutine(rs.getString("kode_rutine")) to
-                    Periode(personIdent = rs.getString("personnr"),
-                            kode = InfotrygdEndringKode.mapKodeTilEndringKode(rs.getString("kode").trim()),
+                    Periode(
+                            personIdent = rs.getString("personnr"),
+                            sakstype = InfotrygdSakstype.mapKode(rs.getString("type_sak").trim()),
+                            kode = InfotrygdEndringKode.mapKode(rs.getString("kode").trim()),
                             brukerId = rs.getString("brukerid"),
                             stønadId = rs.getLong("stonad_id"),
                             vedtakId = rs.getLong("vedtak_id"),
+                            vedtakstidspunkt = rs.getTimestamp("tidspunkt_reg").toLocalDateTime(),
                             stønadBeløp = rs.getInt("stonad_belop"),
+                            inntektsgrunnlag = rs.getInt("inntektsgrunnlag"),
                             inntektsreduksjon = rs.getInt("innt_fradrag"),
                             samordningsfradrag = rs.getInt("sam_fradrag"),
                             beløp = rs.getInt("netto_belop"),
                             startDato = rs.getDate("dato_start").toLocalDate(),
                             stønadFom = rs.getDate("dato_innv_fom").toLocalDate(),
                             stønadTom = rs.getDate("dato_innv_tom").toLocalDate(),
-                            opphørsdato = rs.getDate("dato_opphor")?.toLocalDate())
+                            opphørsdato = rs.getDate("dato_opphor")?.toLocalDate()
+                    )
         }
     }
 
     private fun mapStønadskoder(request: PeriodeRequest): List<String> {
         return request.stønadstyper.ifEmpty {
-            setOf(StønadType.OVERGANGSSTØNAD,
-                  StønadType.SKOLEPENGER,
-                  StønadType.BARNETILSYN)
+            setOf(
+                    StønadType.OVERGANGSSTØNAD,
+                    StønadType.SKOLEPENGER,
+                    StønadType.BARNETILSYN
+            )
         }.map { it.kodeRutine }
     }
 }
