@@ -7,12 +7,21 @@ import javax.persistence.Table
 
 @Suppress("unused") // brukes av hibernate for å generere hvilke tabeller som brukes
 @Entity
-@Table(name = "T_BEREGN_GRL")
-data class BeregningGrunnlag(
+@Table(name = "T_EF")
+data class EF(
         @Id
         @Column(name = "VEDTAK_ID")
         val id: Long,
 
-        @Column(name = "BELOP")
-        val beløp: Long
+        @Column(name = "STONAD_BELOP")
+        val stønadsbeløp: Long,
+
+        @Column(name = "INNT_FRADRAG")
+        val inntektsfradrag: Long,
+
+        @Column(name = "SAM_FRADRAG")
+        val samordningsfradrag: Long,
+
+        @Column(name = "netto_belop")
+        val nettobeløp: String
 )

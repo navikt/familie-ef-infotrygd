@@ -1,6 +1,7 @@
 package no.nav.familie.ef.infotrygd.model
 
 import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -24,6 +25,12 @@ data class Vedtak(@Id
 
                   @Column(name = "TYPE_SAK")
                   val sakstype: String,
+
+                  @Column(name = "BRUKERID")
+                  val brukerId: String,
+
+                  @Column(name = "tidspunkt_reg")
+                  val tidspunktReg: LocalDateTime,
 
                   @Column(name = "DATO_INNV_FOM")
                   val datoFom: LocalDate,
