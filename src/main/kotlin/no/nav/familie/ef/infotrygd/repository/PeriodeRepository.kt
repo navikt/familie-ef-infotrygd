@@ -126,8 +126,10 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
                             personIdent = rs.getString("personnr"),
                             sakstype = InfotrygdSakstype.fraInfotrygdKode(rs.getString("type_sak").trim()),
                             kode = InfotrygdEndringKode.fraInfotrygdKode(rs.getString("kode").trim()),
-                            kodeOvergangsstønad = InfotrygdOvergangsstønadKode.fraInfotrygdKode(rs.getString("kode_overg").trim()),
-                            aktivitetstype = InfotrygdAktivitetstype.fraInfotrygdKode(rs.getString("aktivitet").trim()),
+                            kodeOvergangsstønad = mapVerdi(rs.getString("kode_overg"),
+                                                           InfotrygdOvergangsstønadKode.Companion::fraInfotrygdKode),
+                            aktivitetstype = mapVerdi(rs.getString("aktivitet"),
+                                                      InfotrygdAktivitetstype.Companion::fraInfotrygdKode),
                             brukerId = rs.getString("brukerid"),
                             stønadId = rs.getLong("stonad_id"),
                             vedtakId = rs.getLong("vedtak_id"),
@@ -144,6 +146,11 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
                     )
         }
     }
+
+    private fun <T> mapVerdi(kode: String, mapper: (String) -> T): T? = kode
+            .trim()
+            .takeIf(String::isNotEmpty)
+            ?.let(mapper)
 
     private fun mapStønadskoder(request: PeriodeRequest): List<String> {
         return request.stønadstyper.ifEmpty {

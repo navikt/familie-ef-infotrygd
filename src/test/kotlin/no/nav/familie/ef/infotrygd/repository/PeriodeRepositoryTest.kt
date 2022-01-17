@@ -36,7 +36,8 @@ internal class PeriodeRepositoryTest {
         jdbcTemplate.update("INSERT INTO T_LOPENR_FNR (PERSON_LOPENR, PERSONNR) VALUES (1, '01234567890')")
         jdbcTemplate.update(
                 """INSERT INTO T_VEDTAK (VEDTAK_ID, PERSON_LOPENR, STONAD_ID, KODE_RUTINE, DATO_INNV_FOM,
-                     DATO_INNV_TOM, BRUKERID, TYPE_SAK, TIDSPUNKT_REG) VALUES (1,1,1,'EO',?,?, 'NISSEN', 'S ', current_timestamp)""",
+                     DATO_INNV_TOM, BRUKERID, TYPE_SAK, TIDSPUNKT_REG)
+                      VALUES (1,1,1,'EO',?,?, 'NISSEN', 'S ', current_timestamp)""",
                 startdato,
                 sluttdato
         )
@@ -46,7 +47,8 @@ internal class PeriodeRepositoryTest {
         )
         jdbcTemplate.update("INSERT INTO T_DELYTELSE (VEDTAK_ID, TYPE_SATS, BELOP) VALUES (1, '', 100.34)")
         jdbcTemplate.update("INSERT INTO T_ENDRING (VEDTAK_ID, KODE) VALUES (1, 'F ')")
-        jdbcTemplate.update("INSERT INTO T_EF (VEDTAK_ID, STONAD_BELOP, INNT_FRADRAG, NETTO_BELOP, SAM_FRADRAG) VALUES (1,1,1,1,1)")
+        jdbcTemplate.update("INSERT INTO T_EF (VEDTAK_ID, STONAD_BELOP, INNT_FRADRAG, NETTO_BELOP, SAM_FRADRAG, KODE_OVERG, AKTIVITET)" +
+                            " VALUES (1,1,1,1,1,' ',' ')")
         jdbcTemplate.update("INSERT INTO T_BEREGN_GRL (VEDTAK_ID, TYPE_BELOP, FOM, BELOP, BRUKERID) VALUES (1,'ARBM',current_date, 100, 'A')")
         jdbcTemplate.update("INSERT INTO T_BEREGN_GRL (VEDTAK_ID, TYPE_BELOP, FOM, BELOP, BRUKERID) VALUES (1,'ABCD',current_date, 50, 'A')")
     }
