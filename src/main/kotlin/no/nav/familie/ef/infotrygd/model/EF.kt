@@ -23,5 +23,11 @@ data class EF(
         val samordningsfradrag: Long,
 
         @Column(name = "netto_belop")
-        val nettobeløp: String
+        val nettobeløp: String,
+
+        @Column(name = "KODE_OVERG")
+        val kodeOvergangsstønad: String,
+
+        @Column(name = "AKTIVITET")
+        val aktivitet: String,
 )
