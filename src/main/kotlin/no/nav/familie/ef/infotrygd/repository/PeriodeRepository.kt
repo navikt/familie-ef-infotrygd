@@ -3,7 +3,9 @@ package no.nav.familie.ef.infotrygd.repository
 import no.nav.commons.foedselsnummer.FoedselsNr
 import no.nav.familie.ef.infotrygd.model.StønadType
 import no.nav.familie.ef.infotrygd.rest.api.ArenaPeriode
+import no.nav.familie.ef.infotrygd.rest.api.InfotrygdAktivitetstype
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdEndringKode
+import no.nav.familie.ef.infotrygd.rest.api.InfotrygdOvergangsstønadKode
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSakstype
 import no.nav.familie.ef.infotrygd.rest.api.Periode
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeArenaRequest
@@ -40,8 +42,8 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
         val values = MapSqlParameterSource()
                 .addValue("personIdenter", request.personIdenter.map { it.asString })
                 .addValue("stønadskoder", StønadType.values().map { it.kodeRutine })
-                .addValue("kodeAnnulert", InfotrygdEndringKode.ANNULERT.kode)
-                .addValue("kodeUaktuell", InfotrygdEndringKode.UAKTUELL.kode)
+                .addValue("kodeAnnulert", InfotrygdEndringKode.ANNULERT.infotrygdKode)
+                .addValue("kodeUaktuell", InfotrygdEndringKode.UAKTUELL.infotrygdKode)
                 .addValue("fom", request.fomDato ?: LocalDate.now())
                 .addValue("tom", request.tomDato ?: LocalDate.now())
         return jdbcTemplate.query(
@@ -98,6 +100,8 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
             ef.innt_fradrag,
             ef.sam_fradrag,
             ef.netto_belop,
+            ef.aktivitet,
+            ef.kode_overg,
             s.dato_start,
             v.type_sak,
             v.dato_innv_fom,
@@ -120,8 +124,10 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
             StønadType.fraKodeRutine(rs.getString("kode_rutine")) to
                     Periode(
                             personIdent = rs.getString("personnr"),
-                            sakstype = InfotrygdSakstype.mapKode(rs.getString("type_sak").trim()),
-                            kode = InfotrygdEndringKode.mapKode(rs.getString("kode").trim()),
+                            sakstype = InfotrygdSakstype.fraInfotrygdKode(rs.getString("type_sak").trim()),
+                            kode = InfotrygdEndringKode.fraInfotrygdKode(rs.getString("kode").trim()),
+                            kodeOvergangsstønad = InfotrygdOvergangsstønadKode.fraInfotrygdKode(rs.getString("kode_overg").trim()),
+                            aktivitetstype = InfotrygdAktivitetstype.fraInfotrygdKode(rs.getString("aktivitet").trim()),
                             brukerId = rs.getString("brukerid"),
                             stønadId = rs.getLong("stonad_id"),
                             vedtakId = rs.getLong("vedtak_id"),
