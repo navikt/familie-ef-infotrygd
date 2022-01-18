@@ -142,8 +142,16 @@ internal class PeriodeRepositoryTest {
         val perioder = hentPerioder()
         assertThat(perioder).hasSize(1)
         val periode = perioder.first().second
-        assertThat(periode.inntektsgrunnlag).isEqualTo(150)
+        assertThat(periode.inntektsgrunnlag).isEqualTo(100)
         assertThat(periode.sakstype).isEqualTo(InfotrygdSakstype.SØKNAD)
+    }
+
+    @Test
+    fun `henting av perioder uten T_BEREGN_GRL gir 0 i inntektsgrunnlag`() {
+        jdbcTemplate.update("TRUNCATE TABLE T_BEREGN_GRL")
+        val perioder = hentPerioder()
+        assertThat(perioder).hasSize(1)
+        assertThat(perioder.first().second.inntektsgrunnlag).isEqualTo(0)
     }
 
     private fun hentPerioder() =

@@ -107,7 +107,7 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
             v.dato_innv_fom,
             v.dato_innv_tom,
             s.dato_opphor,
-            (SELECT SUM(bg.belop) FROM t_beregn_grl bg WHERE bg.vedtak_id = v.vedtak_id) inntektsgrunnlag
+            (SELECT bg.belop FROM t_beregn_grl bg WHERE bg.vedtak_id = v.vedtak_id AND bg.type_belop = 'ARBM') inntektsgrunnlag
            FROM t_lopenr_fnr l
             JOIN t_stonad s ON s.person_lopenr = l.person_lopenr
             JOIN t_vedtak v ON v.stonad_id = s.stonad_id
