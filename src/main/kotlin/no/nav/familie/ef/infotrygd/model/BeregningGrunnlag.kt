@@ -14,5 +14,8 @@ data class BeregningGrunnlag(
         val id: Long,
 
         @Column(name = "BELOP")
-        val beløp: Long
+        val beløp: Long,
+
+        @Column(name = "TYPE_BELOP")
+        val type: String
 )
