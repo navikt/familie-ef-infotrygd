@@ -43,7 +43,10 @@ class SakRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
                 .addValue("personIdenter", personIdenter.map(String::reverserFnr))
         return jdbcTemplate.query(
                 """
-            SELECT * FROM sa_sak_10 s
+            SELECT s.ID_SAK,s.S10_SAKSNR,s.S05_SAKSBLOKK,s.S10_REG_DATO,s.S10_MOTTATTDATO,s.S10_KAPITTELNR,s.S10_VALG,
+                s.S10_UNDERVALG,s.S10_TYPE,s.S10_NIVAA,s.S10_RESULTAT,s.S10_VEDTAKSDATO,s.S10_IVERKSATTDATO,s.S10_AARSAKSKODE,
+                s.S10_BEHEN_ENHET,s.S10_REG_AV_ENHET,s.TK_NR,s.REGION
+             FROM sa_sak_10 s
             WHERE s.f_nr IN (:personIdenter)
             AND s.s10_kapittelnr = 'EF'
         """, values
@@ -66,7 +69,7 @@ class SakRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
                     behandlendeEnhet = rs.getString("S10_BEHEN_ENHET"),
                     registrertAvEnhet = rs.getString("S10_REG_AV_ENHET"),
                     tkNr = rs.getString("TK_NR"),
-                    region = rs.getString("F_NR"),
+                    region = rs.getString("REGION"),
             )
         }
     }

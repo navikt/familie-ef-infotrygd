@@ -22,8 +22,8 @@ data class Sak(
         @Column(name = "REGION", columnDefinition = "CHAR")
         val region: String,
 
-        @Column(name = "S01_PERSONKEY", columnDefinition = "DECIMAL") // tknr + fnr
-        val personKey: Long,
+        //@Column(name = "S01_PERSONKEY", columnDefinition = "DECIMAL") // tknr + fnr
+        //val personKey: Long,
 
         @Column(name = "S05_SAKSBLOKK", columnDefinition = "CHAR")
         val saksblokk: String,
@@ -80,8 +80,8 @@ data class Sak(
         @Column(name = "S10_REG_AV_ENHET", columnDefinition = "CHAR(4)")
         val regAvEnhet: String? = null,
 
-        @Column(name = "S10_VEDTATT_AV_ENHET", columnDefinition = "CHAR(4)")
-        val vedtattAvEnhet: String? = null,
+        //@Column(name = "S10_VEDTATT_AV_ENHET", columnDefinition = "CHAR(4)")
+        //val vedtattAvEnhet: String? = null,
 
         @Column(name = "TK_NR", columnDefinition = "CHAR(4)")
         val tkNr: String? = null,
