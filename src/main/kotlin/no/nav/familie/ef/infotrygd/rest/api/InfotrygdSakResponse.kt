@@ -30,36 +30,36 @@ data class InfotrygdSak(
 
 enum class InfotrygdSakType(val infotrygdKode: String, val beskrivelse: String) {
 
-    ANKE("A", "Anke"),// 	antall=1954
-    DISPENSASJON_FORELDELSE("DF", "Dispensasjon foreldelse"), // antall=0
-    DOKUMENTINNSYN("DI", "Dokumentinnsyn"),// antall=77
-    ETTERLYSE_GIROKORT("EG", "Etterlyse girokort"), // antall=0
-    FORESPØRSEL("FS", "Forespørsel"),// antall=1209
-    GRUNNBELØP_OMREGNING_OVERGANGSSTØNAD("GO", "Grunnbeløp omregning (manuell G-omregning) Overgangsstønad"),// antall=1715
-    INFORMASJONSSAK("I", "Informasjonssak"),// 	antall=62196
-    JOURNALSAK("J", "Journalsak"),// 	antall=898
-    JOURNALSAK_PRIVATPERSON("JP", "Journalsak fra privatperson"),// antall=1
-    JOURNALSAK_TRYGDEKONTOR("JT", "Journalsak fra trygdekontor"),// antall=1
+    ANKE("A", "Anke"),
+    DISPENSASJON_FORELDELSE("DF", "Dispensasjon foreldelse"),
+    DOKUMENTINNSYN("DI", "Dokumentinnsyn"),
+    ETTERLYSE_GIROKORT("EG", "Etterlyse girokort"),
+    FORESPØRSEL("FS", "Forespørsel"),
+    GRUNNBELØP_OMREGNING_OVERGANGSSTØNAD("GO", "Grunnbeløp omregning (manuell G-omregning) Overgangsstønad"),
+    INFORMASJONSSAK("I", "Informasjonssak"),
+    JOURNALSAK("J", "Journalsak"),
+    JOURNALSAK_PRIVATPERSON("JP", "Journalsak fra privatperson"),
+    JOURNALSAK_TRYGDEKONTOR("JT", "Journalsak fra trygdekontor"),
     JOURNALSAK_UTENL("JU", "Journalsak fra utenl trm"), // 0
-    KLAGE("K", "Klage"),// 	antall=24618
-    KLAGE_AVREGNING("KA", "Klage avregning"), // antall=0
-    KLAGE_ETTERGIVELSE("KE", "Klage ettergivelse"),// antall=22
-    KONVERTERING("KO", "Konvertering, de som ble lagt inn da rutinen ble lagt over til DB2"),// antall=42210
-    KONTROLLSAK("KS", "Kontrollsak"),// antall=402
-    KLAGE_TILBAKEBETALING("KT", "Klage tilbakebetaling"),// antall=4947
-    MASKINELL_G_OMREGNING("MG", "Maskinell G-omregning (Årlig G-reg. overgangsstønad)"),// antall=256828
-    MASKINELL_SATSOMREGNING("MS", "Maskinell Satsomregning (Årlig satsendring Barnetilsyn)"),// antall=1315
-    REVURDERING("R", "Revurdering"),// 	antall=556924
-    SØKNAD("S", "Søknad"),// 	antall=589777
-    SØKNAD_ETTERGIVELSE("SE", "Søknad om ettergivelse"),// antall=127
-    STRAFFERETTSLIG_VURDERING("SV", "Strafferettslig vurdering"),// antall=581
-    SØKNAD_ØKNING_ENDRING("SØ", "Søknad om økning/endring"),// antall=4384
-    TILBAKEBETALINGSSAK("T", "Tilbakebetalingssak"),// 	antall=60010
-    TA("TA", ""),// antall=202  TODO
-    TILBAKEBETALING_ENDRING("TE", "Tilbakebetaling endring"),// antall=2143
-    TIPSUTREDNING("TU", "Tipsutredning"),// antall=50
-    UA("UA", ""),// antall=1 TODO
-    VURDERING_UTESTENGING("VU", "Vurdering utestenging");// antall=54
+    KLAGE("K", "Klage"),
+    KLAGE_AVREGNING("KA", "Klage avregning"),
+    KLAGE_ETTERGIVELSE("KE", "Klage ettergivelse"),
+    KONVERTERING("KO", "Konvertering, de som ble lagt inn da rutinen ble lagt over til DB2"),
+    KONTROLLSAK("KS", "Kontrollsak"),
+    KLAGE_TILBAKEBETALING("KT", "Klage tilbakebetaling"),
+    MASKINELL_G_OMREGNING("MG", "Maskinell G-omregning (Årlig G-reg. overgangsstønad)"),
+    MASKINELL_SATSOMREGNING("MS", "Maskinell Satsomregning (Årlig satsendring Barnetilsyn)"),
+    REVURDERING("R", "Revurdering"),
+    SØKNAD("S", "Søknad"),
+    SØKNAD_ETTERGIVELSE("SE", "Søknad om ettergivelse"),
+    STRAFFERETTSLIG_VURDERING("SV", "Strafferettslig vurdering"),
+    SØKNAD_ØKNING_ENDRING("SØ", "Søknad om økning/endring"),
+    TILBAKEBETALINGSSAK("T", "Tilbakebetalingssak"),
+    TA("TA", ""), // TODO
+    TILBAKEBETALING_ENDRING("TE", "Tilbakebetaling endring"),
+    TIPSUTREDNING("TU", "Tipsutredning"),
+    UA("UA", ""), // TODO
+    VURDERING_UTESTENGING("VU", "Vurdering utestenging");
 
     companion object {
 
@@ -115,7 +115,9 @@ enum class InfotrygdSakResultat(val infotrygdKode: String, val beskrivelse: Stri
     }
 }
 
+// TODO map disse
 enum class InfotrygdSakNivå(val infotrygdKode: String, val beskrivelse: String) {
+
     AN("AN", ""),
     FFU("FFU", ""),
     HTF("HTF", ""),
@@ -137,7 +139,9 @@ enum class InfotrygdSakNivå(val infotrygdKode: String, val beskrivelse: String)
     }
 }
 
+// TODO map disse
 enum class InfotrygdSakUndervalg(val infotrygdKode: String, val beskrivelse: String) {
+
     AK("AK", ""),
     NY("NY", ""),
     OL("OL", ""),
