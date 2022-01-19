@@ -370,8 +370,7 @@ Create Table INFOTRYGD_Q0.SA_SAK_10 (
     S10_MOTTATTDATO                NUMBER(8)           , -- NOT NULL,
     S10_KAPITTELNR                 CHAR(2)             , -- NOT NULL,
     S10_VALG                       CHAR(2)             , -- NOT NULL,
-    S10_UNDERVALG_1                CHAR(1)             , -- NOT NULL,
-    S10_UNDERVALG_2                CHAR(1)             , -- NOT NULL,
+    S10_UNDERVALG                  CHAR(1)             , -- NOT NULL,
     S10_DUBLETT_FEIL               CHAR(1)             , -- NOT NULL,
     S10_TYPE                       CHAR(2)             , -- NOT NULL,
     S10_INNSTILLING                CHAR(2)             , -- NOT NULL,
@@ -411,9 +410,11 @@ Create Table INFOTRYGD_Q0.SA_SAK_10 (
     TK_NR                          CHAR(4)             , -- NOT NULL,
     F_NR                           CHAR(11)            , -- NOT NULL,
     OPPRETTET                      TIMESTAMP(6)        DEFAULT current_timestamp  , -- NOT NULL,
+    OPPDATERT                      TIMESTAMP(6)        DEFAULT current_timestamp  , -- NOT NULL,
     ENDRET_I_KILDE                 TIMESTAMP(6)        DEFAULT current_timestamp  , -- NOT NULL,
     KILDE_IS                       VARCHAR2(12)        DEFAULT ' '  , -- NOT NULL,
     REGION                         CHAR(1)             DEFAULT ' '  , -- NOT NULL,
+    DB_SPLITT                      CHAR(2)             DEFAULT ' '  , -- NOT NULL,
     ID_SAK                         NUMBER              DEFAULT NOT NULL -- endret fra NUMBER
 );
 

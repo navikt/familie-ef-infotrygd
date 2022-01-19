@@ -1,5 +1,6 @@
 package no.nav.familie.ef.infotrygd.rest.api
 
+import no.nav.familie.ef.infotrygd.model.StønadType
 import java.time.LocalDate
 
 data class InfotrygdSakResponse(
@@ -10,19 +11,19 @@ data class InfotrygdSak(
         val id: Long? = null,
         val saksnr: String? = null,
         val saksblokk: String? = null,
-        val regDato: LocalDate? = null,
-        val mottattdato: LocalDate? = null,
+        val registrertDato: LocalDate? = null,
+        val mottattDato: LocalDate? = null,
         val kapittelnr: String? = null,
-        val valg: String? = null, // TODO Det virker som att denne inneholder fler verdier enn den burde?
-        val undervalg: String? = null,
+        val stønadType: StønadType? = null,
+        val undervalg: InfotrygdSakUndervalg? = null,
         val type: InfotrygdSakType? = null,
-        val nivå: String? = null,
+        val nivå: InfotrygdSakNivå? = null,
         val resultat: InfotrygdSakResultat,
         val vedtaksdato: LocalDate? = null,
         val iverksattdato: LocalDate? = null,
         val årsakskode: String? = null,
-        val behenEnhet: String? = null,
-        val regAvEnhet: String? = null,
+        val behandlendeEnhet: String? = null,
+        val registrertAvEnhet: String? = null,
         val tkNr: String? = null,
         val region: String? = null,
 )
@@ -63,52 +64,92 @@ enum class InfotrygdSakType(val infotrygdKode: String, val beskrivelse: String) 
     companion object {
 
         private val kodeMap = values().associateBy(InfotrygdSakType::infotrygdKode)
-        fun fraInfotrygdKode(kode: String): InfotrygdSakType {
-            return kodeMap[kode] ?: error("Fant ikke sakType for $kode")
+        fun fraInfotrygdKode(kode: String): InfotrygdSakType? {
+            if (kode.isEmpty()) return null
+            return kodeMap[kode.trim()] ?: error("Fant ikke sakType for $kode")
         }
     }
 }
 
 enum class InfotrygdSakResultat(val infotrygdKode: String, val beskrivelse: String) {
-    ÅPEN_SAK("BLANK","Åpen sak"), // Denne er alltså blank, den har ikke verdiet blank
-    AVSLAG("A","Avslag"),
-    AVSLAG_GODKJENT("AG","Avslag godkjent"),
-    AVVIST_KLAGE("AK","Avvist klage"),
-    ANNULLERING("AN","Annullering"),
-    ADVARSEL("AV","Advarsel"),
-    DELVIS_GODKJENT("DG","Delvis godkjent"),
-    DELVIS_INNVILGET("DI","Delvis innvilget"),
-    DELVIS_TILBAKEBETALE("DT","Delvis tilbakebetale"),
-    FERDIG_BEHANDLET("FB","Ferdig behandlet"),
-    FORTSATT_INNVILGET("FI","Fortsatt innvilget"),
-    GODKJENT("GK","Godkjent"),
-    HENLAGT_TRUKKET_TILBAKE("H","Henlagt / trukket tilbake"),
-    HENLAGT_BORTFALT("HB","Henlagt / bortfalt"),
-    INNVILGET("I","Innvilget"),
-    IB("IB",""), // TODO
-    INNVILGET_NY_SITUASJON("IN","Innvilget ny situasjon"),
-    IKKE_STRAFFBART("IS","Ikke straffbart"),
-    IKKE_TILBAKEBETALE("IT","Ikke tilbakebetale"),
-    IU("IU",""), // TODO
-    KLAGE("K","Klage"),
-    MIDLERTIDIG_OPPHØRT("MO","Midlertidig opphørt"),
-    NB("NB",""), // TODO
-    O("O","Opphørt	Hvis type-sak er 'R', dannes hendelse til BA-sak med 'OPPHOERT'"),
-    POLITIANMELDELSE("PA","Politianmeldelse"),
-    REDUSERT("R","Redusert"),
-    TILBAKEBETALE("TB","Tilbakebetale"),
-    TF("TF",""), // TODO
-    TIPS_OPPFØLGING("TO","Tips oppfølging"),
-    VU("VU",""), // TODO
-    ØKNING("Ø","Økning")
+    ÅPEN_SAK("BLANK", "Åpen sak"), // Denne er alltså blank, den har ikke verdiet blank
+    AVSLAG("A", "Avslag"),
+    AVSLAG_GODKJENT("AG", "Avslag godkjent"),
+    AVVIST_KLAGE("AK", "Avvist klage"),
+    ANNULLERING("AN", "Annullering"),
+    ADVARSEL("AV", "Advarsel"),
+    DELVIS_GODKJENT("DG", "Delvis godkjent"),
+    DELVIS_INNVILGET("DI", "Delvis innvilget"),
+    DELVIS_TILBAKEBETALE("DT", "Delvis tilbakebetale"),
+    FERDIG_BEHANDLET("FB", "Ferdig behandlet"),
+    FORTSATT_INNVILGET("FI", "Fortsatt innvilget"),
+    GODKJENT("GK", "Godkjent"),
+    HENLAGT_TRUKKET_TILBAKE("H", "Henlagt / trukket tilbake"),
+    HENLAGT_BORTFALT("HB", "Henlagt / bortfalt"),
+    INNVILGET("I", "Innvilget"),
+    IB("IB", ""), // TODO
+    INNVILGET_NY_SITUASJON("IN", "Innvilget ny situasjon"),
+    IKKE_STRAFFBART("IS", "Ikke straffbart"),
+    IKKE_TILBAKEBETALE("IT", "Ikke tilbakebetale"),
+    IU("IU", ""), // TODO
+    KLAGE("K", "Klage"),
+    MIDLERTIDIG_OPPHØRT("MO", "Midlertidig opphørt"),
+    NB("NB", ""), // TODO
+    O("O", "Opphørt	Hvis type-sak er 'R', dannes hendelse til BA-sak med 'OPPHOERT'"),
+    POLITIANMELDELSE("PA", "Politianmeldelse"),
+    REDUSERT("R", "Redusert"),
+    TILBAKEBETALE("TB", "Tilbakebetale"),
+    TF("TF", ""), // TODO
+    TIPS_OPPFØLGING("TO", "Tips oppfølging"),
+    VU("VU", ""), // TODO
+    ØKNING("Ø", "Økning")
     ;
 
     companion object {
 
         private val kodeMap = values().associateBy(InfotrygdSakResultat::infotrygdKode)
         fun fraInfotrygdKode(kode: String): InfotrygdSakResultat {
-            if(kode.isEmpty()) return ÅPEN_SAK
-            return kodeMap[kode] ?: error("Fant ikke sakResultat for $kode")
+            if (kode.isEmpty()) return ÅPEN_SAK
+            return kodeMap[kode.trim()] ?: error("Fant ikke sakResultat for $kode")
+        }
+    }
+}
+
+enum class InfotrygdSakNivå(val infotrygdKode: String, val beskrivelse: String) {
+    AN("AN", ""),
+    FFU("FFU", ""),
+    HTF("HTF", ""),
+    KA("KA", ""),
+    KI("KI", ""),
+    RTV("RTV", ""),
+    SFK("SFK", ""),
+    TK("TK", ""),
+    TR("TR", ""),
+    ;
+
+    companion object {
+
+        private val kodeMap = values().associateBy(InfotrygdSakNivå::infotrygdKode)
+        fun fraInfotrygdKode(kode: String): InfotrygdSakNivå? {
+            if (kode.isEmpty()) return null
+            return kodeMap[kode.trim()] ?: error("Fant ikke sakNivå for $kode")
+        }
+    }
+}
+
+enum class InfotrygdSakUndervalg(val infotrygdKode: String, val beskrivelse: String) {
+    AK("AK", ""),
+    NY("NY", ""),
+    OL("OL", ""),
+    OR("OR", ""),
+    ;
+
+    companion object {
+
+        private val kodeMap = values().associateBy(InfotrygdSakUndervalg::infotrygdKode)
+        fun fraInfotrygdKode(kode: String): InfotrygdSakUndervalg? {
+            if (kode.isEmpty()) return null
+            return kodeMap[kode.trim()] ?: error("Fant ikke sakUndervalg for $kode")
         }
     }
 }
