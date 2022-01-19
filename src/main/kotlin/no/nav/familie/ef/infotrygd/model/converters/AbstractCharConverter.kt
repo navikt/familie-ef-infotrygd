@@ -26,4 +26,7 @@ class BrukerIdConverter : AbstractCharConverter(7)
 class Char2Converter : AbstractCharConverter(2)
 
 @Converter
+class Char3Converter: AbstractCharConverter(3)
+
+@Converter
 class Char6Converter :AbstractCharConverter(6)
