@@ -72,7 +72,7 @@ enum class InfotrygdSakType(val infotrygdKode: String, val beskrivelse: String) 
 }
 
 enum class InfotrygdSakResultat(val infotrygdKode: String, val beskrivelse: String) {
-    ÅPEN_SAK("BLANK", "Åpen sak"), // Denne er alltså blank, den har ikke verdiet blank
+    ÅPEN_SAK("", "Åpen sak"), // Denne er alltså blank, den har ikke verdiet blank
     AVSLAG("A", "Avslag"),
     AVSLAG_GODKJENT("AG", "Avslag godkjent"),
     AVVIST_KLAGE("AK", "Avvist klage"),
@@ -95,7 +95,7 @@ enum class InfotrygdSakResultat(val infotrygdKode: String, val beskrivelse: Stri
     KLAGE("K", "Klage"),
     MIDLERTIDIG_OPPHØRT("MO", "Midlertidig opphørt"),
     NB("NB", ""), // TODO
-    O("O", "Opphørt	Hvis type-sak er 'R', dannes hendelse til BA-sak med 'OPPHOERT'"),
+    OPPHØRT("O", "Opphørt"),
     POLITIANMELDELSE("PA", "Politianmeldelse"),
     REDUSERT("R", "Redusert"),
     TILBAKEBETALE("TB", "Tilbakebetale"),
@@ -109,7 +109,6 @@ enum class InfotrygdSakResultat(val infotrygdKode: String, val beskrivelse: Stri
 
         private val kodeMap = values().associateBy(InfotrygdSakResultat::infotrygdKode)
         fun fraInfotrygdKode(kode: String): InfotrygdSakResultat {
-            if (kode.isEmpty()) return ÅPEN_SAK
             return kodeMap[kode.trim()] ?: error("Fant ikke sakResultat for $kode")
         }
     }
