@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSøkRequest
 import no.nav.familie.ef.infotrygd.service.StønadService
-import no.nav.security.token.support.core.api.Protected
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 
-@Protected
 @RestController
 @RequestMapping("/api/stonad",
                 consumes = [MediaType.APPLICATION_JSON_VALUE],
