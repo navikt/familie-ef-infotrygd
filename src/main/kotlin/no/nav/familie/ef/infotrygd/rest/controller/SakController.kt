@@ -2,6 +2,7 @@ package no.nav.familie.ef.infotrygd.rest.controller
 
 import io.micrometer.core.annotation.Timed
 import no.nav.familie.ef.infotrygd.repository.SakRepository
+import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSakResponse
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSøkRequest
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.ResponseEntity
@@ -23,7 +24,7 @@ class SakController(private val sakRepository: SakRepository) {
             return ResponseEntity.badRequest().build()
         }
 
-        return ResponseEntity.ok(sakRepository.finnSaker(request.personIdenter))
+        return ResponseEntity.ok(InfotrygdSakResponse(sakRepository.finnSaker(request.personIdenter)))
     }
 
 }
