@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RestController
 
 
 @RestController
-@RequestMapping("/api/sak")
+@RequestMapping("/api/saker")
 @Timed(value = "infotrygd_sak_enslig_forsoerger_controller", percentiles = [0.5, 0.95])
 @ProtectedWithClaims(issuer = "azure")
 class SakController(private val sakRepository: SakRepository) {
 
-    @PostMapping(path = ["/eksisterer"])
+    @PostMapping(path = ["/finn"])
     fun finnSaker(@RequestBody request: InfotrygdSøkRequest): ResponseEntity<Any> {
         if (request.personIdenter.isEmpty()) {
             return ResponseEntity.badRequest().build()
