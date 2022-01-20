@@ -26,7 +26,7 @@ open class AbstractNavLocalDateConverter(datePattern: String) : AttributeConvert
                 så vi returnerer et tomt resultat.
              */
             logger.warn("Kunne ikke lese dato: '$dbData'")
-            null;
+            null
         }
     }
 

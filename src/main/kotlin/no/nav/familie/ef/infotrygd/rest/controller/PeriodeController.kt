@@ -10,7 +10,6 @@ import no.nav.familie.ef.infotrygd.rest.api.PeriodeArenaRequest
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeArenaResponse
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeRequest
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeResponse
-import no.nav.security.token.support.core.api.Protected
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 
-@Protected
 @RestController
 @RequestMapping("/api/perioder",
                 consumes = [MediaType.APPLICATION_JSON_VALUE],

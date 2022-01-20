@@ -79,6 +79,7 @@ class RepoTest {
     private fun kombinasjonerAvQueries() = listOf({ periodeRepository.hentPerioderForArena(mockk(relaxed = true)) },
                                                   { periodeRepository.hentPerioder(mockk(relaxed = true)) },
                                                   { sakRepository.finnesSaker(emptySet()) },
+                                                  { sakRepository.finnSaker(emptySet()) },
                                                   { infotrygdRepository.harStønad(emptySet(), true) },
                                                   { infotrygdRepository.harStønad(emptySet(), false) })
 

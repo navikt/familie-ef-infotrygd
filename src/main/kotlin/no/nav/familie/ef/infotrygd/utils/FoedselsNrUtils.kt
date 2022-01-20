@@ -2,16 +2,6 @@ package no.nav.familie.ef.infotrygd.utils
 
 import no.nav.commons.foedselsnummer.FoedselsNr
 
-
-val FoedselsNr.reversert: String
-    get() {
-        return reverse(asString)
-    }
-
-fun FoedselsNr.Companion.fraReversert(reversert: String): FoedselsNr {
-    return FoedselsNr(reverse(reversert))
-}
-
 fun String.reverserFnr() = reverse(this)
 
 /**
