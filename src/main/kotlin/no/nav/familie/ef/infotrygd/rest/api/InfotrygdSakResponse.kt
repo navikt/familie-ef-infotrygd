@@ -8,6 +8,7 @@ data class InfotrygdSakResponse(
 )
 
 data class InfotrygdSak(
+        val personIdent: String,
         val id: Long? = null,
         val saksnr: String? = null,
         val saksblokk: String? = null,

@@ -55,5 +55,6 @@ internal class SakRepositoryTest {
     fun hentSaker() {
         val resultat = sakRepository.finnSaker(setOf("03047012345"))
         assertThat(resultat).hasSize(1)
+        assertThat(resultat[0].personIdent).isEqualTo("03047012345")
     }
 }

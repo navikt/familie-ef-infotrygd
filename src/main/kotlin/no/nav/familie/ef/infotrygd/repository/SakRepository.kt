@@ -45,13 +45,14 @@ class SakRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
                 """
             SELECT s.ID_SAK,s.S10_SAKSNR,s.S05_SAKSBLOKK,s.S10_REG_DATO,s.S10_MOTTATTDATO,s.S10_KAPITTELNR,s.S10_VALG,
                 s.S10_UNDERVALG,s.S10_TYPE,s.S10_NIVAA,s.S10_RESULTAT,s.S10_VEDTAKSDATO,s.S10_IVERKSATTDATO,s.S10_AARSAKSKODE,
-                s.S10_BEHEN_ENHET,s.S10_REG_AV_ENHET,s.TK_NR,s.REGION
+                s.S10_BEHEN_ENHET,s.S10_REG_AV_ENHET,s.TK_NR,s.REGION,s.F_NR
              FROM sa_sak_10 s
             WHERE s.f_nr IN (:personIdenter)
             AND s.s10_kapittelnr = 'EF'
         """, values
         ) { rs, _ ->
             InfotrygdSak(
+                    personIdent = rs.getString("F_NR").reverserFnr(),
                     id = rs.getLong("ID_SAK"),
                     saksnr = rs.getString("S10_SAKSNR"),
                     saksblokk = rs.getString("S05_SAKSBLOKK"),
