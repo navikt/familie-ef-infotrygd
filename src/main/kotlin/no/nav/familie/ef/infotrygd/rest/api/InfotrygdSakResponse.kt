@@ -56,10 +56,10 @@ enum class InfotrygdSakType(val infotrygdKode: String, val beskrivelse: String) 
     STRAFFERETTSLIG_VURDERING("SV", "Strafferettslig vurdering"),
     SØKNAD_ØKNING_ENDRING("SØ", "Søknad om økning/endring"),
     TILBAKEBETALINGSSAK("T", "Tilbakebetalingssak"),
-    TA("TA", ""), // TODO
+    TILBAKEBETALING_AVREGNING("TA", "Tilbakebetaling avregning"),
     TILBAKEBETALING_ENDRING("TE", "Tilbakebetaling endring"),
     TIPSUTREDNING("TU", "Tipsutredning"),
-    UA("UA", ""), // TODO
+    UTBETALING_TIL_ANNEN("UA", "Utbetaling til annen"),
     VURDERING_UTESTENGING("VU", "Vurdering utestenging");
 
     companion object {
@@ -115,18 +115,17 @@ enum class InfotrygdSakResultat(val infotrygdKode: String, val beskrivelse: Stri
     }
 }
 
-// TODO map disse
 enum class InfotrygdSakNivå(val infotrygdKode: String, val beskrivelse: String) {
 
     AN("AN", ""),
-    FFU("FFU", ""),
+    FOLKETRYGDKONTORET_FOR_UTENLANDSSAKER("FFU", "Folketrygdkontoret for utenlandssaker"),
     HTF("HTF", ""),
-    KA("KA", ""),
+    KLAGE_ANKE("KA", "Klage/anke"),
     KI("KI", ""),
-    RTV("RTV", ""),
+    RIKSTRYGDEVERKET("RTV", "Rikstrygdeverket"),
     SFK("SFK", ""),
-    TK("TK", ""),
-    TR("TR", ""),
+    NAV_KONTOR("TK", "NAV-kontor (trygdekontor)"),
+    TRYGDERETTEN("TR", "Trygderetten"),
     ;
 
     companion object {
@@ -139,18 +138,20 @@ enum class InfotrygdSakNivå(val infotrygdKode: String, val beskrivelse: String)
     }
 }
 
-// TODO map disse
-enum class InfotrygdSakUndervalg(val infotrygdKode: String, val beskrivelse: String) {
+/**
+ * Disse mappes til ulike verdier beroende på hvilken typ av stønad det gjelder.
+ */
+enum class InfotrygdSakUndervalg {
 
-    AK("AK", ""),
-    NY("NY", ""),
-    OL("OL", ""),
-    OR("OR", ""),
+    AK,
+    NY,
+    OL,
+    OR
     ;
 
     companion object {
 
-        private val kodeMap = values().associateBy(InfotrygdSakUndervalg::infotrygdKode)
+        private val kodeMap = values().associateBy { it.name }
         fun fraInfotrygdKode(kode: String): InfotrygdSakUndervalg? {
             if (kode.isEmpty()) return null
             return kodeMap[kode.trim()] ?: error("Fant ikke sakUndervalg for $kode")
