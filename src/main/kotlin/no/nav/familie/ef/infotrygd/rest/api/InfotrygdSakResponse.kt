@@ -66,7 +66,7 @@ enum class InfotrygdSakType(val infotrygdKode: String, val beskrivelse: String) 
 
         private val kodeMap = values().associateBy(InfotrygdSakType::infotrygdKode)
         fun fraInfotrygdKode(kode: String): InfotrygdSakType? {
-            if (kode.isEmpty()) return null
+            if (kode.isBlank()) return null
             return kodeMap[kode.trim()] ?: error("Fant ikke sakType for $kode")
         }
     }
@@ -132,7 +132,7 @@ enum class InfotrygdSakNivå(val infotrygdKode: String, val beskrivelse: String)
 
         private val kodeMap = values().associateBy(InfotrygdSakNivå::infotrygdKode)
         fun fraInfotrygdKode(kode: String): InfotrygdSakNivå? {
-            if (kode.isEmpty()) return null
+            if (kode.isBlank()) return null
             return kodeMap[kode.trim()] ?: error("Fant ikke sakNivå for $kode")
         }
     }
@@ -153,7 +153,7 @@ enum class InfotrygdSakUndervalg {
 
         private val kodeMap = values().associateBy { it.name }
         fun fraInfotrygdKode(kode: String): InfotrygdSakUndervalg? {
-            if (kode.isEmpty()) return null
+            if (kode.isBlank()) return null
             return kodeMap[kode.trim()] ?: error("Fant ikke sakUndervalg for $kode")
         }
     }
