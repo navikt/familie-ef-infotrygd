@@ -41,6 +41,7 @@ class SakRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
     fun finnSaker(personIdenter: Set<String>): List<InfotrygdSak> {
         val values = MapSqlParameterSource()
                 .addValue("personIdenter", personIdenter.map(String::reverserFnr))
+                .addValue("s10_valg", StønadType.values().map { it.saS10Valg })
         return jdbcTemplate.query(
                 """
             SELECT s.ID_SAK,s.S10_SAKSNR,s.S05_SAKSBLOKK,s.S10_REG_DATO,s.S10_MOTTATTDATO,s.S10_KAPITTELNR,s.S10_VALG,
@@ -48,6 +49,7 @@ class SakRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
                 s.S10_BEHEN_ENHET,s.S10_REG_AV_ENHET,s.TK_NR,s.REGION,s.F_NR
              FROM sa_sak_10 s
             WHERE s.f_nr IN (:personIdenter)
+            AND s.s10_valg IN (:s10_valg)
             AND s.s10_kapittelnr = 'EF'
         """, values
         ) { rs, _ ->
