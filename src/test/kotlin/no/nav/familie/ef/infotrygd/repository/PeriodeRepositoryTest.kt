@@ -61,6 +61,11 @@ internal class PeriodeRepositoryTest {
     }
 
     @Test
+    fun `hentPersonerForMigrering går fint`() {
+        periodeRepository.hentPersonerForMigrering(10)
+    }
+
+    @Test
     fun `skal hente perioder`() {
         val perioder = periodeRepository.hentPerioder(PeriodeRequest(setOf(FoedselsNr("01234567890")),
                                                                      setOf(StønadType.OVERGANGSSTØNAD)))
