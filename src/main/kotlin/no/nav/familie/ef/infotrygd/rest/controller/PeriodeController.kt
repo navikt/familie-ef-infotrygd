@@ -13,9 +13,11 @@ import no.nav.familie.ef.infotrygd.rest.api.PeriodeResponse
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 
@@ -65,6 +67,15 @@ class PeriodeController(private val periodeRepository: PeriodeRepository) {
 
         val perioder = periodeRepository.hentPerioderForArena(request)
         return ResponseEntity.ok(PeriodeArenaResponse(perioder))
+    }
+
+    /**
+     * Denne henter perioder for alle typer EF-stønader, då arena ønsker de sammenslåtte
+     */
+    @GetMapping(path = ["/migreringspersoner"])
+    fun hentMigreringspersoner(@RequestParam antall: Int): ResponseEntity<Any> {
+        val personerForMigrering = periodeRepository.hentPersonerForMigrering(antall)
+        return ResponseEntity.ok(personerForMigrering)
     }
 
 }

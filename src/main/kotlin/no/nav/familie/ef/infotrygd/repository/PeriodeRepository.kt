@@ -10,10 +10,12 @@ import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSakstype
 import no.nav.familie.ef.infotrygd.rest.api.Periode
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeArenaRequest
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeRequest
+import no.nav.familie.ef.infotrygd.rest.api.PersonerForMigrering
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
+import java.time.YearMonth
 
 /**
  *  FOM < TOM - Det finnes perioder med TOM < FOM og denne filtrerer bort de.
@@ -144,6 +146,39 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
                             opphørsdato = rs.getDate("dato_opphor")?.toLocalDate()
                     )
         }
+    }
+
+    /**
+     * Finner personer med vedtak som har tom-dato fra neste måned
+     */
+    // language=PostgreSQL
+    fun hentPersonerForMigrering(antall: Int): PersonerForMigrering {
+        val values = MapSqlParameterSource()
+                .addValue("stønadskode", StønadType.OVERGANGSSTØNAD.kodeRutine)
+                .addValue("nesteMåned", YearMonth.now().plusMonths(1).atDay(1))
+                .addValue("antall", antall)
+        val identer = jdbcTemplate.query("""
+            WITH vedtak AS (SELECT l.personnr, s.stonad_id, v.vedtak_id, v.dato_innv_fom fom, 
+            (CASE WHEN (NVL(s.dato_opphor, v.dato_innv_tom) < v.dato_innv_tom) THEN s.dato_opphor ELSE v.dato_innv_tom END) tom
+            FROM t_lopenr_fnr l
+              JOIN t_stonad s ON s.person_lopenr = l.person_lopenr
+              JOIN t_vedtak v ON v.stonad_id = s.stonad_id
+              JOIN t_endring e ON e.vedtak_id = v.vedtak_id
+            WHERE s.oppdrag_id IS NOT NULL
+              AND v.kode_rutine = :stønadskode
+              AND e.kode <> 'AN'
+              AND e.kode <> 'UA'
+              AND v.dato_innv_fom < v.dato_innv_tom
+              AND (s.dato_opphor IS NULL OR s.dato_opphor > v.dato_innv_fom))
+            , maxvedtakid AS (SELECT personnr, stonad_id, MAX(vedtak_id) vedtak_id FROM vedtak GROUP BY personnr, stonad_id)
+            SELECT personnr FROM (SELECT q1.personnr, MAX(tom) 
+            FROM maxvedtakid q1 JOIN vedtak q2 ON q1.vedtak_id = q2.vedtak_id
+            WHERE q2.tom > :nesteMåned
+            GROUP BY q1.personnr) WHERE rownum < :antall
+        """, values) { rs, _ ->
+            rs.getString("personnr")
+        }
+        return PersonerForMigrering(identer.toSet())
     }
 
     private fun <T> mapVerdi(kode: String, mapper: (String) -> T): T? = kode
