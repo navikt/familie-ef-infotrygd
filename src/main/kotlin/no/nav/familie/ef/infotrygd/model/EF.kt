@@ -16,6 +16,9 @@ data class EF(
         @Column(name = "STONAD_BELOP")
         val stønadsbeløp: Long,
 
+        @Column(name = "BARNT_UTG")
+        val utgifterBarnetilsyn: Long,
+
         @Column(name = "INNT_FRADRAG")
         val inntektsfradrag: Long,
 

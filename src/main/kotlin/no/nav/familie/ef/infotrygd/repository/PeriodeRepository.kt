@@ -109,6 +109,7 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
             v.dato_innv_fom,
             v.dato_innv_tom,
             s.dato_opphor,
+            ef.barnt_utg,
             (SELECT bg.belop FROM t_beregn_grl bg WHERE bg.vedtak_id = v.vedtak_id AND bg.type_belop = 'ARBM') inntektsgrunnlag
            FROM t_lopenr_fnr l
             JOIN t_stonad s ON s.person_lopenr = l.person_lopenr
@@ -136,10 +137,13 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
                             vedtakId = rs.getLong("vedtak_id"),
                             vedtakstidspunkt = rs.getTimestamp("tidspunkt_reg").toLocalDateTime(),
                             stønadBeløp = rs.getInt("stonad_belop"),
+                            engangsbeløp = rs.getInt("stonad_belop"),
                             inntektsgrunnlag = rs.getInt("inntektsgrunnlag"),
                             inntektsreduksjon = rs.getInt("innt_fradrag"),
                             samordningsfradrag = rs.getInt("sam_fradrag"),
+                            utgifterBarnetilsyn = rs.getInt("barnt_utg"),
                             beløp = rs.getInt("netto_belop"),
+                            månedsbeløp = rs.getInt("netto_belop"),
                             startDato = rs.getDate("dato_start").toLocalDate(),
                             stønadFom = rs.getDate("dato_innv_fom").toLocalDate(),
                             stønadTom = rs.getDate("dato_innv_tom").toLocalDate(),

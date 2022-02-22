@@ -47,8 +47,8 @@ internal class PeriodeRepositoryTest {
         )
         jdbcTemplate.update("INSERT INTO T_DELYTELSE (VEDTAK_ID, TYPE_SATS, BELOP) VALUES (1, '', 100.34)")
         jdbcTemplate.update("INSERT INTO T_ENDRING (VEDTAK_ID, KODE) VALUES (1, 'F ')")
-        jdbcTemplate.update("INSERT INTO T_EF (VEDTAK_ID, STONAD_BELOP, INNT_FRADRAG, NETTO_BELOP, SAM_FRADRAG, KODE_OVERG, AKTIVITET)" +
-                            " VALUES (1,1,1,1,1,' ',' ')")
+        jdbcTemplate.update("INSERT INTO T_EF (VEDTAK_ID, STONAD_BELOP, INNT_FRADRAG, NETTO_BELOP, SAM_FRADRAG, KODE_OVERG, AKTIVITET, BARNT_UTG)" +
+                            " VALUES (1,1,1,1,1,' ',' ', 1)")
         jdbcTemplate.update("INSERT INTO T_BEREGN_GRL (VEDTAK_ID, TYPE_BELOP, FOM, BELOP, BRUKERID) VALUES (1,'ARBM',current_date, 100, 'A')")
         jdbcTemplate.update("INSERT INTO T_BEREGN_GRL (VEDTAK_ID, TYPE_BELOP, FOM, BELOP, BRUKERID) VALUES (1,'ABCD',current_date, 50, 'A')")
     }
