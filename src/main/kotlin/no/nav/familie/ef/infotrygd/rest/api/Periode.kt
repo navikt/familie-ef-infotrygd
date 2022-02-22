@@ -33,6 +33,8 @@ data class PeriodeResponse(
 )
 
 /**
+ * @param stønadBeløp er det samme som engangsbeløp
+ * @param beløp mappet fra netto_beløp, som er det samme som månedsbeløp
  * @param kodeOvergangsstønad er i prinsipp det vi kaller periodetype i ny løsning
  */
 data class Periode(
@@ -45,11 +47,16 @@ data class Periode(
         val stønadId: Long,
         val vedtakId: Long,
         val vedtakstidspunkt: LocalDateTime,
+        @Deprecated("bruk beløpEngangsutbetaling")
         val stønadBeløp: Int,
+        val engangsbeløp: Int,
         val inntektsgrunnlag: Int,
         val inntektsreduksjon: Int,
         val samordningsfradrag: Int,
+        val utgifterBarnetilsyn: Int,
+        @Deprecated("bruk beløpMånedsutbetaling")
         val beløp: Int,
+        val månedsbeløp: Int,
         val startDato: LocalDate,
         val stønadFom: LocalDate,
         val stønadTom: LocalDate,
