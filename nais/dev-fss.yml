@@ -58,6 +58,8 @@ spec:
       rules:
         - application: familie-ef-sak
           cluster: dev-gcp
+        - application: familie-ef-sak-lokal
+          cluster: dev-gcp
         - application: familie-ef-mottak
           cluster: dev-gcp
   env:
