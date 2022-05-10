@@ -2,15 +2,7 @@ package no.nav.familie.ef.infotrygd.repository
 
 import no.nav.commons.foedselsnummer.FoedselsNr
 import no.nav.familie.ef.infotrygd.model.StønadType
-import no.nav.familie.ef.infotrygd.rest.api.ArenaPeriode
-import no.nav.familie.ef.infotrygd.rest.api.InfotrygdAktivitetstype
-import no.nav.familie.ef.infotrygd.rest.api.InfotrygdEndringKode
-import no.nav.familie.ef.infotrygd.rest.api.InfotrygdOvergangsstønadKode
-import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSakstype
-import no.nav.familie.ef.infotrygd.rest.api.Periode
-import no.nav.familie.ef.infotrygd.rest.api.PeriodeArenaRequest
-import no.nav.familie.ef.infotrygd.rest.api.PeriodeRequest
-import no.nav.familie.ef.infotrygd.rest.api.PersonerForMigrering
+import no.nav.familie.ef.infotrygd.rest.api.*
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
@@ -42,14 +34,14 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
      */
     fun hentPerioderForArena(request: PeriodeArenaRequest): List<ArenaPeriode> {
         val values = MapSqlParameterSource()
-                .addValue("personIdenter", request.personIdenter.map { it.asString })
-                .addValue("stønadskoder", StønadType.values().map { it.kodeRutine })
-                .addValue("kodeAnnulert", InfotrygdEndringKode.ANNULERT.infotrygdKode)
-                .addValue("kodeUaktuell", InfotrygdEndringKode.UAKTUELL.infotrygdKode)
-                .addValue("fom", request.fomDato ?: LocalDate.now())
-                .addValue("tom", request.tomDato ?: LocalDate.now())
+            .addValue("personIdenter", request.personIdenter.map { it.asString })
+            .addValue("stønadskoder", StønadType.values().map { it.kodeRutine })
+            .addValue("kodeAnnulert", InfotrygdEndringKode.ANNULERT.infotrygdKode)
+            .addValue("kodeUaktuell", InfotrygdEndringKode.UAKTUELL.infotrygdKode)
+            .addValue("fom", request.fomDato ?: LocalDate.now())
+            .addValue("tom", request.tomDato ?: LocalDate.now())
         return jdbcTemplate.query(
-                """
+            """
             SELECT DISTINCT l.personnr
               ,v.tknr
               ,s.stonad_id
@@ -75,21 +67,21 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
       """, values
         ) { rs, _ ->
             ArenaPeriode(
-                    FoedselsNr(rs.getString("PERSONNR")),
-                    rs.getDate("DATO_INNV_FOM").toLocalDate(),
-                    rs.getDate("DATO_INNV_TOM").toLocalDate(),
-                    rs.getDate("DATO_OPPHOR")?.toLocalDate(),
-                    rs.getFloat("BELOP")
+                FoedselsNr(rs.getString("PERSONNR")),
+                rs.getDate("DATO_INNV_FOM").toLocalDate(),
+                rs.getDate("DATO_INNV_TOM").toLocalDate(),
+                rs.getDate("DATO_OPPHOR")?.toLocalDate(),
+                rs.getFloat("BELOP")
             )
         }
     }
 
     fun hentPerioder(request: PeriodeRequest): List<Pair<StønadType, Periode>> {
         val values = MapSqlParameterSource()
-                .addValue("personIdenter", request.personIdenter.map { it.asString })
-                .addValue("stønadskoder", mapStønadskoder(request))
+            .addValue("personIdenter", request.personIdenter.map { it.asString })
+            .addValue("stønadskoder", mapStønadskoder(request))
         return jdbcTemplate.query(
-                """
+            """
             SELECT 
             l.personnr,
             v.kode_rutine,
@@ -125,29 +117,29 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
         ) { rs, _ ->
             StønadType.fraKodeRutine(rs.getString("kode_rutine")) to
                     Periode(
-                            personIdent = rs.getString("personnr"),
-                            sakstype = InfotrygdSakstype.fraInfotrygdKode(rs.getString("type_sak").trim()),
-                            kode = InfotrygdEndringKode.fraInfotrygdKode(rs.getString("kode").trim()),
+                        personIdent = rs.getString("personnr"),
+                        sakstype = InfotrygdSakstype.fraInfotrygdKode(rs.getString("type_sak").trim()),
+                        kode = InfotrygdEndringKode.fraInfotrygdKode(rs.getString("kode").trim()),
                             kodeOvergangsstønad = mapVerdi(rs.getString("kode_overg"),
                                                            InfotrygdOvergangsstønadKode.Companion::fraInfotrygdKode),
                             aktivitetstype = mapVerdi(rs.getString("aktivitet"),
                                                       InfotrygdAktivitetstype.Companion::fraInfotrygdKode),
-                            brukerId = rs.getString("brukerid"),
-                            stønadId = rs.getLong("stonad_id"),
-                            vedtakId = rs.getLong("vedtak_id"),
-                            vedtakstidspunkt = rs.getTimestamp("tidspunkt_reg").toLocalDateTime(),
-                            stønadBeløp = rs.getInt("stonad_belop"),
-                            engangsbeløp = rs.getInt("stonad_belop"),
-                            inntektsgrunnlag = rs.getInt("inntektsgrunnlag"),
-                            inntektsreduksjon = rs.getInt("innt_fradrag"),
-                            samordningsfradrag = rs.getInt("sam_fradrag"),
-                            utgifterBarnetilsyn = rs.getInt("barnt_utg"),
-                            beløp = rs.getInt("netto_belop"),
-                            månedsbeløp = rs.getInt("netto_belop"),
-                            startDato = rs.getDate("dato_start").toLocalDate(),
-                            stønadFom = rs.getDate("dato_innv_fom").toLocalDate(),
-                            stønadTom = rs.getDate("dato_innv_tom").toLocalDate(),
-                            opphørsdato = rs.getDate("dato_opphor")?.toLocalDate()
+                        brukerId = rs.getString("brukerid"),
+                        stønadId = rs.getLong("stonad_id"),
+                        vedtakId = rs.getLong("vedtak_id"),
+                        vedtakstidspunkt = rs.getTimestamp("tidspunkt_reg").toLocalDateTime(),
+                        stønadBeløp = rs.getInt("stonad_belop"),
+                        engangsbeløp = rs.getInt("stonad_belop"),
+                        inntektsgrunnlag = rs.getInt("inntektsgrunnlag"),
+                        inntektsreduksjon = rs.getInt("innt_fradrag"),
+                        samordningsfradrag = rs.getInt("sam_fradrag"),
+                        utgifterBarnetilsyn = rs.getInt("barnt_utg"),
+                        beløp = rs.getInt("netto_belop"),
+                        månedsbeløp = rs.getInt("netto_belop"),
+                        startDato = rs.getDate("dato_start").toLocalDate(),
+                        stønadFom = rs.getDate("dato_innv_fom").toLocalDate(),
+                        stønadTom = rs.getDate("dato_innv_tom").toLocalDate(),
+                        opphørsdato = rs.getDate("dato_opphor")?.toLocalDate()
                     )
         }
     }
@@ -158,9 +150,9 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
     // language=PostgreSQL
     fun hentPersonerForMigrering(antall: Int): PersonerForMigrering {
         val values = MapSqlParameterSource()
-                .addValue("stønadskode", StønadType.OVERGANGSSTØNAD.kodeRutine)
-                .addValue("nesteMåned", YearMonth.now().plusMonths(1).atDay(1))
-                .addValue("antall", antall)
+            .addValue("stønadskode", StønadType.OVERGANGSSTØNAD.kodeRutine)
+            .addValue("nesteMåned", YearMonth.now().plusMonths(1).atDay(1))
+            .addValue("antall", antall)
         val identer = jdbcTemplate.query("""
             WITH vedtak AS (SELECT l.personnr, s.stonad_id, v.vedtak_id, v.dato_innv_fom fom, 
             (CASE WHEN (NVL(s.dato_opphor, v.dato_innv_tom) < v.dato_innv_tom) THEN s.dato_opphor ELSE v.dato_innv_tom END) tom
@@ -185,17 +177,30 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
         return PersonerForMigrering(identer.toSet())
     }
 
+    fun hentBarnForPerioder(barnetilsynPerioder: List<Periode>): Map<String, List<String>> {
+        val values = MapSqlParameterSource()
+            .addValue("vedtakIdListe", barnetilsynPerioder.map { it.vedtakId })
+
+        return jdbcTemplate.query(
+            """select r.vedtak_id, barn.personnr from t_rolle r
+        JOIN t_lopenr_fnr barn ON barn.person_lopenr = r.person_lopenr_r
+        where r.vedtak_id in (:vedtakIdListe);
+        """, values
+        ) { rs, _ -> rs.getString("vedtak_id") to rs.getString("personnr")}
+            .groupBy({ it.first }, { it.second })
+    }
+
     private fun <T> mapVerdi(kode: String, mapper: (String) -> T): T? = kode
-            .trim()
-            .takeIf(String::isNotEmpty)
-            ?.let(mapper)
+        .trim()
+        .takeIf(String::isNotEmpty)
+        ?.let(mapper)
 
     private fun mapStønadskoder(request: PeriodeRequest): List<String> {
         return request.stønadstyper.ifEmpty {
             setOf(
-                    StønadType.OVERGANGSSTØNAD,
-                    StønadType.SKOLEPENGER,
-                    StønadType.BARNETILSYN
+                StønadType.OVERGANGSSTØNAD,
+                StønadType.SKOLEPENGER,
+                StønadType.BARNETILSYN
             )
         }.map { it.kodeRutine }
     }

@@ -6,12 +6,8 @@ import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import no.nav.familie.ef.infotrygd.model.StønadType
 import no.nav.familie.ef.infotrygd.repository.PeriodeRepository
-import no.nav.familie.ef.infotrygd.rest.api.PeriodeArenaRequest
-import no.nav.familie.ef.infotrygd.rest.api.PeriodeArenaResponse
-import no.nav.familie.ef.infotrygd.rest.api.PeriodeRequest
-import no.nav.familie.ef.infotrygd.rest.api.PeriodeResponse
+import no.nav.familie.ef.infotrygd.rest.api.*
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -73,6 +69,21 @@ class PeriodeController(private val periodeRepository: PeriodeRepository) {
     fun hentMigreringspersoner(@RequestParam antall: Int): ResponseEntity<Any> {
         val personerForMigrering = periodeRepository.hentPersonerForMigrering(antall)
         return ResponseEntity.ok(personerForMigrering)
+    }
+
+    @ApiOperation("Henter barnetilsynperioder med barn for Bidrag")
+    @PostMapping(path = ["/barnetilsynBidrag"])
+    @ApiImplicitParams(ApiImplicitParam(
+        name = "request",
+        dataType = "PeriodeRequest",
+        value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
+                " \"fomDato\": \"2020-01-01\",\n  \"tomDato\": \"2021-01-01\"\n}"
+    ))
+    fun hentPerioderForBidrag(@RequestBody request: PeriodeBarnetilsynRequest): ResponseEntity<List<PeriodeMedBarn>> {
+        val periodeRequest = PeriodeRequest(setOf(request.personIdent), setOf(StønadType.BARNETILSYN))
+        val barnetilsynPerioder = periodeRepository.hentPerioder(periodeRequest).map { it.second }
+        val periodeBarnListe  = periodeRepository.hentBarnForPerioder(barnetilsynPerioder)
+        return ResponseEntity.ok(barnetilsynPerioder.map { PeriodeMedBarn(it, periodeBarnListe[it.vedtakId] ?: emptyList()) })
     }
 
 }
