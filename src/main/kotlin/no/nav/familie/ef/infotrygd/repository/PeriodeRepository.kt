@@ -178,6 +178,9 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
     }
 
     fun hentBarnForPerioder(barnetilsynPerioder: List<Periode>): Map<String, List<String>> {
+        if (barnetilsynPerioder.isEmpty()) {
+            return emptyMap()
+        }
         val values = MapSqlParameterSource()
             .addValue("vedtakIdListe", barnetilsynPerioder.map { it.vedtakId })
 
