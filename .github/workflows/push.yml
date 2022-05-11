@@ -8,7 +8,7 @@ env:
   IMAGE: ghcr.io/navikt/${{ github.repository }}:${{ github.sha }}
 jobs:
   deploy-to-dev:
-    name: Test bygg app/image
+    name: Test bygg app
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
