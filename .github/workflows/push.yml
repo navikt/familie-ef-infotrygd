@@ -1,5 +1,4 @@
-name: Build-Deploy-Preprod
-
+name: Build
 on:
   push:
     branches-ignore:
@@ -9,7 +8,7 @@ env:
   IMAGE: ghcr.io/navikt/${{ github.repository }}:${{ github.sha }}
 jobs:
   deploy-to-dev:
-    name: Bygg app/image, push til github, deploy til dev-fss
+    name: Test bygg app/image
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
