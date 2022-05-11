@@ -39,9 +39,10 @@ class PeriodeController(private val periodeRepository: PeriodeRepository) {
         }
 
         val perioder = periodeRepository.hentPerioder(request).groupBy({ it.first }) { it.second }
-        val perioderMedBarn = hentBarnetilsynPerioderMedBarn(perioder)
+        //val perioderMedBarn = hentBarnetilsynPerioderMedBarn(perioder)
+
         return ResponseEntity.ok(PeriodeResponse(overgangsstønad = perioder.getOrDefault(StønadType.OVERGANGSSTØNAD, emptyList()),
-                                                 barnetilsyn = perioderMedBarn,
+                                                 barnetilsyn = perioder.getOrDefault(StønadType.BARNETILSYN, emptyList()),
                                                  skolepenger = perioder.getOrDefault(StønadType.SKOLEPENGER, emptyList())))
     }
 

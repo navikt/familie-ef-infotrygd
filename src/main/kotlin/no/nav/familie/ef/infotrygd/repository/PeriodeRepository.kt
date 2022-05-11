@@ -187,7 +187,7 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
         return jdbcTemplate.query(
             """select r.vedtak_id, barn.personnr from t_rolle r
         JOIN t_lopenr_fnr barn ON barn.person_lopenr = r.person_lopenr_r
-        where r.vedtak_id in (:vedtakIdListe);
+        where r.vedtak_id in (:vedtakIdListe)
         """, values
         ) { rs, _ -> rs.getString("vedtak_id") to rs.getString("personnr")}
             .groupBy({ it.first }, { it.second })
