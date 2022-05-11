@@ -66,7 +66,8 @@ data class Periode(
         val startDato: LocalDate,
         val stønadFom: LocalDate,
         val stønadTom: LocalDate,
-        val opphørsdato: LocalDate?
+        val opphørsdato: LocalDate?,
+        val barnIdenter : List<String> = emptyList()
 )
 
 /**

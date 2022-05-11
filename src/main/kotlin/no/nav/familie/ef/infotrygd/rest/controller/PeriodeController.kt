@@ -25,34 +25,40 @@ class PeriodeController(private val periodeRepository: PeriodeRepository) {
 
     @ApiOperation("Henter perioder")
     @PostMapping
-    @ApiImplicitParams(ApiImplicitParam(
-            name = "request",
-            dataType = "PeriodeRequest",
-            value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
-                    " \"stønadstyper\": [\n\"OVERGANGSSTØNAD\"\n] \n}"
-    ))
+    @ApiImplicitParams(
+            ApiImplicitParam(
+                    name = "request",
+                    dataType = "PeriodeRequest",
+                    value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
+                            " \"stønadstyper\": [\n\"OVERGANGSSTØNAD\"\n] \n}"
+            )
+    )
     fun hentPerioder(@RequestBody request: PeriodeRequest): ResponseEntity<Any> {
         if (request.personIdenter.isEmpty()) {
             return ResponseEntity.badRequest().build()
         }
 
         val perioder = periodeRepository.hentPerioder(request).groupBy({ it.first }) { it.second }
+        val perioderMedBarn = hentBarnetilsynPerioderMedBarn(perioder)
         return ResponseEntity.ok(PeriodeResponse(overgangsstønad = perioder.getOrDefault(StønadType.OVERGANGSSTØNAD, emptyList()),
-                                                 barnetilsyn = perioder.getOrDefault(StønadType.BARNETILSYN, emptyList()),
+                                                 barnetilsyn = perioderMedBarn,
                                                  skolepenger = perioder.getOrDefault(StønadType.SKOLEPENGER, emptyList())))
     }
+
 
     /**
      * Denne henter perioder for alle typer EF-stønader, då arena ønsker de sammenslåtte
      */
     @ApiOperation("Henter perioder for Arena")
     @PostMapping(path = ["/arena", "/overgangsstonad"])
-    @ApiImplicitParams(ApiImplicitParam(
-            name = "request",
-            dataType = "PeriodeArenaRequest",
-            value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
-                    " \"fomDato\": \"2020-01-01\",\n  \"tomDato\": \"2021-01-01\"\n}"
-    ))
+    @ApiImplicitParams(
+            ApiImplicitParam(
+                    name = "request",
+                    dataType = "PeriodeArenaRequest",
+                    value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
+                            " \"fomDato\": \"2020-01-01\",\n  \"tomDato\": \"2021-01-01\"\n}"
+            )
+    )
     fun hentPerioderForArena(@RequestBody request: PeriodeArenaRequest): ResponseEntity<Any> {
         if (request.personIdenter.isEmpty()) {
             return ResponseEntity.badRequest().build()
@@ -72,18 +78,29 @@ class PeriodeController(private val periodeRepository: PeriodeRepository) {
     }
 
     @ApiOperation("Henter barnetilsynperioder med barn for Bidrag")
-    @PostMapping(path = ["/barnetilsynBidrag"])
-    @ApiImplicitParams(ApiImplicitParam(
-        name = "request",
-        dataType = "PeriodeRequest",
-        value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
-                " \"fomDato\": \"2020-01-01\",\n  \"tomDato\": \"2021-01-01\"\n}"
-    ))
+    @PostMapping(path = ["/barnetilsyn-bidrag"])
+    @ApiImplicitParams(
+            ApiImplicitParam(
+                    name = "request",
+                    dataType = "PeriodeRequest",
+                    value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
+                            " \"fomDato\": \"2020-01-01\",\n  \"tomDato\": \"2021-01-01\"\n}"
+            )
+    )
     fun hentPerioderForBidrag(@RequestBody request: PeriodeBarnetilsynRequest): ResponseEntity<List<PeriodeMedBarn>> {
         val periodeRequest = PeriodeRequest(setOf(request.personIdent), setOf(StønadType.BARNETILSYN))
         val barnetilsynPerioder = periodeRepository.hentPerioder(periodeRequest).map { it.second }
-        val periodeBarnListe  = periodeRepository.hentBarnForPerioder(barnetilsynPerioder)
+        val periodeBarnListe = periodeRepository.hentBarnForPerioder(barnetilsynPerioder)
         return ResponseEntity.ok(barnetilsynPerioder.map { PeriodeMedBarn(it, periodeBarnListe[it.vedtakId] ?: emptyList()) })
+    }
+
+    private fun hentBarnetilsynPerioderMedBarn(perioder: Map<StønadType, List<Periode>>): List<Periode> {
+        val barnetilsynPerioder = perioder.getOrDefault(StønadType.BARNETILSYN, emptyList())
+        val barnetilsynPeriodeBarnListe = periodeRepository.hentBarnForPerioder(barnetilsynPerioder)
+        val perioderMedBarn = barnetilsynPerioder.map {
+            it.copy(barnIdenter = barnetilsynPeriodeBarnListe.get(it.vedtakId) ?: emptyList())
+        }
+        return perioderMedBarn
     }
 
 }
