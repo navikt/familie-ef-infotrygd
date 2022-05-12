@@ -6,8 +6,10 @@ import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import no.nav.familie.ef.infotrygd.model.StønadType
 import no.nav.familie.ef.infotrygd.repository.PeriodeRepository
+import no.nav.familie.ef.infotrygd.rest.ApiExceptionHandler
 import no.nav.familie.ef.infotrygd.rest.api.*
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -22,6 +24,9 @@ import org.springframework.web.bind.annotation.RestController
 @Timed(value = "infotrygd_historikk_enslig_forsoerger_controller", percentiles = [0.5, 0.95])
 @ProtectedWithClaims(issuer = "azure")
 class PeriodeController(private val periodeRepository: PeriodeRepository) {
+
+    private val logger = LoggerFactory.getLogger(ApiExceptionHandler::class.java)
+    private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
     @ApiOperation("Henter perioder")
     @PostMapping
@@ -92,6 +97,17 @@ class PeriodeController(private val periodeRepository: PeriodeRepository) {
         val periodeRequest = PeriodeRequest(setOf(request.personIdent), setOf(StønadType.BARNETILSYN))
         val barnetilsynPerioder = periodeRepository.hentPerioder(periodeRequest).map { it.second }
         val periodeBarnListe = periodeRepository.hentBarnForPerioder(barnetilsynPerioder)
+
+        // TODO slett logger under
+        try {
+            secureLogger.info("Vi skal finne BT perioder for: ${request.personIdent}. " +
+                                      "barnetilsynPerioder: ${barnetilsynPerioder.size}, " +
+                                      "first vedtakid: ${barnetilsynPerioder.first().vedtakId } " +
+                                      "Keys: ${periodeBarnListe.keys}  " +
+                                      "Values:${periodeBarnListe.values}  "
+            )
+        }catch (e: Exception){ // kun logging i try}
+
         return ResponseEntity.ok(barnetilsynPerioder.map { PeriodeMedBarn(it, periodeBarnListe[it.vedtakId] ?: emptyList()) })
     }
 
