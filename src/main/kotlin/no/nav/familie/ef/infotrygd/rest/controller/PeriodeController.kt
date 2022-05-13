@@ -112,7 +112,11 @@ class PeriodeController(private val periodeRepository: PeriodeRepository) {
                           "Values:${periodeBarnListe.values}  "
         )
 
-        return ResponseEntity.ok(barnetilsynPerioder.map { PeriodeMedBarn(it, periodeBarnListe[it.vedtakId] ?: emptyList()) })
+        val listeMedPerioderOgBarn = barnetilsynPerioder.map { PeriodeMedBarn(it, periodeBarnListe[it.vedtakId] ?: emptyList()) }
+
+        secureLogger.info("Mappet: ${listeMedPerioderOgBarn.first().periode.vedtakId}. ${listeMedPerioderOgBarn.first().barnIdenter}")
+
+        return ResponseEntity.ok(listeMedPerioderOgBarn)
     }
 
     private fun hentBarnetilsynPerioderMedBarn(perioder: Map<StønadType, List<Periode>>): List<Periode> {
