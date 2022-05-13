@@ -177,7 +177,7 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
         return PersonerForMigrering(identer.toSet())
     }
 
-    fun hentBarnForPerioder(barnetilsynPerioder: List<Periode>): Map<String, List<String>> {
+    fun hentBarnForPerioder(barnetilsynPerioder: List<Periode>): Map<Long, List<String>> {
         if (barnetilsynPerioder.isEmpty()) {
             return emptyMap()
         }
@@ -189,7 +189,7 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
                 FROM t_rolle r JOIN t_lopenr_fnr barn ON barn.person_lopenr = r.person_lopenr_r
                 WHERE r.vedtak_id in (:vedtakIdListe)
         """, values
-        ) { rs, _ -> rs.getString("vedtak_id") to rs.getString("personnr")}
+        ) { rs, _ -> rs.getLong("vedtak_id") to rs.getString("personnr")}
             .groupBy({ it.first }, { it.second })
     }
 

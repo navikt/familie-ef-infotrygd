@@ -101,7 +101,7 @@ class PeriodeController(private val periodeRepository: PeriodeRepository) {
     )
     fun hentPerioderForBidrag(@RequestBody request: PeriodeBarnetilsynRequest): ResponseEntity<List<PeriodeMedBarn>> {
         val periodeRequest = PeriodeRequest(setOf(request.personIdent), setOf(StønadType.BARNETILSYN))
-        val barnetilsynPerioder = periodeRepository.hentPerioder(periodeRequest).map { it.second }
+        val barnetilsynPerioder : List<Periode> = periodeRepository.hentPerioder(periodeRequest).map { it.second }
         val periodeBarnListe = periodeRepository.hentBarnForPerioder(barnetilsynPerioder)
 
         // TODO slett logger for feilsøking
