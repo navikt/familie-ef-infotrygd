@@ -99,13 +99,14 @@ class PeriodeController(private val periodeRepository: PeriodeRepository) {
                             " \"fomDato\": \"2020-01-01\",\n  \"tomDato\": \"2021-01-01\"\n}"
             )
     )
+
     fun hentPerioderForBidrag(@RequestBody request: PeriodeBarnetilsynRequest): ResponseEntity<List<PeriodeMedBarn>> {
-        val periodeRequest = PeriodeRequest(setOf(request.personIdent), setOf(StønadType.BARNETILSYN))
+        val periodeRequest = PeriodeRequest(request.personIdenter, setOf(StønadType.BARNETILSYN))
         val barnetilsynPerioder : List<Periode> = periodeRepository.hentPerioder(periodeRequest).map { it.second }
         val periodeBarnListe = periodeRepository.hentBarnForPerioder(barnetilsynPerioder)
 
         // TODO slett logger for feilsøking
-        secureLogger.info("Vi skal finne BT perioder for: ${request.personIdent}. " +
+        secureLogger.info("Vi skal finne BT perioder for: ${request.personIdenter}. " +
                           "barnetilsynPerioder: ${barnetilsynPerioder.size}, " +
                           "first vedtakid: ${barnetilsynPerioder.first().vedtakId} " +
                           "Keys: ${periodeBarnListe.keys}  " +

@@ -17,7 +17,7 @@ data class PeriodeArenaRequest(
 )
 
 data class PeriodeBarnetilsynRequest(
-    val personIdent: FoedselsNr
+    val personIdenter: Set<FoedselsNr>
 )
 
 data class PeriodeMedBarn(val periode : Periode, val barnIdenter : List<String>)
