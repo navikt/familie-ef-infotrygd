@@ -1,0 +1,65 @@
+package no.nav.familie.ef.infotrygd.service
+
+import io.mockk.every
+import io.mockk.mockk
+import no.nav.commons.foedselsnummer.FoedselsNr
+import no.nav.familie.ef.infotrygd.model.StønadType.*
+import no.nav.familie.ef.infotrygd.repository.PeriodeRepository
+import no.nav.familie.ef.infotrygd.rest.api.InfotrygdEndringKode
+import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSakstype
+import no.nav.familie.ef.infotrygd.rest.api.Periode
+import no.nav.familie.ef.infotrygd.rest.api.PeriodeRequest
+import org.assertj.core.api.Assertions
+import org.junit.Test
+import java.time.LocalDate
+import java.time.LocalDateTime
+
+internal class PeriodeServiceTest {
+
+    val periodeRepository = mockk<PeriodeRepository>()
+    val periodeService: PeriodeService = PeriodeService(periodeRepository)
+
+    @Test
+    fun `Skal legge til barn på barnetilsyn - andre skal være uendret`() {
+        val request = PeriodeRequest(
+            personIdenter = setOf(FoedselsNr("01015450572")),
+            stønadstyper = setOf(BARNETILSYN, OVERGANGSSTØNAD)
+        )
+        every { periodeRepository.hentPerioder(any()) } returns listOf(
+            Pair(BARNETILSYN, lagPeriode(vedtakId=35L)),
+            Pair(OVERGANGSSTØNAD, lagPeriode())
+        )
+        every { periodeRepository.hentBarnForPerioder(any()) } returns mapOf(35L to listOf("123"))
+
+        val perioder = periodeService.hentPerioder(request = request)
+        val barnetilsynPerioderHentet = perioder.get(BARNETILSYN)!!.first()
+        Assertions.assertThat(barnetilsynPerioderHentet.barnIdenter.first()).isEqualTo("123")
+    }
+
+    private fun lagPeriode(vedtakId: Long = 1) = Periode(
+        personIdent = "123",
+        sakstype =InfotrygdSakstype.SØKNAD,
+        kode =InfotrygdEndringKode.FØRSTEGANGSVEDTAK,
+        kodeOvergangsstønad = null,
+        aktivitetstype = null,
+        brukerId = "",
+        stønadId = 0,
+        vedtakId = vedtakId,
+        vedtakstidspunkt = LocalDateTime.MIN,
+        stønadBeløp = 0,
+        engangsbeløp = 0,
+        inntektsgrunnlag = 0,
+        inntektsreduksjon = 0,
+        samordningsfradrag = 0,
+        utgifterBarnetilsyn = 0,
+        beløp = 0,
+        månedsbeløp = 0,
+        startDato = LocalDate.MIN,
+        stønadFom = LocalDate.MIN,
+        stønadTom = LocalDate.MAX,
+        opphørsdato = null,
+        barnIdenter = emptyList()
+    )
+
+
+}

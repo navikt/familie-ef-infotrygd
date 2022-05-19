@@ -14,6 +14,7 @@ import no.nav.familie.ef.infotrygd.rest.api.PeriodeBarnetilsynRequest
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeMedBarn
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeRequest
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeResponse
+import no.nav.familie.ef.infotrygd.service.PeriodeService
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
@@ -29,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/perioder")
 @Timed(value = "infotrygd_historikk_enslig_forsoerger_controller", percentiles = [0.5, 0.95])
 @ProtectedWithClaims(issuer = "azure")
-class PeriodeController(private val periodeRepository: PeriodeRepository) {
+class PeriodeController(private val periodeRepository: PeriodeRepository, private val periodeService: PeriodeService) {
 
     private val logger = LoggerFactory.getLogger(ApiExceptionHandler::class.java)
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
@@ -48,13 +49,13 @@ class PeriodeController(private val periodeRepository: PeriodeRepository) {
         if (request.personIdenter.isEmpty()) {
             return ResponseEntity.badRequest().build()
         }
-
-        val perioder = periodeRepository.hentPerioder(request).groupBy({ it.first }) { it.second }
-        //val perioderMedBarn = hentBarnetilsynPerioderMedBarn(perioder)
-
-        return ResponseEntity.ok(PeriodeResponse(overgangsstønad = perioder.getOrDefault(StønadType.OVERGANGSSTØNAD, emptyList()),
-                                                 barnetilsyn = perioder.getOrDefault(StønadType.BARNETILSYN, emptyList()),
-                                                 skolepenger = perioder.getOrDefault(StønadType.SKOLEPENGER, emptyList())))
+        val perioder = periodeService.hentPerioder(request)
+        return ResponseEntity.ok(
+            PeriodeResponse(
+                overgangsstønad = perioder.getOrDefault(StønadType.OVERGANGSSTØNAD, emptyList()),
+                barnetilsyn = perioder.getOrDefault(StønadType.BARNETILSYN, emptyList()),
+                skolepenger = perioder.getOrDefault(StønadType.SKOLEPENGER, emptyList())
+            ))
     }
 
 
@@ -118,15 +119,6 @@ class PeriodeController(private val periodeRepository: PeriodeRepository) {
         secureLogger.info("Mappet: ${listeMedPerioderOgBarn.first().periode.vedtakId}. ${listeMedPerioderOgBarn.first().barnIdenter}")
 
         return ResponseEntity.ok(listeMedPerioderOgBarn)
-    }
-
-    private fun hentBarnetilsynPerioderMedBarn(perioder: Map<StønadType, List<Periode>>): List<Periode> {
-        val barnetilsynPerioder = perioder.getOrDefault(StønadType.BARNETILSYN, emptyList())
-        val barnetilsynPeriodeBarnListe = periodeRepository.hentBarnForPerioder(barnetilsynPerioder)
-        val perioderMedBarn = barnetilsynPerioder.map {
-            it.copy(barnIdenter = barnetilsynPeriodeBarnListe.get(it.vedtakId) ?: emptyList())
-        }
-        return perioderMedBarn
     }
 
 }
