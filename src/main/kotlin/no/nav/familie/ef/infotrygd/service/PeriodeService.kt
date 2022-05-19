@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service
 class PeriodeService(private val periodeRepository: PeriodeRepository) {
 
     fun hentPerioder(request: PeriodeRequest): Map<StønadType, List<Periode>> {
-        val perioder = periodeRepository.hentPerioder(request).groupBy({ it.first }) { it.second }
-        perioder.toMutableMap().put(BARNETILSYN, hentBarnetilsynPerioderMedBarn(perioder))
+        val perioder = periodeRepository.hentPerioder(request).groupBy({ it.first }) { it.second }.toMutableMap()
+        perioder.put(BARNETILSYN, hentBarnetilsynPerioderMedBarn(perioder))
         return perioder
     }
 
