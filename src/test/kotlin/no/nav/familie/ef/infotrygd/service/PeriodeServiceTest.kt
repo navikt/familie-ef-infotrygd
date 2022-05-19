@@ -10,6 +10,7 @@ import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSakstype
 import no.nav.familie.ef.infotrygd.rest.api.Periode
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeRequest
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.*
 import org.junit.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -33,7 +34,8 @@ internal class PeriodeServiceTest {
 
         val perioder = periodeService.hentPerioder(request = request)
         val barnetilsynPerioderHentet = perioder.get(BARNETILSYN)!!.first()
-        Assertions.assertThat(barnetilsynPerioderHentet.barnIdenter.first()).isEqualTo("123")
+        assertThat(barnetilsynPerioderHentet.barnIdenter.first()).isEqualTo("123")
+        assertThat(perioder.get(OVERGANGSSTØNAD)!!.first().barnIdenter).isEmpty()
     }
 
     private fun lagPeriode(vedtakId: Long = 1) = Periode(
