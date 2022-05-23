@@ -32,9 +32,6 @@ import org.springframework.web.bind.annotation.RestController
 @ProtectedWithClaims(issuer = "azure")
 class PeriodeController(private val periodeRepository: PeriodeRepository, private val periodeService: PeriodeService) {
 
-    private val logger = LoggerFactory.getLogger(ApiExceptionHandler::class.java)
-    private val secureLogger = LoggerFactory.getLogger("secureLogger")
-
     @ApiOperation("Henter perioder")
     @PostMapping
     @ApiImplicitParams(
@@ -88,37 +85,6 @@ class PeriodeController(private val periodeRepository: PeriodeRepository, privat
     fun hentMigreringspersoner(@RequestParam antall: Int): ResponseEntity<Any> {
         val personerForMigrering = periodeRepository.hentPersonerForMigrering(antall)
         return ResponseEntity.ok(personerForMigrering)
-    }
-
-    @ApiOperation("Henter barnetilsynperioder med barn for Bidrag")
-    @PostMapping(path = ["/barnetilsyn-bidrag"])
-    @ApiImplicitParams(
-            ApiImplicitParam(
-                    name = "request",
-                    dataType = "PeriodeRequest",
-                    value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
-                            " \"fomDato\": \"2020-01-01\",\n  \"tomDato\": \"2021-01-01\"\n}"
-            )
-    )
-
-    fun hentPerioderForBidrag(@RequestBody request: PeriodeBarnetilsynRequest): ResponseEntity<List<PeriodeMedBarn>> {
-        val periodeRequest = PeriodeRequest(request.personIdenter, setOf(StønadType.BARNETILSYN))
-        val barnetilsynPerioder : List<Periode> = periodeRepository.hentPerioder(periodeRequest).map { it.second }
-        val periodeBarnListe = periodeRepository.hentBarnForPerioder(barnetilsynPerioder)
-
-        // TODO slett logger for feilsøking
-        secureLogger.info("Vi skal finne BT perioder for: ${request.personIdenter}. " +
-                          "barnetilsynPerioder: ${barnetilsynPerioder.size}, " +
-                          "first vedtakid: ${barnetilsynPerioder.first().vedtakId} " +
-                          "Keys: ${periodeBarnListe.keys}  " +
-                          "Values:${periodeBarnListe.values}  "
-        )
-
-        val listeMedPerioderOgBarn = barnetilsynPerioder.map { PeriodeMedBarn(it, periodeBarnListe[it.vedtakId] ?: emptyList()) }
-
-        secureLogger.info("Mappet: ${listeMedPerioderOgBarn.first().periode.vedtakId}. ${listeMedPerioderOgBarn.first().barnIdenter}")
-
-        return ResponseEntity.ok(listeMedPerioderOgBarn)
     }
 
 }

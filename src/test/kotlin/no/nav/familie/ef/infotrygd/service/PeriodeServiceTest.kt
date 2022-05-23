@@ -9,7 +9,6 @@ import no.nav.familie.ef.infotrygd.rest.api.InfotrygdEndringKode
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSakstype
 import no.nav.familie.ef.infotrygd.rest.api.Periode
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeRequest
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.*
 import org.junit.Test
 import java.time.LocalDate
@@ -26,16 +25,36 @@ internal class PeriodeServiceTest {
             personIdenter = setOf(FoedselsNr("01015450572")),
             stønadstyper = setOf(BARNETILSYN, OVERGANGSSTØNAD)
         )
+        val uendretPeriode = lagPeriode()
         every { periodeRepository.hentPerioder(any()) } returns listOf(
             Pair(BARNETILSYN, lagPeriode(vedtakId=35L)),
-            Pair(OVERGANGSSTØNAD, lagPeriode())
+            Pair(OVERGANGSSTØNAD, uendretPeriode)
         )
         every { periodeRepository.hentBarnForPerioder(any()) } returns mapOf(35L to listOf("123"))
 
         val perioder = periodeService.hentPerioder(request = request)
-        val barnetilsynPerioderHentet = perioder.get(BARNETILSYN)!!.first()
-        assertThat(barnetilsynPerioderHentet.barnIdenter.first()).isEqualTo("123")
         assertThat(perioder.get(OVERGANGSSTØNAD)!!.first().barnIdenter).isEmpty()
+        assertThat(uendretPeriode).isEqualTo(perioder.get(OVERGANGSSTØNAD)!!.first())
+        assertThat(perioder.get(BARNETILSYN)!!.first().barnIdenter.first()).isEqualTo("123")
+    }
+
+    @Test
+    fun `Ingen barnetilsynbarn funnet - skal ikke feile hvis det ikke finnes barn`() {
+        val request = PeriodeRequest(
+            personIdenter = setOf(FoedselsNr("01015450572")),
+            stønadstyper = setOf(BARNETILSYN, OVERGANGSSTØNAD)
+        )
+        val uendretPeriode = lagPeriode()
+        every { periodeRepository.hentPerioder(any()) } returns listOf(
+            Pair(BARNETILSYN, lagPeriode(vedtakId=35L)),
+            Pair(OVERGANGSSTØNAD, uendretPeriode)
+        )
+        every { periodeRepository.hentBarnForPerioder(any()) } returns emptyMap()
+
+        val perioder = periodeService.hentPerioder(request = request)
+        val barnetilsynPerioderHentet = perioder.get(BARNETILSYN)!!.first()
+        assertThat(perioder.get(OVERGANGSSTØNAD)!!.first().barnIdenter).isEmpty()
+        assertThat(barnetilsynPerioderHentet.barnIdenter).isEmpty()
     }
 
     private fun lagPeriode(vedtakId: Long = 1) = Periode(
