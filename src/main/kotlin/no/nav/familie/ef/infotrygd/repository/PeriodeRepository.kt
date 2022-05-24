@@ -163,7 +163,7 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
                 .addValue("antall", antall)
         val identer = jdbcTemplate.query("""
             WITH vedtak AS (SELECT l.personnr, s.stonad_id, v.vedtak_id, v.dato_innv_fom fom, 
-            (CASE WHEN (nvl(s.dato_opphor, v.dato_innv_tom) < v.dato_innv_tom) THEN s.dato_opphor ELSE v.dato_innv_tom END) tom
+            (CASE WHEN (NVL(s.dato_opphor, v.dato_innv_tom) < v.dato_innv_tom) THEN s.dato_opphor ELSE v.dato_innv_tom END) tom
             FROM t_lopenr_fnr l
               JOIN t_stonad s ON s.person_lopenr = l.person_lopenr
               JOIN t_vedtak v ON v.stonad_id = s.stonad_id
@@ -177,7 +177,7 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
             , maxvedtakid AS (SELECT personnr, stonad_id, MAX(vedtak_id) vedtak_id FROM vedtak GROUP BY personnr, stonad_id)
             SELECT personnr FROM (SELECT q1.personnr, MAX(tom) 
             FROM maxvedtakid q1 JOIN vedtak q2 ON q1.vedtak_id = q2.vedtak_id
-            WHERE q2.tom > :nestemåned
+            WHERE q2.tom > :nesteMåned
             GROUP BY q1.personnr) WHERE rownum < :antall
         """, values) { rs, _ ->
             rs.getString("personnr")
