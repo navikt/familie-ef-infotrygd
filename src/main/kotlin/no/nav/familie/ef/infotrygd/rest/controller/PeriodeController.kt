@@ -30,14 +30,12 @@ class PeriodeController(private val periodeRepository: PeriodeRepository, privat
 
     @ApiOperation("Henter perioder")
     @PostMapping
-    @ApiImplicitParams(
-            ApiImplicitParam(
-                    name = "request",
-                    dataType = "PeriodeRequest",
-                    value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
-                            " \"stønadstyper\": [\n\"OVERGANGSSTØNAD\"\n] \n}"
-            )
-    )
+    @ApiImplicitParams(ApiImplicitParam(
+            name = "request",
+            dataType = "PeriodeRequest",
+            value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
+                    " \"stønadstyper\": [\n\"OVERGANGSSTØNAD\"\n] \n}"
+    ))
     fun hentPerioder(@RequestBody request: PeriodeRequest): ResponseEntity<Any> {
         if (request.personIdenter.isEmpty()) {
             return ResponseEntity.badRequest().build()
