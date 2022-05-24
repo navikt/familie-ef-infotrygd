@@ -6,17 +6,13 @@ import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import no.nav.familie.ef.infotrygd.model.StønadType
 import no.nav.familie.ef.infotrygd.repository.PeriodeRepository
-import no.nav.familie.ef.infotrygd.rest.ApiExceptionHandler
-import no.nav.familie.ef.infotrygd.rest.api.Periode
+
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeArenaRequest
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeArenaResponse
-import no.nav.familie.ef.infotrygd.rest.api.PeriodeBarnetilsynRequest
-import no.nav.familie.ef.infotrygd.rest.api.PeriodeMedBarn
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeRequest
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeResponse
 import no.nav.familie.ef.infotrygd.service.PeriodeService
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -48,11 +44,11 @@ class PeriodeController(private val periodeRepository: PeriodeRepository, privat
         }
         val perioder = periodeService.hentPerioder(request)
         return ResponseEntity.ok(
-            PeriodeResponse(
-                overgangsstønad = perioder.getOrDefault(StønadType.OVERGANGSSTØNAD, emptyList()),
-                barnetilsyn = perioder.getOrDefault(StønadType.BARNETILSYN, emptyList()),
-                skolepenger = perioder.getOrDefault(StønadType.SKOLEPENGER, emptyList())
-            ))
+                PeriodeResponse(
+                        overgangsstønad = perioder.getOrDefault(StønadType.OVERGANGSSTØNAD, emptyList()),
+                        barnetilsyn = perioder.getOrDefault(StønadType.BARNETILSYN, emptyList()),
+                        skolepenger = perioder.getOrDefault(StønadType.SKOLEPENGER, emptyList())
+                ))
     }
 
 

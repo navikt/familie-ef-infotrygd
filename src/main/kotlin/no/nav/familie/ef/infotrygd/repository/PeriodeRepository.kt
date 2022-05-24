@@ -192,13 +192,13 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
         val values = MapSqlParameterSource()
                 .addValue("vedtakIdListe", barnetilsynPerioder.map { it.vedtakId })
 
-        return jdbcTemplate.query("""
+        val resultatliste = jdbcTemplate.query("""
                 SELECT r.vedtak_id, barn.personnr
                 FROM t_rolle r JOIN t_lopenr_fnr barn ON barn.person_lopenr = r.person_lopenr_r
                 WHERE r.vedtak_id IN (:vedtakIdListe)
         """, values
         ) { rs, _ -> rs.getLong("vedtak_id") to rs.getString("personnr") }
-                .groupBy({ it.first }, { it.second })
+        return resultatliste.groupBy({ it.first }, { it.second })
     }
 
     private fun <T> mapVerdi(kode: String, mapper: (String) -> T): T? = kode

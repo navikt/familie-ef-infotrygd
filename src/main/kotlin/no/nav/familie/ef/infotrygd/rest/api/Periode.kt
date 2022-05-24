@@ -16,12 +16,6 @@ data class PeriodeArenaRequest(
         val tomDato: LocalDate?
 )
 
-data class PeriodeBarnetilsynRequest(
-    val personIdenter: Set<FoedselsNr>
-)
-
-data class PeriodeMedBarn(val periode : Periode, val barnIdenter : List<String>)
-
 data class PeriodeArenaResponse(val perioder: List<ArenaPeriode>)
 
 data class ArenaPeriode(
