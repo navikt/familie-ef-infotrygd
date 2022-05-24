@@ -195,15 +195,14 @@ internal class PeriodeRepositoryTest {
                     )
             )
 
-    private fun lagVedtak(personLøpenummer: Int = 1, stønadType: String, vedtakId: Int, stønadId: Int) {
+    private fun lagVedtak( stønadType: String, vedtakId: Int, stønadId: Int) {
 
-        jdbcTemplate.update("INSERT INTO t_lopenr_fnr (person_lopenr, personnr) VALUES (?,  '01234567890')", personLøpenummer)
+        jdbcTemplate.update("INSERT INTO t_lopenr_fnr (person_lopenr, personnr) VALUES (1,  '01234567890')")
         jdbcTemplate.update(
                 """INSERT INTO t_vedtak (vedtak_id, person_lopenr, stonad_id, kode_rutine, dato_innv_fom,
                          dato_innv_tom, brukerid, type_sak, tidspunkt_reg)
-                          VALUES (?,?,?,?,?,?, 'NISSEN', 'S ', CURRENT_TIMESTAMP)""",
+                          VALUES (?,1,?,?,?,?, 'NISSEN', 'S ', CURRENT_TIMESTAMP)""",
                 vedtakId,
-                personLøpenummer,
                 stønadId,
                 stønadType,
                 startdato,
@@ -211,7 +210,7 @@ internal class PeriodeRepositoryTest {
         )
         jdbcTemplate.update(
                 """INSERT INTO t_stonad (stonad_id, oppdrag_id, person_lopenr, dato_start, dato_opphor)
-                                         VALUES (?, 1, ?, sysdate, NULL)""", stønadId, personLøpenummer
+                                         VALUES (?, 1, 1, sysdate, NULL)""", stønadId
         )
         jdbcTemplate.update("INSERT INTO t_delytelse (vedtak_id, type_sats, belop) VALUES (?, '', 100.34)", vedtakId)
         jdbcTemplate.update("INSERT INTO t_endring (vedtak_id, kode) VALUES (?, 'F ')", vedtakId)
