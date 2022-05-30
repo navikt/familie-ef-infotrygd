@@ -9,7 +9,6 @@ import org.hibernate.service.spi.SessionFactoryServiceRegistry
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer
 import org.springframework.stereotype.Component
 
-
 @Component
 class TableIntegrator : Integrator {
     private lateinit var _tables: Map<String, List<String>>
@@ -26,9 +25,11 @@ class TableIntegrator : Integrator {
     ) {
         val result = mutableMapOf<String, List<String>>()
 
-        for (namespace in metadata!!
-            .getDatabase()
-            .getNamespaces()) {
+        for (
+            namespace in metadata!!
+                .getDatabase()
+                .getNamespaces()
+        ) {
 
             for (table in namespace.getTables()) {
                 val cols = table.columnIterator.asSequence().toList()
@@ -43,7 +44,6 @@ class TableIntegrator : Integrator {
         sessionFactory: SessionFactoryImplementor?,
         serviceRegistry: SessionFactoryServiceRegistry?
     ) {
-
     }
 }
 

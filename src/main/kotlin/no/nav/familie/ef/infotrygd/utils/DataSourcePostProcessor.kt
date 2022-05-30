@@ -14,7 +14,7 @@ import javax.sql.DataSource
 @Profile(DEBUG_SQL)
 class DataSourcePostProcessor : BeanPostProcessor {
     override fun postProcessAfterInitialization(bean: Any, beanName: String): Any? {
-        if(bean is DataSource) {
+        if (bean is DataSource) {
             return createProxy(bean)
         }
         return bean

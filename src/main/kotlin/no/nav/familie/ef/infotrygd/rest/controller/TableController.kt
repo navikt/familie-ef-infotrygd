@@ -11,8 +11,10 @@ import javax.transaction.Transactional
 @RestController
 @Unprotected
 @Transactional
-class TableController(private val tableIntegrator: TableIntegrator,
-                      private val jdbcTemplate: NamedParameterJdbcTemplate) {
+class TableController(
+    private val tableIntegrator: TableIntegrator,
+    private val jdbcTemplate: NamedParameterJdbcTemplate
+) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 

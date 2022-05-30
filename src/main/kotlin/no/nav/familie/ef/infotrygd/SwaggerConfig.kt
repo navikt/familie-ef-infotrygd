@@ -17,9 +17,11 @@ class SwaggerConfig {
     fun api(): Docket {
         return Docket(DocumentationType.SWAGGER_2)
             .securityContexts(listOf(securityContext()))
-            .securitySchemes(listOf(
-                ApiKey("JWT", "Authorization", "header")
-            ))
+            .securitySchemes(
+                listOf(
+                    ApiKey("JWT", "Authorization", "header")
+                )
+            )
             .select()
             .apis(RequestHandlerSelectors.basePackage("no.nav.infotrygd"))
             .paths(PathSelectors.any())

@@ -4,29 +4,29 @@ import no.nav.familie.ef.infotrygd.model.StønadType
 import java.time.LocalDate
 
 data class InfotrygdSakResponse(
-        val saker: List<InfotrygdSak>
+    val saker: List<InfotrygdSak>
 )
 
 data class InfotrygdSak(
-        val personIdent: String,
-        val id: Long? = null,
-        val saksnr: String? = null,
-        val saksblokk: String? = null,
-        val registrertDato: LocalDate? = null,
-        val mottattDato: LocalDate? = null,
-        val kapittelnr: String? = null,
-        val stønadType: StønadType? = null,
-        val undervalg: InfotrygdSakUndervalg? = null,
-        val type: InfotrygdSakType? = null,
-        val nivå: InfotrygdSakNivå? = null,
-        val resultat: InfotrygdSakResultat,
-        val vedtaksdato: LocalDate? = null,
-        val iverksattdato: LocalDate? = null,
-        val årsakskode: String? = null,
-        val behandlendeEnhet: String? = null,
-        val registrertAvEnhet: String? = null,
-        val tkNr: String? = null,
-        val region: String? = null,
+    val personIdent: String,
+    val id: Long? = null,
+    val saksnr: String? = null,
+    val saksblokk: String? = null,
+    val registrertDato: LocalDate? = null,
+    val mottattDato: LocalDate? = null,
+    val kapittelnr: String? = null,
+    val stønadType: StønadType? = null,
+    val undervalg: InfotrygdSakUndervalg? = null,
+    val type: InfotrygdSakType? = null,
+    val nivå: InfotrygdSakNivå? = null,
+    val resultat: InfotrygdSakResultat,
+    val vedtaksdato: LocalDate? = null,
+    val iverksattdato: LocalDate? = null,
+    val årsakskode: String? = null,
+    val behandlendeEnhet: String? = null,
+    val registrertAvEnhet: String? = null,
+    val tkNr: String? = null,
+    val region: String? = null,
 )
 
 enum class InfotrygdSakType(val infotrygdKode: String, val beskrivelse: String) {

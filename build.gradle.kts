@@ -7,16 +7,17 @@ val springfoxVersion = "3.0.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
 
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
-
+val ktlint by configurations.creating
 
 plugins {
-    val kotlinVersion = "1.4.21"
+    val kotlinVersion = "1.6.10"
     val springBootVersion = "2.3.5.RELEASE"
     id("org.springframework.boot") version springBootVersion
     id("io.spring.dependency-management") version "1.0.10.RELEASE"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
+// id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
 }
 
 group = "no.nav"
@@ -35,8 +36,8 @@ repositories {
         name = "Github"
         url = uri("https://maven.pkg.github.com/navikt/nav-foedselsnummer")
         credentials {
-            username = "x-access-token" //project.findProperty("gpr.user") as String? ?: System.getenv("GPR_USER")
-            password = System.getenv("GPR_API_KEY") ?: System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key") as String?
+            username = "navikt" //project.findProperty("gpr.user") as String? ?: System.getenv("GPR_USER")
+            password = "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"
         }
     }
 }
@@ -48,6 +49,13 @@ allOpen {
 }
 
 dependencies {
+
+
+    ktlint("com.pinterest:ktlint:0.45.2") {
+        attributes {
+            attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
+        }
+    }
     implementation("nav-foedselsnummer:core:$navFoedselsnummerVersion")
     testImplementation("nav-foedselsnummer:testutils:$navFoedselsnummerVersion")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -66,8 +74,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("io.springfox:springfox-boot-starter:$springfoxVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:5.1")
-    compile("org.springframework.boot:spring-boot-starter-jdbc")
-    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-jdbc")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("org.postgresql:postgresql")
     implementation("com.oracle.ojdbc:ojdbc8:19.3.0.0")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -78,7 +86,33 @@ dependencies {
     testImplementation("io.mockk:mockk:$mockkVersion")
 }
 
+val inputFiles = project.fileTree(mapOf("dir" to "src", "include" to "**/*.kt"))
+
+val ktlintCheck by tasks.creating(JavaExec::class) {
+    inputs.files(inputFiles)
+    // outputs.dir(outputDir)
+
+    description = "Check Kotlin code style."
+    classpath = ktlint
+    mainClass.set("com.pinterest.ktlint.Main")
+    args = listOf("src/**/*.kt")
+}
+
+val ktlintFormat by tasks.creating(JavaExec::class) {
+    inputs.files(inputFiles)
+    // outputs.dir(outputDir)
+
+    description = "Fix Kotlin code style deviations."
+    classpath = ktlint
+    mainClass.set("com.pinterest.ktlint.Main")
+    args = listOf("-F", "src/**/*.kt")
+    jvmArgs = listOf("--add-opens", "java.base/java.lang=ALL-UNNAMED")
+}
+
 tasks.withType<KotlinCompile> {
+    dependsOn("ktlintFormat")
+    dependsOn("ktlintCheck")
+    tasks.findByName("ktlintCheck")?.mustRunAfter("ktlintFormat")
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "1.8"
@@ -89,3 +123,5 @@ extensions.findByName("buildScan")?.withGroovyBuilder {
     setProperty("termsOfServiceUrl", "https://gradle.com/terms-of-service")
     setProperty("termsOfServiceAgree", "yes")
 }
+
+// tasks.findByName('publish').mustRunAfter 'build'

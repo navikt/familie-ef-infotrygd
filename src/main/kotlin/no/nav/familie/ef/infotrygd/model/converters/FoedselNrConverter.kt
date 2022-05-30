@@ -3,7 +3,7 @@ package no.nav.familie.ef.infotrygd.model.converters
 import no.nav.commons.foedselsnummer.FoedselsNr
 import javax.persistence.AttributeConverter
 
-class FoedselNrConverter  : AttributeConverter<FoedselsNr?, String?> {
+class FoedselNrConverter : AttributeConverter<FoedselsNr?, String?> {
     override fun convertToDatabaseColumn(attribute: FoedselsNr?): String? {
         return attribute?.asString
     }
