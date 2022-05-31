@@ -16,9 +16,9 @@ enum class StønadType(val kodeRutine: String, val saS10Valg: String) {
         private val kodeRutineMap = values().map { it.kodeRutine to it }.toMap()
         private val s10ValgMap = values().map { it.saS10Valg to it }.toMap()
         fun fraKodeRutine(kodeRutine: String): StønadType =
-                kodeRutineMap[kodeRutine] ?: error("Fant ikke StønadType fra kodeRutine=$kodeRutine")
+            kodeRutineMap[kodeRutine] ?: error("Fant ikke StønadType fra kodeRutine=$kodeRutine")
 
         fun fraS10Valg(s10Valg: String): StønadType =
-                s10ValgMap[s10Valg] ?: error("Fant ikke StønadType fra s10Valg=$s10Valg")
+            s10ValgMap[s10Valg] ?: error("Fant ikke StønadType fra s10Valg=$s10Valg")
     }
 }

@@ -62,17 +62,18 @@ class StønadControllerTest {
         assertThat(result.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED)
     }
 
-    private fun kallStønadController(uri: String,
-                                     client: WebClient,
-                                     request: InfotrygdSøkRequest): ClientResponse {
+    private fun kallStønadController(
+        uri: String,
+        client: WebClient,
+        request: InfotrygdSøkRequest
+    ): ClientResponse {
         return client.post()
-                .uri("/api$uri")
-                .contentType(MediaType.APPLICATION_JSON)
-                .syncBody(request)
-                .exchange()
-                .block()!!
+            .uri("/api$uri")
+            .contentType(MediaType.APPLICATION_JSON)
+            .syncBody(request)
+            .exchange()
+            .block()!!
     }
-
 }
 
 private fun ClientResponse.responseBody(): InfotrygdFinnesResponse {

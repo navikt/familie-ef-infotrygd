@@ -31,14 +31,15 @@ internal class InfotrygdRepositoryTest {
         val opphørsdato = if (medOpphør) opphørsdato else null
         jdbcTemplate.update("INSERT INTO T_LOPENR_FNR (PERSON_LOPENR, PERSONNR) VALUES (1, ?)", personIdent)
         jdbcTemplate.update(
-                """INSERT INTO T_VEDTAK (VEDTAK_ID, PERSON_LOPENR, STONAD_ID, KODE_RUTINE, DATO_INNV_FOM,
+            """INSERT INTO T_VEDTAK (VEDTAK_ID, PERSON_LOPENR, STONAD_ID, KODE_RUTINE, DATO_INNV_FOM,
                          DATO_INNV_TOM) VALUES (1,1,1,'EO',?,?)""",
-                startdato,
-                sluttdato
+            startdato,
+            sluttdato
         )
         jdbcTemplate.update(
-                """INSERT INTO T_STONAD (STONAD_ID, OPPDRAG_ID, PERSON_LOPENR, KODE_RUTINE, DATO_START, DATO_OPPHOR)
-                                         VALUES (1, 1, 1, 'EO', sysdate, ?)""", opphørsdato
+            """INSERT INTO T_STONAD (STONAD_ID, OPPDRAG_ID, PERSON_LOPENR, KODE_RUTINE, DATO_START, DATO_OPPHOR)
+                                         VALUES (1, 1, 1, 'EO', sysdate, ?)""",
+            opphørsdato
         )
     }
 
@@ -95,9 +96,10 @@ internal class InfotrygdRepositoryTest {
     fun `harStønad - kun aktive, har opphør - finner ingen aktiv stønad når dagens dato er etter opphørsdato`() {
         leggInnData(true)
         val dagensDato = opphørsdato.plusDays(5)
-        val harStønad = infotrygdRepository.harStønad(setOf(personIdent), true,
-                                                      dagensDato)
+        val harStønad = infotrygdRepository.harStønad(
+            setOf(personIdent), true,
+            dagensDato
+        )
         assertThat(harStønad).isEmpty()
     }
-
 }

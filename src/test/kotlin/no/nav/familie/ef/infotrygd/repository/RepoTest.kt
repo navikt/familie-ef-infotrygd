@@ -70,18 +70,19 @@ class RepoTest {
         assertThat(checkedTables).containsExactlyInAnyOrderElementsOf(definedTables.keys)
         definedTables.forEach { (k, v) ->
             assertThat(v)
-                    .withFailMessage("$k har verdier som ikke trengs: $v")
-                    .isEmpty()
+                .withFailMessage("$k har verdier som ikke trengs: $v")
+                .isEmpty()
         }
     }
 
-
-    private fun kombinasjonerAvQueries() = listOf({ periodeRepository.hentPerioderForArena(mockk(relaxed = true)) },
-                                                  { periodeRepository.hentPerioder(mockk(relaxed = true)) },
-                                                  { sakRepository.finnesSaker(emptySet()) },
-                                                  { sakRepository.finnSaker(emptySet()) },
-                                                  { infotrygdRepository.harStønad(emptySet(), true) },
-                                                  { infotrygdRepository.harStønad(emptySet(), false) })
+    private fun kombinasjonerAvQueries() = listOf(
+        { periodeRepository.hentPerioderForArena(mockk(relaxed = true)) },
+        { periodeRepository.hentPerioder(mockk(relaxed = true)) },
+        { sakRepository.finnesSaker(emptySet()) },
+        { sakRepository.finnSaker(emptySet()) },
+        { infotrygdRepository.harStønad(emptySet(), true) },
+        { infotrygdRepository.harStønad(emptySet(), false) }
+    )
 
     private fun verifyColumnsExists(s: String) {
         val tables = """(FROM|JOIN) (\w+) (\w+)""".toRegex().findAll(s).map {
@@ -106,5 +107,4 @@ class RepoTest {
             checkedTables.add(table)
         }
     }
-
 }

@@ -50,22 +50,22 @@ internal class StønadServiceTest {
 
     private fun leggInnStønad(id: Int, stønadType: StønadType, opphørsdato: LocalDate?) {
         jdbcTemplate.update(
-                """INSERT INTO T_STONAD (STONAD_ID, OPPDRAG_ID, PERSON_LOPENR, KODE_RUTINE, DATO_START, DATO_OPPHOR)
+            """INSERT INTO T_STONAD (STONAD_ID, OPPDRAG_ID, PERSON_LOPENR, KODE_RUTINE, DATO_START, DATO_OPPHOR)
                                          VALUES (?, ?, ?, ?, sysdate, ?)""",
-                id, id, id,
-                stønadType.kodeRutine,
-                opphørsdato
+            id, id, id,
+            stønadType.kodeRutine,
+            opphørsdato
         )
     }
 
     private fun leggInnVedtak(id: Int, stønadType: StønadType) {
         jdbcTemplate.update(
-                """INSERT INTO T_VEDTAK (VEDTAK_ID, PERSON_LOPENR, STONAD_ID, KODE_RUTINE, DATO_INNV_FOM,
+            """INSERT INTO T_VEDTAK (VEDTAK_ID, PERSON_LOPENR, STONAD_ID, KODE_RUTINE, DATO_INNV_FOM,
                              DATO_INNV_TOM) VALUES (?,?,?,?,?,?)""",
-                id, id, id,
-                stønadType.kodeRutine,
-                startdato,
-                sluttdato
+            id, id, id,
+            stønadType.kodeRutine,
+            startdato,
+            sluttdato
         )
     }
 
@@ -134,5 +134,4 @@ internal class StønadServiceTest {
         const val IDENT3 = "01234567892"
         const val IDENT4 = "01234567893"
     }
-
 }

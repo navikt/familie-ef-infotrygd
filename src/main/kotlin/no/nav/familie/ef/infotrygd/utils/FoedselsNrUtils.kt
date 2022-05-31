@@ -1,7 +1,5 @@
 package no.nav.familie.ef.infotrygd.utils
 
-import no.nav.commons.foedselsnummer.FoedselsNr
-
 fun String.reverserFnr() = reverse(this)
 
 /**

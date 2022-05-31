@@ -35,11 +35,11 @@ internal class PeriodeRepositoryTest {
     fun setUp() {
         jdbcTemplate.update("INSERT INTO T_LOPENR_FNR (PERSON_LOPENR, PERSONNR) VALUES (1, '01234567890')")
         jdbcTemplate.update(
-                """INSERT INTO T_VEDTAK (VEDTAK_ID, PERSON_LOPENR, STONAD_ID, KODE_RUTINE, DATO_INNV_FOM,
+            """INSERT INTO T_VEDTAK (VEDTAK_ID, PERSON_LOPENR, STONAD_ID, KODE_RUTINE, DATO_INNV_FOM,
                      DATO_INNV_TOM, BRUKERID, TYPE_SAK, TIDSPUNKT_REG)
                       VALUES (1,1,1,'EO',?,?, 'NISSEN', 'S ', current_timestamp)""",
-                startdato,
-                sluttdato
+            startdato,
+            sluttdato
         )
         jdbcTemplate.update(
             """INSERT INTO T_STONAD (STONAD_ID, OPPDRAG_ID, PERSON_LOPENR, DATO_START, DATO_OPPHOR)
@@ -47,8 +47,10 @@ internal class PeriodeRepositoryTest {
         )
         jdbcTemplate.update("INSERT INTO T_DELYTELSE (VEDTAK_ID, TYPE_SATS, BELOP) VALUES (1, '', 100.34)")
         jdbcTemplate.update("INSERT INTO T_ENDRING (VEDTAK_ID, KODE) VALUES (1, 'F ')")
-        jdbcTemplate.update("INSERT INTO T_EF (VEDTAK_ID, STONAD_BELOP, INNT_FRADRAG, NETTO_BELOP, SAM_FRADRAG, KODE_OVERG, AKTIVITET, BARNT_UTG)" +
-                            " VALUES (1,1,1,1,1,' ',' ', 1)")
+        jdbcTemplate.update(
+            "INSERT INTO T_EF (VEDTAK_ID, STONAD_BELOP, INNT_FRADRAG, NETTO_BELOP, SAM_FRADRAG, KODE_OVERG, AKTIVITET, BARNT_UTG)" +
+                " VALUES (1,1,1,1,1,' ',' ', 1)"
+        )
         jdbcTemplate.update("INSERT INTO T_BEREGN_GRL (VEDTAK_ID, TYPE_BELOP, FOM, BELOP, BRUKERID) VALUES (1,'ARBM',current_date, 100, 'A')")
         jdbcTemplate.update("INSERT INTO T_BEREGN_GRL (VEDTAK_ID, TYPE_BELOP, FOM, BELOP, BRUKERID) VALUES (1,'ABCD',current_date, 50, 'A')")
     }
@@ -67,8 +69,12 @@ internal class PeriodeRepositoryTest {
 
     @Test
     fun `skal hente perioder`() {
-        val perioder = periodeRepository.hentPerioder(PeriodeRequest(setOf(FoedselsNr("01234567890")),
-                                                                     setOf(StønadType.OVERGANGSSTØNAD)))
+        val perioder = periodeRepository.hentPerioder(
+            PeriodeRequest(
+                setOf(FoedselsNr("01234567890")),
+                setOf(StønadType.OVERGANGSSTØNAD)
+            )
+        )
         assertThat(perioder).hasSize(1)
         assertThat(perioder.first().first).isEqualTo(StønadType.OVERGANGSSTØNAD)
     }
@@ -160,14 +166,14 @@ internal class PeriodeRepositoryTest {
     }
 
     private fun hentPerioder() =
-            periodeRepository.hentPerioder(PeriodeRequest(setOf(FoedselsNr("01234567890")), StønadType.values().toSet()))
+        periodeRepository.hentPerioder(PeriodeRequest(setOf(FoedselsNr("01234567890")), StønadType.values().toSet()))
 
     private fun hentPerioderForArena(fomDato: LocalDate? = null, tomDato: LocalDate? = null): List<ArenaPeriode> =
         periodeRepository.hentPerioderForArena(
             PeriodeArenaRequest(
-                        personIdenter = setOf(FoedselsNr("01234567890")),
-                        fomDato,
-                        tomDato
+                personIdenter = setOf(FoedselsNr("01234567890")),
+                fomDato,
+                tomDato
             )
         )
 }

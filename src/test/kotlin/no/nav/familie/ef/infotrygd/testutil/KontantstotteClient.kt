@@ -11,24 +11,24 @@ fun restClient(port: Int, clientId: String? = "CLIENT_ID_EF_SAK", accessAsApplic
     val createSignedJWT = token(clientId, accessAsApplication)
 
     return WebClient.builder()
-            .baseUrl(baseUrl(port))
-            .defaultHeader("Authorization", "Bearer ${createSignedJWT.serialize()}")
-            .build()
+        .baseUrl(baseUrl(port))
+        .defaultHeader("Authorization", "Bearer ${createSignedJWT.serialize()}")
+        .build()
 }
 
 fun restClientNoAuth(port: Int): WebClient {
     return WebClient.builder()
-            .baseUrl("http://localhost:$port")
-            .build()
+        .baseUrl("http://localhost:$port")
+        .build()
 }
 
 private fun token(clientId: String?, accessAsApplication: Boolean): SignedJWT {
     val thisId = UUID.randomUUID().toString()
     var claimsSet = JwtTokenGenerator.createSignedJWT(clientId).jwtClaimsSet
     val builder = JWTClaimsSet.Builder(claimsSet)
-            .claim("oid", thisId)
-            .claim("sub", thisId)
-            .claim("azp", clientId)
+        .claim("oid", thisId)
+        .claim("sub", thisId)
+        .claim("azp", clientId)
 
     if (accessAsApplication) {
         builder.claim("roles", listOf("access_as_application"))

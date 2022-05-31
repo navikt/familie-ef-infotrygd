@@ -7,14 +7,14 @@ import javax.persistence.AttributeConverter
 
 open class AbstractNavLocalDateConverter(datePattern: String) : AttributeConverter<LocalDate?, Int?> {
     private val logger = LoggerFactory.getLogger(javaClass)
-    
-    private val formatter = DateTimeFormatter.ofPattern(datePattern);
+
+    private val formatter = DateTimeFormatter.ofPattern(datePattern)
     override fun convertToDatabaseColumn(attribute: LocalDate?): Int? {
         return attribute?.format(formatter)?.toInt()
     }
 
     override fun convertToEntityAttribute(dbData: Int?): LocalDate? {
-        if(dbData == null || dbData == NULL_VALUE) {
+        if (dbData == null || dbData == NULL_VALUE) {
             return null
         }
         return try {

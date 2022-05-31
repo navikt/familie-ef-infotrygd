@@ -10,13 +10,12 @@ abstract class AbstractCharConverter(private val size: Int) : AttributeConverter
     }
 
     override fun convertToEntityAttribute(dbData: String?): String? {
-        if(dbData.isNullOrBlank()) {
+        if (dbData.isNullOrBlank()) {
             return null
         }
 
         return dbData.trimEnd()
     }
-
 }
 
 @Converter
@@ -26,7 +25,7 @@ class BrukerIdConverter : AbstractCharConverter(7)
 class Char2Converter : AbstractCharConverter(2)
 
 @Converter
-class Char3Converter: AbstractCharConverter(3)
+class Char3Converter : AbstractCharConverter(3)
 
 @Converter
-class Char6Converter :AbstractCharConverter(6)
+class Char6Converter : AbstractCharConverter(6)
