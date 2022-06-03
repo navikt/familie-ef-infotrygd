@@ -20,7 +20,7 @@ class PeriodeService(private val periodeRepository: PeriodeRepository) {
         val barnetilsynPerioder = perioder.getOrDefault(BARNETILSYN, emptyList())
         val barnetilsynPeriodeBarnListe = periodeRepository.hentBarnForPerioder(barnetilsynPerioder)
         return barnetilsynPerioder.map {
-            it.copy(barnIdenter = barnetilsynPeriodeBarnListe.get(it.vedtakId) ?: emptyList())
+            it.copy(barnIdenter = barnetilsynPeriodeBarnListe[it.vedtakId] ?: emptyList())
         }
     }
 }
