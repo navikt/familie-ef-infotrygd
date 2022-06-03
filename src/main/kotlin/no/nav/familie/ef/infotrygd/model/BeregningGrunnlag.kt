@@ -9,13 +9,13 @@ import javax.persistence.Table
 @Entity
 @Table(name = "T_BEREGN_GRL")
 data class BeregningGrunnlag(
-        @Id
-        @Column(name = "VEDTAK_ID")
-        val id: Long,
+    @Id
+    @Column(name = "VEDTAK_ID")
+    val id: Long,
 
-        @Column(name = "BELOP")
-        val beløp: Long,
+    @Column(name = "BELOP")
+    val beløp: Long,
 
-        @Column(name = "TYPE_BELOP")
-        val type: String
+    @Column(name = "TYPE_BELOP")
+    val type: String
 )

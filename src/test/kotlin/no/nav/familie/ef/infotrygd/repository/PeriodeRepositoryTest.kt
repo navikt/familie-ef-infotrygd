@@ -18,7 +18,6 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
 import java.time.LocalDate
 
-
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -73,8 +72,12 @@ internal class PeriodeRepositoryTest {
 
     @Test
     fun `skal hente perioder`() {
-        val perioder = periodeRepository.hentPerioder(PeriodeRequest(setOf(FoedselsNr("01234567890")),
-                                                                     setOf(StønadType.OVERGANGSSTØNAD)))
+        val perioder = periodeRepository.hentPerioder(
+            PeriodeRequest(
+                setOf(FoedselsNr("01234567890")),
+                setOf(StønadType.OVERGANGSSTØNAD)
+            )
+        )
         assertThat(perioder).hasSize(1)
         assertThat(perioder.first().first).isEqualTo(StønadType.OVERGANGSSTØNAD)
     }
@@ -166,7 +169,7 @@ internal class PeriodeRepositoryTest {
     }
 
     private fun hentPerioder() =
-            periodeRepository.hentPerioder(PeriodeRequest(setOf(FoedselsNr("01234567890")), StønadType.values().toSet()))
+        periodeRepository.hentPerioder(PeriodeRequest(setOf(FoedselsNr("01234567890")), StønadType.values().toSet()))
 
     private fun hentPerioderForArena(fomDato: LocalDate? = null, tomDato: LocalDate? = null): List<ArenaPeriode> =
             periodeRepository.hentPerioderForArena(

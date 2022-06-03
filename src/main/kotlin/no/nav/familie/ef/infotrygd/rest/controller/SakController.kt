@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-
 @RestController
 @RequestMapping("/api/saker")
 @Timed(value = "infotrygd_sak_enslig_forsoerger_controller", percentiles = [0.5, 0.95])
@@ -26,5 +25,4 @@ class SakController(private val sakRepository: SakRepository) {
 
         return ResponseEntity.ok(InfotrygdSakResponse(sakRepository.finnSaker(request.personIdenter)))
     }
-
 }

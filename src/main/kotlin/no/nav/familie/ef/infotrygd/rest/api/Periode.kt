@@ -6,30 +6,30 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class PeriodeRequest(
-        val personIdenter: Set<FoedselsNr>,
-        val stønadstyper: Set<StønadType>
+    val personIdenter: Set<FoedselsNr>,
+    val stønadstyper: Set<StønadType>
 )
 
 data class PeriodeArenaRequest(
-        val personIdenter: Set<FoedselsNr>,
-        val fomDato: LocalDate?,
-        val tomDato: LocalDate?
+    val personIdenter: Set<FoedselsNr>,
+    val fomDato: LocalDate?,
+    val tomDato: LocalDate?
 )
 
 data class PeriodeArenaResponse(val perioder: List<ArenaPeriode>)
 
 data class ArenaPeriode(
-        val personIdent: FoedselsNr,
-        val fomDato: LocalDate,
-        val tomDato: LocalDate,
-        val opphørsdato: LocalDate?,
-        val beløp: Float
+    val personIdent: FoedselsNr,
+    val fomDato: LocalDate,
+    val tomDato: LocalDate,
+    val opphørsdato: LocalDate?,
+    val beløp: Float
 )
 
 data class PeriodeResponse(
-        val overgangsstønad: List<Periode>,
-        val barnetilsyn: List<Periode>,
-        val skolepenger: List<Periode>
+    val overgangsstønad: List<Periode>,
+    val barnetilsyn: List<Periode>,
+    val skolepenger: List<Periode>
 )
 
 /**
@@ -38,30 +38,30 @@ data class PeriodeResponse(
  * @param kodeOvergangsstønad er i prinsipp det vi kaller periodetype i ny løsning
  */
 data class Periode(
-        val personIdent: String,
-        val sakstype: InfotrygdSakstype,
-        val kode: InfotrygdEndringKode,
-        val kodeOvergangsstønad: InfotrygdOvergangsstønadKode?,
-        val aktivitetstype: InfotrygdAktivitetstype?,
-        val brukerId: String,
-        val stønadId: Long,
-        val vedtakId: Long,
-        val vedtakstidspunkt: LocalDateTime,
-        @Deprecated("bruk beløpEngangsutbetaling")
-        val stønadBeløp: Int,
-        val engangsbeløp: Int,
-        val inntektsgrunnlag: Int,
-        val inntektsreduksjon: Int,
-        val samordningsfradrag: Int,
-        val utgifterBarnetilsyn: Int,
-        @Deprecated("bruk beløpMånedsutbetaling")
-        val beløp: Int,
-        val månedsbeløp: Int,
-        val startDato: LocalDate,
-        val stønadFom: LocalDate,
-        val stønadTom: LocalDate,
-        val opphørsdato: LocalDate?,
-        val barnIdenter : List<String> = emptyList()
+    val personIdent: String,
+    val sakstype: InfotrygdSakstype,
+    val kode: InfotrygdEndringKode,
+    val kodeOvergangsstønad: InfotrygdOvergangsstønadKode?,
+    val aktivitetstype: InfotrygdAktivitetstype?,
+    val brukerId: String,
+    val stønadId: Long,
+    val vedtakId: Long,
+    val vedtakstidspunkt: LocalDateTime,
+    @Deprecated("bruk beløpEngangsutbetaling")
+    val stønadBeløp: Int,
+    val engangsbeløp: Int,
+    val inntektsgrunnlag: Int,
+    val inntektsreduksjon: Int,
+    val samordningsfradrag: Int,
+    val utgifterBarnetilsyn: Int,
+    @Deprecated("bruk beløpMånedsutbetaling")
+    val beløp: Int,
+    val månedsbeløp: Int,
+    val startDato: LocalDate,
+    val stønadFom: LocalDate,
+    val stønadTom: LocalDate,
+    val opphørsdato: LocalDate?,
+    val barnIdenter : List<String> = emptyList()
 )
 
 /**
@@ -132,8 +132,10 @@ enum class InfotrygdSakstype(val infotrygdKode: String, val beskrivelse: String)
 enum class InfotrygdOvergangsstønadKode(val infotrygdKode: String, val beskrivelse: String) {
     BARN_UNDER_1_3_ÅR("1", "Barn under 1 år / 3 år (gamle tilfeller)"),
     YRKESRETTET_AKTIVITET_BARN_FYLT_1_3_ÅR("2", "Er i yrkesrettet aktivitet - barn har fylt 1 år / 3 år (gamle tilfeller)"),
-    UNNTAK_FRA_KRAV_TIL_YRKESRETTET_AKTIVITET("3",
-                                              "Unntak fra krav til yrkesr. aktivitet når barn har fylt 1 år / år (gamle tilfeller)"),
+    UNNTAK_FRA_KRAV_TIL_YRKESRETTET_AKTIVITET(
+        "3",
+        "Unntak fra krav til yrkesr. aktivitet når barn har fylt 1 år / år (gamle tilfeller)"
+    ),
     UTVIDELSE_NØDVENDIG_UTDANNING("4", "Utvidelse på grunn av nødvendig utdanning jf 15-6. 3. ledd"),
     PÅVENTE_SKOLESTART_ARBEID_TILSYNSPLASS("5", "I påvente av skolestart/arbeid/tilsynsplass 15-6. 4. ledd"),
     YRKESRETTET_AKTIVITET("6", "Er i yrkesrettet aktivitet - i omstillingstid"),

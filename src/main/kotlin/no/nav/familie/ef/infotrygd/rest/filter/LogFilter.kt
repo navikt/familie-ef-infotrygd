@@ -4,7 +4,6 @@ import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.Ordered.HIGHEST_PRECEDENCE
-import org.springframework.core.Ordered.LOWEST_PRECEDENCE
 import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.GenericFilterBean
@@ -15,7 +14,6 @@ import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-
 @Component
 @Order(HIGHEST_PRECEDENCE)
 class LogFilter(@Value("\${spring.application.name}") private val applicationName: String) : GenericFilterBean() {
@@ -23,9 +21,11 @@ class LogFilter(@Value("\${spring.application.name}") private val applicationNam
     private val consumerIdHeader = "Nav-Consumer-Id"
     private val callIdHeader = "Nav-Call-Id"
 
-    private val dontLog = setOf("/internal/status/isAlive",
-                                "/internal/prometheus",
-                                "/api/ping")
+    private val dontLog = setOf(
+        "/internal/status/isAlive",
+        "/internal/prometheus",
+        "/api/ping"
+    )
 
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
         putValues(HttpServletRequest::class.java.cast(request))
@@ -35,7 +35,7 @@ class LogFilter(@Value("\${spring.application.name}") private val applicationNam
         try {
             chain.doFilter(request, response)
         } finally {
-            if(!dontLog.contains(req.requestURI)) {
+            if (!dontLog.contains(req.requestURI)) {
                 val millis = (System.nanoTime() - t0) / 1_000_000
                 log.info("[${millis}ms]\t${res.status} ${req.method} ${req.requestURI}")
             }

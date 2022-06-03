@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import no.nav.familie.ef.infotrygd.model.StønadType
 import no.nav.familie.ef.infotrygd.repository.PeriodeRepository
-
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeArenaRequest
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeArenaResponse
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeRequest
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-
 @RestController
 @RequestMapping("/api/perioder")
 @Timed(value = "infotrygd_historikk_enslig_forsoerger_controller", percentiles = [0.5, 0.95])
@@ -30,12 +28,14 @@ class PeriodeController(private val periodeRepository: PeriodeRepository, privat
 
     @ApiOperation("Henter perioder")
     @PostMapping
-    @ApiImplicitParams(ApiImplicitParam(
+    @ApiImplicitParams(
+        ApiImplicitParam(
             name = "request",
             dataType = "PeriodeRequest",
             value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
-                    " \"stønadstyper\": [\n\"OVERGANGSSTØNAD\"\n] \n}"
-    ))
+                " \"stønadstyper\": [\n\"OVERGANGSSTØNAD\"\n] \n}"
+        )
+    )
     fun hentPerioder(@RequestBody request: PeriodeRequest): ResponseEntity<Any> {
         if (request.personIdenter.isEmpty()) {
             return ResponseEntity.badRequest().build()
@@ -48,7 +48,6 @@ class PeriodeController(private val periodeRepository: PeriodeRepository, privat
                         skolepenger = perioder.getOrDefault(StønadType.SKOLEPENGER, emptyList())
                 ))
     }
-
 
     /**
      * Denne henter perioder for alle typer EF-stønader, då arena ønsker de sammenslåtte
@@ -80,5 +79,4 @@ class PeriodeController(private val periodeRepository: PeriodeRepository, privat
         val personerForMigrering = periodeRepository.hentPersonerForMigrering(antall)
         return ResponseEntity.ok(personerForMigrering)
     }
-
 }
