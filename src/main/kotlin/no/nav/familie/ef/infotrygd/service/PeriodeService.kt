@@ -12,7 +12,7 @@ class PeriodeService(private val periodeRepository: PeriodeRepository) {
 
     fun hentPerioder(request: PeriodeRequest): Map<StønadType, List<Periode>> {
         val perioder = periodeRepository.hentPerioder(request).groupBy({ it.first }) { it.second }.toMutableMap()
-        perioder.put(BARNETILSYN, hentBarnetilsynPerioderMedBarn(perioder))
+        perioder[BARNETILSYN] = hentBarnetilsynPerioderMedBarn(perioder)
         return perioder
     }
 
