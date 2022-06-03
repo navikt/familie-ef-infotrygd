@@ -194,6 +194,23 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
         return PersonerForMigrering(identer.toSet())
     }
 
+    fun hentBarnForPerioder(barnetilsynPerioder: List<Periode>): Map<Long, List<String>> {
+        if (barnetilsynPerioder.isEmpty()) {
+            return emptyMap()
+        }
+        val values = MapSqlParameterSource()
+                .addValue("vedtakIdListe", barnetilsynPerioder.map { it.vedtakId })
+
+        val resultatliste = jdbcTemplate.query("""
+                SELECT r.vedtak_id, barn.personnr
+                FROM t_rolle r 
+                JOIN t_lopenr_fnr barn ON barn.person_lopenr = r.person_lopenr_r
+                WHERE r.vedtak_id IN (:vedtakIdListe)
+        """, values
+        ) { rs, _ -> rs.getLong("vedtak_id") to rs.getString("personnr") }
+        return resultatliste.groupBy({ it.first }, { it.second })
+    }
+
     private fun <T> mapVerdi(kode: String, mapper: (String) -> T): T? = kode
         .trim()
         .takeIf(String::isNotEmpty)
