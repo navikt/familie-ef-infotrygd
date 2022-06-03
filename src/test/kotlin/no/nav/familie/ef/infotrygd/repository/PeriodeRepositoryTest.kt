@@ -66,24 +66,6 @@ internal class PeriodeRepositoryTest {
 
     }
 
-    private fun insertBarnetilsynsak() {
-        // Lag barnetilsynvedtak
-        lagVedtak(stønadType = "EB", vedtakId = 2, stønadId = 2)
-        // legg til barn
-        jdbcTemplate.update("INSERT INTO t_lopenr_fnr (person_lopenr, personnr) VALUES (2, '01234567891')")
-        jdbcTemplate.update("INSERT INTO t_lopenr_fnr (person_lopenr, personnr) VALUES (3, '01234567892')")
-
-        // barnetilsynbarn 1 på barnetilsynvedtak
-        jdbcTemplate.update("INSERT INTO t_rolle (vedtak_id,type,tidspunkt_reg,fom,tom,person_lopenr_r,brukerid,barn_type,bor_sammen_med,trygdetid_faktisk,trygdetid_anvendt,trygdetid_unntak,trygd_medlem_siden,utenlandsopphold,bt_1_sum,bt_1_antall,bt_2_sum,bt_2_antall,bt_s_sum,bt_s_antall,opprettet,oppdatert) " +
-                            "VALUES (2,'EB',CURRENT_TIMESTAMP, CURRENT_DATE,CURRENT_DATE,2,'MIA4408',  NULL, NULL, NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, CURRENT_DATE,CURRENT_DATE)")
-
-        // barnetilsynbarn 2 på barnetilsynvedtak
-        jdbcTemplate.update("INSERT INTO t_rolle (vedtak_id,type,tidspunkt_reg,fom,tom,person_lopenr_r,brukerid,barn_type,bor_sammen_med,trygdetid_faktisk,trygdetid_anvendt,trygdetid_unntak,trygd_medlem_siden,utenlandsopphold,bt_1_sum,bt_1_antall,bt_2_sum,bt_2_antall,bt_s_sum,bt_s_antall,opprettet,oppdatert) " +
-                            "VALUES (2,'EB',CURRENT_TIMESTAMP, CURRENT_DATE,CURRENT_DATE,3,'MIA4409',  NULL, NULL, NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, CURRENT_DATE,CURRENT_DATE)")
-
-    }
-
-
     @Test
     fun `hentPersonerForMigrering går fint`() {
         periodeRepository.hentPersonerForMigrering(10)
@@ -216,5 +198,22 @@ internal class PeriodeRepositoryTest {
         jdbcTemplate.update("INSERT INTO t_endring (vedtak_id, kode) VALUES (?, 'F ')", vedtakId)
         jdbcTemplate.update("INSERT INTO t_ef (vedtak_id, stonad_belop, innt_fradrag, netto_belop, sam_fradrag, kode_overg, aktivitet, barnt_utg)" +
                             " VALUES (?,1,1,1,1,' ',' ', 1)", vedtakId)
+    }
+
+    private fun insertBarnetilsynsak() {
+        // Lag barnetilsynvedtak
+        lagVedtak(stønadType = "EB", vedtakId = 2, stønadId = 2)
+        // legg til barn
+        jdbcTemplate.update("INSERT INTO t_lopenr_fnr (person_lopenr, personnr) VALUES (2, '01234567891')")
+        jdbcTemplate.update("INSERT INTO t_lopenr_fnr (person_lopenr, personnr) VALUES (3, '01234567892')")
+
+        // barnetilsynbarn 1 på barnetilsynvedtak
+        jdbcTemplate.update("INSERT INTO t_rolle (vedtak_id,type,tidspunkt_reg,fom,tom,person_lopenr_r,brukerid,barn_type,bor_sammen_med,trygdetid_faktisk,trygdetid_anvendt,trygdetid_unntak,trygd_medlem_siden,utenlandsopphold,bt_1_sum,bt_1_antall,bt_2_sum,bt_2_antall,bt_s_sum,bt_s_antall,opprettet,oppdatert) " +
+                            "VALUES (2,'EB',CURRENT_TIMESTAMP, CURRENT_DATE,CURRENT_DATE,2,'MIA4408',  NULL, NULL, NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, CURRENT_DATE,CURRENT_DATE)")
+
+        // barnetilsynbarn 2 på barnetilsynvedtak
+        jdbcTemplate.update("INSERT INTO t_rolle (vedtak_id,type,tidspunkt_reg,fom,tom,person_lopenr_r,brukerid,barn_type,bor_sammen_med,trygdetid_faktisk,trygdetid_anvendt,trygdetid_unntak,trygd_medlem_siden,utenlandsopphold,bt_1_sum,bt_1_antall,bt_2_sum,bt_2_antall,bt_s_sum,bt_s_antall,opprettet,oppdatert) " +
+                            "VALUES (2,'EB',CURRENT_TIMESTAMP, CURRENT_DATE,CURRENT_DATE,3,'MIA4409',  NULL, NULL, NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, CURRENT_DATE,CURRENT_DATE)")
+
     }
 }
