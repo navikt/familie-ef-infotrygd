@@ -194,7 +194,8 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
 
         val resultatliste = jdbcTemplate.query("""
                 SELECT r.vedtak_id, barn.personnr
-                FROM t_rolle r JOIN t_lopenr_fnr barn ON barn.person_lopenr = r.person_lopenr_r
+                FROM t_rolle r 
+                JOIN t_lopenr_fnr barn ON barn.person_lopenr = r.person_lopenr_r
                 WHERE r.vedtak_id IN (:vedtakIdListe)
         """, values
         ) { rs, _ -> rs.getLong("vedtak_id") to rs.getString("personnr") }
