@@ -1,4 +1,4 @@
-Hvis `s.dato_opphor` finnes og den er før `v.dato_innv_tom` så er det `dato_opphor` som er gjeldende, av den grunnen burde man
+Hvis `s.dato_opphor` (t_stonad) finnes og den er før `v.dato_innv_tom` (t_vedtak) så er det `dato_opphor` som er gjeldende, av den grunnen burde man
 bruke opphør hvis den finnes og er før tom-dato.
 
 ```sql
