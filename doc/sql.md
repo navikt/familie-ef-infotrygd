@@ -51,7 +51,7 @@ Typiskt tilfelle der opphørsdatoet er før fom-dato er når perioden aldri blit
 AND v.dato_innv_fom < v.dato_innv_tom
 ```
 
-Man kan også bruke opphørsdatoet, som iblant har blitt sa
+Man kan også bruke opphørsdatoet, som iblant har blitt satt
 
 ```sql
 AND v.dato_innv_fom < (case when (nvl(dato_opphor, dato_innv_tom) < dato_innv_tom) then dato_opphor else dato_innv_tom end)
