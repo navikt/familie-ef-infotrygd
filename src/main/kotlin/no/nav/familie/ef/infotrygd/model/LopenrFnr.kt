@@ -8,9 +8,11 @@ import javax.persistence.Table
 @Suppress("unused") // brukes av hibernate for å generere hvilke tabeller som brukes
 @Entity
 @Table(name = "T_LOPENR_FNR")
-data class LopenrFnr(@Id
-                     @Column(name = "PERSON_LOPENR")
-                     val personKey: Long,
+data class LopenrFnr(
+    @Id
+    @Column(name = "PERSON_LOPENR")
+    val personKey: Long,
 
-                     @Column(name = "PERSONNR")
-                     val fnr: String)
+    @Column(name = "PERSONNR")
+    val fnr: String
+)

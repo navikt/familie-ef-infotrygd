@@ -9,11 +9,11 @@ class ReversedFoedselNrConverter : AttributeConverter<String?, String?> {
     }
 
     override fun convertToEntityAttribute(dbData: String?): String? {
-        if(dbData == null) {
+        if (dbData == null) {
             return null
         }
 
-        if(dbData.toLong() == 0L) {
+        if (dbData.toLong() == 0L) {
             return null
         }
 

@@ -7,7 +7,6 @@ import org.junit.runner.RunWith
 import org.springframework.test.context.junit4.SpringRunner
 import org.testcontainers.containers.OracleContainer
 
-
 @RunWith(SpringRunner::class)
 @Ignore
 class OracleTest {
@@ -18,6 +17,5 @@ class OracleTest {
 
     @Test
     fun test() {
-
     }
 }

@@ -10,8 +10,8 @@ import no.nav.familie.ef.infotrygd.rest.api.PeriodeArenaRequest
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeArenaResponse
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeRequest
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeResponse
+import no.nav.familie.ef.infotrygd.service.PeriodeService
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -20,30 +20,33 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-
 @RestController
 @RequestMapping("/api/perioder")
 @Timed(value = "infotrygd_historikk_enslig_forsoerger_controller", percentiles = [0.5, 0.95])
 @ProtectedWithClaims(issuer = "azure")
-class PeriodeController(private val periodeRepository: PeriodeRepository) {
+class PeriodeController(private val periodeRepository: PeriodeRepository, private val periodeService: PeriodeService) {
 
     @ApiOperation("Henter perioder")
     @PostMapping
-    @ApiImplicitParams(ApiImplicitParam(
+    @ApiImplicitParams(
+        ApiImplicitParam(
             name = "request",
             dataType = "PeriodeRequest",
             value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
-                    " \"stønadstyper\": [\n\"OVERGANGSSTØNAD\"\n] \n}"
-    ))
+                " \"stønadstyper\": [\n\"OVERGANGSSTØNAD\"\n] \n}"
+        )
+    )
     fun hentPerioder(@RequestBody request: PeriodeRequest): ResponseEntity<Any> {
         if (request.personIdenter.isEmpty()) {
             return ResponseEntity.badRequest().build()
         }
-
-        val perioder = periodeRepository.hentPerioder(request).groupBy({ it.first }) { it.second }
-        return ResponseEntity.ok(PeriodeResponse(overgangsstønad = perioder.getOrDefault(StønadType.OVERGANGSSTØNAD, emptyList()),
-                                                 barnetilsyn = perioder.getOrDefault(StønadType.BARNETILSYN, emptyList()),
-                                                 skolepenger = perioder.getOrDefault(StønadType.SKOLEPENGER, emptyList())))
+        val perioder = periodeService.hentPerioder(request)
+        return ResponseEntity.ok(
+                PeriodeResponse(
+                        overgangsstønad = perioder.getOrDefault(StønadType.OVERGANGSSTØNAD, emptyList()),
+                        barnetilsyn = perioder.getOrDefault(StønadType.BARNETILSYN, emptyList()),
+                        skolepenger = perioder.getOrDefault(StønadType.SKOLEPENGER, emptyList())
+                ))
     }
 
     /**
@@ -51,12 +54,14 @@ class PeriodeController(private val periodeRepository: PeriodeRepository) {
      */
     @ApiOperation("Henter perioder for Arena")
     @PostMapping(path = ["/arena", "/overgangsstonad"])
-    @ApiImplicitParams(ApiImplicitParam(
-            name = "request",
-            dataType = "PeriodeArenaRequest",
-            value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
-                    " \"fomDato\": \"2020-01-01\",\n  \"tomDato\": \"2021-01-01\"\n}"
-    ))
+    @ApiImplicitParams(
+            ApiImplicitParam(
+                    name = "request",
+                    dataType = "PeriodeArenaRequest",
+                    value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
+                            " \"fomDato\": \"2020-01-01\",\n  \"tomDato\": \"2021-01-01\"\n}"
+            )
+    )
     fun hentPerioderForArena(@RequestBody request: PeriodeArenaRequest): ResponseEntity<Any> {
         if (request.personIdenter.isEmpty()) {
             return ResponseEntity.badRequest().build()
@@ -74,5 +79,4 @@ class PeriodeController(private val periodeRepository: PeriodeRepository) {
         val personerForMigrering = periodeRepository.hentPersonerForMigrering(antall)
         return ResponseEntity.ok(personerForMigrering)
     }
-
 }

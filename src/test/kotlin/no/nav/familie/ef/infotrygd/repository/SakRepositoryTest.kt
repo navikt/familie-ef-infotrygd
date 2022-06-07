@@ -1,11 +1,5 @@
 package no.nav.familie.ef.infotrygd.repository
 
-import no.nav.commons.foedselsnummer.FoedselsNr
-import no.nav.familie.ef.infotrygd.model.StønadType
-import no.nav.familie.ef.infotrygd.rest.api.ArenaPeriode
-import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSakstype
-import no.nav.familie.ef.infotrygd.rest.api.PeriodeArenaRequest
-import no.nav.familie.ef.infotrygd.rest.api.PeriodeRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
@@ -16,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
-import java.time.LocalDate
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -28,7 +21,8 @@ internal class SakRepositoryTest {
 
     @Before
     fun setUp() {
-        jdbcTemplate.update("""
+        jdbcTemplate.update(
+            """
             INSERT INTO sa_sak_10 (s01_personkey,s05_saksblokk,s10_saksnr,s10_reg_dato,s10_mottattdato,s10_kapittelnr,s10_valg,
             s10_undervalg,s10_dublett_feil,s10_type,s10_innstilling,s10_resultat,s10_nivaa,s10_innstilldato,s10_vedtaksdato,
             s10_iverksattdato,s10_grunnbl_dato,s10_aarsakskode,s10_tellepunkt,s10_telletype,s10_telledato,s10_eval_kode,
@@ -41,7 +35,8 @@ internal class SakRepositoryTest {
              '   ',' ','0','00',' ','0000',' ','3041','70040312345',
              TO_TIMESTAMP('14.01.2022 21.48.43,830464000','DD.MM.RRRR HH24.MI.SSXFF'),
              TO_TIMESTAMP('14.01.2022 21.48.43,788490000','DD.MM.RRRR HH24.MI.SSXFF'),'RG01','1','17529101',
-             TO_TIMESTAMP('14.01.2022 21.48.43,830464000','DD.MM.RRRR HH24.MI.SSXFF'),'EF')""")
+             TO_TIMESTAMP('14.01.2022 21.48.43,830464000','DD.MM.RRRR HH24.MI.SSXFF'),'EF')"""
+        )
     }
 
     @After

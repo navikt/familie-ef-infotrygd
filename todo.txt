@@ -10,3 +10,8 @@ Om man har 2 perioder, så virker det som att ma har 2st T_STONAD
 Hva skjer hvis man får en endring/opphør i den andre perioden?
 
 Trenger vi virkelig t_Stonadsklasse, burde det ikke være tilsrekkelig å sjekke kode_rutine='EO' på t_stonad
+
+
+Hva er koderutine EX? (barnetilsyn? Bare to vedtak, tre barn)
+select * from t_vedtak v JOIN t_rolle r on r.vedtak_id = v.vedtak_id
+where v.kode_rutine <> 'EB' ;
