@@ -23,38 +23,38 @@ internal class PeriodeServiceTest {
     @Test
     fun `Skal legge til barn på barnetilsyn - andre skal være uendret`() {
         val request = PeriodeRequest(
-                personIdenter = setOf(FoedselsNr("01015450572")),
-                stønadstyper = setOf(BARNETILSYN, OVERGANGSSTØNAD)
+            personIdenter = setOf(FoedselsNr("01015450572")),
+            stønadstyper = setOf(BARNETILSYN, OVERGANGSSTØNAD)
         )
         val uendretPeriode = lagPeriode()
         every { periodeRepository.hentPerioder(any()) } returns listOf(
-                Pair(BARNETILSYN, lagPeriode(vedtakId = 35L)),
-                Pair(OVERGANGSSTØNAD, uendretPeriode)
+            Pair(BARNETILSYN, lagPeriode(vedtakId = 35L)),
+            Pair(OVERGANGSSTØNAD, uendretPeriode)
         )
         every { periodeRepository.hentBarnForPerioder(any()) } returns mapOf(35L to listOf("123"))
 
         val perioder = periodeService.hentPerioder(request = request)
-        assertThat(perioder.get(OVERGANGSSTØNAD)!!.first().barnIdenter).isEmpty()
-        assertThat(uendretPeriode).isEqualTo(perioder.get(OVERGANGSSTØNAD)!!.first())
-        assertThat(perioder.get(BARNETILSYN)!!.first().barnIdenter.first()).isEqualTo("123")
+        assertThat(perioder[OVERGANGSSTØNAD]!!.first().barnIdenter).isEmpty()
+        assertThat(uendretPeriode).isEqualTo(perioder[OVERGANGSSTØNAD]!!.first())
+        assertThat(perioder[BARNETILSYN]!!.first().barnIdenter.first()).isEqualTo("123")
     }
 
     @Test
     fun `Ingen barnetilsynbarn funnet - skal ikke feile hvis det ikke finnes barn`() {
         val request = PeriodeRequest(
-                personIdenter = setOf(FoedselsNr("01015450572")),
-                stønadstyper = setOf(BARNETILSYN, OVERGANGSSTØNAD)
+            personIdenter = setOf(FoedselsNr("01015450572")),
+            stønadstyper = setOf(BARNETILSYN, OVERGANGSSTØNAD)
         )
         val uendretPeriode = lagPeriode()
         every { periodeRepository.hentPerioder(any()) } returns listOf(
-                Pair(BARNETILSYN, lagPeriode(vedtakId = 35L)),
-                Pair(OVERGANGSSTØNAD, uendretPeriode)
+            Pair(BARNETILSYN, lagPeriode(vedtakId = 35L)),
+            Pair(OVERGANGSSTØNAD, uendretPeriode)
         )
         every { periodeRepository.hentBarnForPerioder(any()) } returns emptyMap()
 
         val perioder = periodeService.hentPerioder(request = request)
-        val barnetilsynPerioderHentet = perioder.get(BARNETILSYN)!!.first()
-        assertThat(perioder.get(OVERGANGSSTØNAD)!!.first().barnIdenter).isEmpty()
+        val barnetilsynPerioderHentet = perioder[BARNETILSYN]!!.first()
+        assertThat(perioder[OVERGANGSSTØNAD]!!.first().barnIdenter).isEmpty()
         assertThat(barnetilsynPerioderHentet.barnIdenter).isEmpty()
     }
 
@@ -66,41 +66,41 @@ internal class PeriodeServiceTest {
         )
         val uendretPeriode = lagPeriode()
         every { periodeRepository.hentPerioder(any()) } returns listOf(
-            Pair(BARNETILSYN, lagPeriode(vedtakId = 35L), lagPeriode(vedtakId = 34L)),
+            Pair(BARNETILSYN, lagPeriode(vedtakId = 35L, "FI")),
+            Pair(BARNETILSYN, lagPeriode(vedtakId = 34L)),
             Pair(OVERGANGSSTØNAD, uendretPeriode)
         )
         every { periodeRepository.hentBarnForPerioder(any()) } returns mapOf(34L to listOf("123"))
 
         val perioder = periodeService.hentPerioder(request = request)
-        val barnetilsynPerioderHentet = perioder.get(BARNETILSYN)!!.map{ it.vedtak_id to it}.toMap()
-        assertThat(barnetilsynPerioderHentet[34L]!!.barnIdenter).isNotEmpty()
-        assertThat(barnetilsynPerioderHentet[35L]!!.barnIdenter).isNotEmpty()
+        val barnetilsynPerioderHentet = perioder[BARNETILSYN]!!.associateBy { it.vedtakId }
+        assertThat(barnetilsynPerioderHentet[34L]!!.barnIdenter).isNotEmpty
+        assertThat(barnetilsynPerioderHentet[35L]!!.barnIdenter).isNotEmpty
     }
 
-    private fun lagPeriode(vedtakId: Long = 1) = Periode(
-            personIdent = "123",
-            sakstype = InfotrygdSakstype.SØKNAD,
-            kode = InfotrygdEndringKode.FØRSTEGANGSVEDTAK,
-            kodeOvergangsstønad = null,
-            aktivitetstype = null,
-            brukerId = "",
-            stønadId = 0,
-            vedtakId = vedtakId,
-            vedtakstidspunkt = LocalDateTime.MIN,
-            stønadBeløp = 0,
-            engangsbeløp = 0,
-            inntektsgrunnlag = 0,
-            inntektsreduksjon = 0,
-            samordningsfradrag = 0,
-            utgifterBarnetilsyn = 0,
-            beløp = 0,
-            månedsbeløp = 0,
-            startDato = LocalDate.MIN,
-            stønadFom = LocalDate.MIN,
-            stønadTom = LocalDate.MAX,
-            opphørsdato = null,
-            barnIdenter = emptyList()
+    private fun lagPeriode(vedtakId: Long = 1, vedtakKodeResultat: String = "I") = Periode(
+        personIdent = "123",
+        sakstype = InfotrygdSakstype.SØKNAD,
+        kode = InfotrygdEndringKode.FØRSTEGANGSVEDTAK,
+        kodeOvergangsstønad = null,
+        aktivitetstype = null,
+        brukerId = "",
+        stønadId = 0,
+        vedtakId = vedtakId,
+        vedtakstidspunkt = LocalDateTime.MIN,
+        stønadBeløp = 0,
+        engangsbeløp = 0,
+        inntektsgrunnlag = 0,
+        inntektsreduksjon = 0,
+        samordningsfradrag = 0,
+        utgifterBarnetilsyn = 0,
+        beløp = 0,
+        månedsbeløp = 0,
+        startDato = LocalDate.MIN,
+        stønadFom = LocalDate.MIN,
+        stønadTom = LocalDate.MAX,
+        opphørsdato = null,
+        barnIdenter = emptyList(),
+        vedtakKodeResultat = vedtakKodeResultat
     )
-
-
 }

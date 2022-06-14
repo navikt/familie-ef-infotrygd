@@ -42,11 +42,12 @@ class PeriodeController(private val periodeRepository: PeriodeRepository, privat
         }
         val perioder = periodeService.hentPerioder(request)
         return ResponseEntity.ok(
-                PeriodeResponse(
-                        overgangsstønad = perioder.getOrDefault(StønadType.OVERGANGSSTØNAD, emptyList()),
-                        barnetilsyn = perioder.getOrDefault(StønadType.BARNETILSYN, emptyList()),
-                        skolepenger = perioder.getOrDefault(StønadType.SKOLEPENGER, emptyList())
-                ))
+            PeriodeResponse(
+                overgangsstønad = perioder.getOrDefault(StønadType.OVERGANGSSTØNAD, emptyList()),
+                barnetilsyn = perioder.getOrDefault(StønadType.BARNETILSYN, emptyList()),
+                skolepenger = perioder.getOrDefault(StønadType.SKOLEPENGER, emptyList())
+            )
+        )
     }
 
     /**
@@ -55,12 +56,12 @@ class PeriodeController(private val periodeRepository: PeriodeRepository, privat
     @ApiOperation("Henter perioder for Arena")
     @PostMapping(path = ["/arena", "/overgangsstonad"])
     @ApiImplicitParams(
-            ApiImplicitParam(
-                    name = "request",
-                    dataType = "PeriodeArenaRequest",
-                    value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
-                            " \"fomDato\": \"2020-01-01\",\n  \"tomDato\": \"2021-01-01\"\n}"
-            )
+        ApiImplicitParam(
+            name = "request",
+            dataType = "PeriodeArenaRequest",
+            value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
+                " \"fomDato\": \"2020-01-01\",\n  \"tomDato\": \"2021-01-01\"\n}"
+        )
     )
     fun hentPerioderForArena(@RequestBody request: PeriodeArenaRequest): ResponseEntity<Any> {
         if (request.personIdenter.isEmpty()) {

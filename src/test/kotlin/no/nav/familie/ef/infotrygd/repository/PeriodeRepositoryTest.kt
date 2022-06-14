@@ -23,8 +23,10 @@ import java.time.LocalDate
 @ActiveProfiles("test")
 internal class PeriodeRepositoryTest {
 
-    @Autowired lateinit var periodeRepository: PeriodeRepository
-    @Autowired lateinit var jdbcTemplate: JdbcTemplate
+    @Autowired
+    lateinit var periodeRepository: PeriodeRepository
+    @Autowired
+    lateinit var jdbcTemplate: JdbcTemplate
 
     private val startdato = LocalDate.now().minusYears(1)
     private val sluttdato = LocalDate.now().plusYears(1)
@@ -40,7 +42,16 @@ internal class PeriodeRepositoryTest {
 
     @After
     fun tearDown() {
-        listOf("T_ROLLE", "T_LOPENR_FNR", "T_VEDTAK", "T_STONAD", "T_DELYTELSE", "T_ENDRING", "T_EF", "T_BEREGN_GRL").forEach {
+        listOf(
+            "T_ROLLE",
+            "T_LOPENR_FNR",
+            "T_VEDTAK",
+            "T_STONAD",
+            "T_DELYTELSE",
+            "T_ENDRING",
+            "T_EF",
+            "T_BEREGN_GRL"
+        ).forEach {
             jdbcTemplate.update("TRUNCATE TABLE $it")
         }
     }
@@ -55,14 +66,17 @@ internal class PeriodeRepositoryTest {
     fun `hent barnetilsyn-barn gitt barnetilsynperioder som finnes`() {
         insertBarnetilsynsak()
 
-        val perioder = periodeRepository.hentPerioder(PeriodeRequest(setOf(FoedselsNr("01234567890")),
-                                                                     setOf(StønadType.BARNETILSYN)))
-                .groupBy({ it.first }) { it.second }
-                .toMutableMap()
+        val perioder = periodeRepository.hentPerioder(
+            PeriodeRequest(
+                setOf(FoedselsNr("01234567890")),
+                setOf(StønadType.BARNETILSYN)
+            )
+        )
+            .groupBy({ it.first }) { it.second }
+            .toMutableMap()
         assertThat(perioder).isNotEmpty
         val barn = periodeRepository.hentBarnForPerioder(perioder.getOrDefault(StønadType.BARNETILSYN, emptyList()))
         assertThat(barn.get(2)).containsExactly("01234567891", "01234567892")
-
     }
 
     @Test
@@ -97,58 +111,58 @@ internal class PeriodeRepositoryTest {
     @Test
     fun `fom og tom datoer`() {
         assertThat(hentPerioderForArena(førStartdato, LocalDate.now()))
-                .withFailMessage("FOM dato < TOM dato(db)")
-                .hasSize(1)
+            .withFailMessage("FOM dato < TOM dato(db)")
+            .hasSize(1)
 
         assertThat(hentPerioderForArena(førStartdato, etterSluttdato))
-                .withFailMessage("FOM dato < TOM dato(db)")
-                .hasSize(1)
+            .withFailMessage("FOM dato < TOM dato(db)")
+            .hasSize(1)
 
         assertThat(hentPerioderForArena(LocalDate.now(), LocalDate.now()))
-                .withFailMessage("FOM dato < TOM dato(db)")
-                .hasSize(1)
+            .withFailMessage("FOM dato < TOM dato(db)")
+            .hasSize(1)
 
         assertThat(hentPerioderForArena(LocalDate.now(), etterSluttdato))
-                .withFailMessage("FOM dato < TOM dato(db)")
-                .hasSize(1)
+            .withFailMessage("FOM dato < TOM dato(db)")
+            .hasSize(1)
 
         assertThat(hentPerioderForArena(førStartdato, førStartdato))
-                .withFailMessage("TOM dato < FOM dato(db)")
-                .isEmpty()
+            .withFailMessage("TOM dato < FOM dato(db)")
+            .isEmpty()
 
         assertThat(hentPerioderForArena(etterSluttdato, etterSluttdato))
-                .withFailMessage("FOM dato > TOM dato(db)")
-                .isEmpty()
+            .withFailMessage("FOM dato > TOM dato(db)")
+            .isEmpty()
     }
 
     @Test
     fun `uten tom dato`() {
         assertThat(hentPerioderForArena(førStartdato, null))
-                .withFailMessage("FOM dato < TOM dato(db)")
-                .hasSize(1)
+            .withFailMessage("FOM dato < TOM dato(db)")
+            .hasSize(1)
 
         assertThat(hentPerioderForArena(LocalDate.now(), null))
-                .withFailMessage("FOM dato < TOM dato(db)")
-                .hasSize(1)
+            .withFailMessage("FOM dato < TOM dato(db)")
+            .hasSize(1)
 
         assertThat(hentPerioderForArena(etterSluttdato, null))
-                .withFailMessage("FOM dato > TOM dato(db)")
-                .isEmpty()
+            .withFailMessage("FOM dato > TOM dato(db)")
+            .isEmpty()
     }
 
     @Test
     fun `uten fom dato`() {
         assertThat(hentPerioderForArena(null, førStartdato))
-                .withFailMessage("TOM dato < FOM dato(db)")
-                .isEmpty()
+            .withFailMessage("TOM dato < FOM dato(db)")
+            .isEmpty()
 
         assertThat(hentPerioderForArena(null, LocalDate.now()))
-                .withFailMessage("FOM dato < TOM dato(db)")
-                .hasSize(1)
+            .withFailMessage("FOM dato < TOM dato(db)")
+            .hasSize(1)
 
         assertThat(hentPerioderForArena(null, etterSluttdato))
-                .withFailMessage("FOM dato > TOM dato(db)")
-                .hasSize(1)
+            .withFailMessage("FOM dato > TOM dato(db)")
+            .hasSize(1)
     }
 
     @Test
@@ -172,35 +186,39 @@ internal class PeriodeRepositoryTest {
         periodeRepository.hentPerioder(PeriodeRequest(setOf(FoedselsNr("01234567890")), StønadType.values().toSet()))
 
     private fun hentPerioderForArena(fomDato: LocalDate? = null, tomDato: LocalDate? = null): List<ArenaPeriode> =
-            periodeRepository.hentPerioderForArena(
-                    PeriodeArenaRequest(
-                            personIdenter = setOf(FoedselsNr("01234567890")),
-                            fomDato,
-                            tomDato
-                    )
+        periodeRepository.hentPerioderForArena(
+            PeriodeArenaRequest(
+                personIdenter = setOf(FoedselsNr("01234567890")),
+                fomDato,
+                tomDato
             )
+        )
 
-    private fun lagVedtak( stønadType: String, vedtakId: Int, stønadId: Int) {
+    private fun lagVedtak(stønadType: String, vedtakId: Int, stønadId: Int) {
 
         jdbcTemplate.update("INSERT INTO t_lopenr_fnr (person_lopenr, personnr) VALUES (1,  '01234567890')")
         jdbcTemplate.update(
-                """INSERT INTO t_vedtak (vedtak_id, person_lopenr, stonad_id, kode_rutine, dato_innv_fom,
-                         dato_innv_tom, brukerid, type_sak, tidspunkt_reg)
-                          VALUES (?,1,?,?,?,?, 'NISSEN', 'S ', CURRENT_TIMESTAMP)""",
-                vedtakId,
-                stønadId,
-                stønadType,
-                startdato,
-                sluttdato
+            """INSERT INTO t_vedtak (vedtak_id, person_lopenr, stonad_id, kode_rutine, kode_resultat, 
+                dato_innv_fom, dato_innv_tom, brukerid, type_sak, tidspunkt_reg)
+                          VALUES (?,1,?,?,'I',?,?, 'NISSEN', 'S ', CURRENT_TIMESTAMP)""",
+            vedtakId,
+            stønadId,
+            stønadType,
+            startdato,
+            sluttdato
         )
         jdbcTemplate.update(
-                """INSERT INTO t_stonad (stonad_id, oppdrag_id, person_lopenr, dato_start, dato_opphor)
-                                         VALUES (?, 1, 1, sysdate, NULL)""", stønadId
+            """INSERT INTO t_stonad (stonad_id, oppdrag_id, person_lopenr, dato_start, dato_opphor)
+                                         VALUES (?, 1, 1, sysdate, NULL)""",
+            stønadId
         )
         jdbcTemplate.update("INSERT INTO t_delytelse (vedtak_id, type_sats, belop) VALUES (?, '', 100.34)", vedtakId)
         jdbcTemplate.update("INSERT INTO t_endring (vedtak_id, kode) VALUES (?, 'F ')", vedtakId)
-        jdbcTemplate.update("INSERT INTO t_ef (vedtak_id, stonad_belop, innt_fradrag, netto_belop, sam_fradrag, kode_overg, aktivitet, barnt_utg)" +
-                            " VALUES (?,1,1,1,1,' ',' ', 1)", vedtakId)
+        jdbcTemplate.update(
+            "INSERT INTO t_ef (vedtak_id, stonad_belop, innt_fradrag, netto_belop, sam_fradrag, kode_overg, aktivitet, barnt_utg)" +
+                " VALUES (?,1,1,1,1,' ',' ', 1)",
+            vedtakId
+        )
     }
 
     private fun insertBarnetilsynsak() {
@@ -211,12 +229,15 @@ internal class PeriodeRepositoryTest {
         jdbcTemplate.update("INSERT INTO t_lopenr_fnr (person_lopenr, personnr) VALUES (3, '01234567892')")
 
         // barnetilsynbarn 1 på barnetilsynvedtak
-        jdbcTemplate.update("INSERT INTO t_rolle (vedtak_id,type,tidspunkt_reg,fom,tom,person_lopenr_r,brukerid,barn_type,bor_sammen_med,trygdetid_faktisk,trygdetid_anvendt,trygdetid_unntak,trygd_medlem_siden,utenlandsopphold,bt_1_sum,bt_1_antall,bt_2_sum,bt_2_antall,bt_s_sum,bt_s_antall,opprettet,oppdatert) " +
-                            "VALUES (2,'EB',CURRENT_TIMESTAMP, CURRENT_DATE,CURRENT_DATE,2,'MIA4408',  NULL, NULL, NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, CURRENT_DATE,CURRENT_DATE)")
+        jdbcTemplate.update(
+            "INSERT INTO t_rolle (vedtak_id,type,tidspunkt_reg,fom,tom,person_lopenr_r,brukerid,barn_type,bor_sammen_med,trygdetid_faktisk,trygdetid_anvendt,trygdetid_unntak,trygd_medlem_siden,utenlandsopphold,bt_1_sum,bt_1_antall,bt_2_sum,bt_2_antall,bt_s_sum,bt_s_antall,opprettet,oppdatert) " +
+                "VALUES (2,'EB',CURRENT_TIMESTAMP, CURRENT_DATE,CURRENT_DATE,2,'MIA4408',  NULL, NULL, NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, CURRENT_DATE,CURRENT_DATE)"
+        )
 
         // barnetilsynbarn 2 på barnetilsynvedtak
-        jdbcTemplate.update("INSERT INTO t_rolle (vedtak_id,type,tidspunkt_reg,fom,tom,person_lopenr_r,brukerid,barn_type,bor_sammen_med,trygdetid_faktisk,trygdetid_anvendt,trygdetid_unntak,trygd_medlem_siden,utenlandsopphold,bt_1_sum,bt_1_antall,bt_2_sum,bt_2_antall,bt_s_sum,bt_s_antall,opprettet,oppdatert) " +
-                            "VALUES (2,'EB',CURRENT_TIMESTAMP, CURRENT_DATE,CURRENT_DATE,3,'MIA4409',  NULL, NULL, NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, CURRENT_DATE,CURRENT_DATE)")
-
+        jdbcTemplate.update(
+            "INSERT INTO t_rolle (vedtak_id,type,tidspunkt_reg,fom,tom,person_lopenr_r,brukerid,barn_type,bor_sammen_med,trygdetid_faktisk,trygdetid_anvendt,trygdetid_unntak,trygd_medlem_siden,utenlandsopphold,bt_1_sum,bt_1_antall,bt_2_sum,bt_2_antall,bt_s_sum,bt_s_antall,opprettet,oppdatert) " +
+                "VALUES (2,'EB',CURRENT_TIMESTAMP, CURRENT_DATE,CURRENT_DATE,3,'MIA4409',  NULL, NULL, NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, CURRENT_DATE,CURRENT_DATE)"
+        )
     }
 }

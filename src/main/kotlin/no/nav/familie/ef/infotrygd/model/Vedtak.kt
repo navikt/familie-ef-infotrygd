@@ -27,6 +27,9 @@ data class Vedtak(
     @Column(name = "TYPE_SAK")
     val sakstype: String,
 
+    @Column(name = "KODE_RESULTAT")
+    val kodeResultat: String,
+
     @Column(name = "BRUKERID")
     val brukerId: String,
 
