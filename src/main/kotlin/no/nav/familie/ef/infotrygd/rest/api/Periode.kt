@@ -61,8 +61,11 @@ data class Periode(
     val stønadFom: LocalDate,
     val stønadTom: LocalDate,
     val opphørsdato: LocalDate?,
-    val barnIdenter : List<String> = emptyList()
-)
+    val barnIdenter: List<String> = emptyList(),
+    val vedtakKodeResultat: String
+) {
+    fun erFortsattInnvilget() = vedtakKodeResultat == "FI"
+}
 
 /**
  * AN      	Annullert
@@ -131,7 +134,10 @@ enum class InfotrygdSakstype(val infotrygdKode: String, val beskrivelse: String)
 
 enum class InfotrygdOvergangsstønadKode(val infotrygdKode: String, val beskrivelse: String) {
     BARN_UNDER_1_3_ÅR("1", "Barn under 1 år / 3 år (gamle tilfeller)"),
-    YRKESRETTET_AKTIVITET_BARN_FYLT_1_3_ÅR("2", "Er i yrkesrettet aktivitet - barn har fylt 1 år / 3 år (gamle tilfeller)"),
+    YRKESRETTET_AKTIVITET_BARN_FYLT_1_3_ÅR(
+        "2",
+        "Er i yrkesrettet aktivitet - barn har fylt 1 år / 3 år (gamle tilfeller)"
+    ),
     UNNTAK_FRA_KRAV_TIL_YRKESRETTET_AKTIVITET(
         "3",
         "Unntak fra krav til yrkesr. aktivitet når barn har fylt 1 år / år (gamle tilfeller)"

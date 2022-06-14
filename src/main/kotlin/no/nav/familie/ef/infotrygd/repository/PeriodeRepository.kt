@@ -107,6 +107,7 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
             ef.kode_overg,
             s.dato_start,
             v.type_sak,
+            v.kode_resultat,
             v.dato_innv_fom,
             v.dato_innv_tom,
             s.dato_opphor,
@@ -153,7 +154,8 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
                     startDato = rs.getDate("dato_start").toLocalDate(),
                     stønadFom = rs.getDate("dato_innv_fom").toLocalDate(),
                     stønadTom = rs.getDate("dato_innv_tom").toLocalDate(),
-                    opphørsdato = rs.getDate("dato_opphor")?.toLocalDate()
+                    opphørsdato = rs.getDate("dato_opphor")?.toLocalDate(),
+                    vedtakKodeResultat = rs.getString("kode_resultat").trim()
                 )
         }
     }
@@ -199,14 +201,16 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
             return emptyMap()
         }
         val values = MapSqlParameterSource()
-                .addValue("vedtakIdListe", barnetilsynPerioder.map { it.vedtakId })
+            .addValue("vedtakIdListe", barnetilsynPerioder.map { it.vedtakId })
 
-        val resultatliste = jdbcTemplate.query("""
+        val resultatliste = jdbcTemplate.query(
+            """
                 SELECT r.vedtak_id, barn.personnr
                 FROM t_rolle r 
                 JOIN t_lopenr_fnr barn ON barn.person_lopenr = r.person_lopenr_r
                 WHERE r.vedtak_id IN (:vedtakIdListe)
-        """, values
+        """,
+            values
         ) { rs, _ -> rs.getLong("vedtak_id") to rs.getString("personnr") }
         return resultatliste.groupBy({ it.first }, { it.second })
     }
