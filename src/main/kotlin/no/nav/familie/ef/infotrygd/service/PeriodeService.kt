@@ -19,8 +19,32 @@ class PeriodeService(private val periodeRepository: PeriodeRepository) {
     private fun hentBarnetilsynPerioderMedBarn(perioder: Map<StønadType, List<Periode>>): List<Periode> {
         val barnetilsynPerioder = perioder.getOrDefault(BARNETILSYN, emptyList())
         val barnetilsynPeriodeBarnListe = periodeRepository.hentBarnForPerioder(barnetilsynPerioder)
+
+        barnetilsynPerioder.groupBy { it.stønadId }
+            .values
+            .map { perioder ->
+                perioder.sortedBy { it.vedtakId }
+                    .fold(emptyList<Periode>()) { acc, periode ->
+                        var barnIdenter = barnIdenterForVedtakEllerForForrigeVedtakHvisManglerBarnIdenter(acc, periode, barnetilsynPeriodeBarnListe)
+                        acc + periode.copy(barnIdenter = barnIdenter)
+                    }
+            }
+
         return barnetilsynPerioder.map {
             it.copy(barnIdenter = barnetilsynPeriodeBarnListe[it.vedtakId] ?: emptyList())
         }
+    }
+
+    private fun barnIdenterForVedtakEllerForForrigeVedtakHvisManglerBarnIdenter(
+        acc: List<Periode>,
+        periode: Periode,
+        barnetilsynPeriodeBarnListe: Map<Long, List<String>>
+    ): List<String> {
+        val barnIdenter = barnetilsynPeriodeBarnListe[periode.vedtakId] ?: emptyList()
+        val last = acc.lastOrNull()
+        if (barnIdenter.isEmpty() && last != null && last.barnIdenter.isNotEmpty()) {
+            return last.barnIdenter
+        }
+        return barnIdenter
     }
 }

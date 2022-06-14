@@ -58,6 +58,25 @@ internal class PeriodeServiceTest {
         assertThat(barnetilsynPerioderHentet.barnIdenter).isEmpty()
     }
 
+    @Test
+    fun `Ingen barnetilsynbarn funnet - skal bruke forrige periode sine barn hvis det finnes`() {
+        val request = PeriodeRequest(
+            personIdenter = setOf(FoedselsNr("01015450572")),
+            stønadstyper = setOf(BARNETILSYN, OVERGANGSSTØNAD)
+        )
+        val uendretPeriode = lagPeriode()
+        every { periodeRepository.hentPerioder(any()) } returns listOf(
+            Pair(BARNETILSYN, lagPeriode(vedtakId = 35L), lagPeriode(vedtakId = 34L)),
+            Pair(OVERGANGSSTØNAD, uendretPeriode)
+        )
+        every { periodeRepository.hentBarnForPerioder(any()) } returns mapOf(34L to listOf("123"))
+
+        val perioder = periodeService.hentPerioder(request = request)
+        val barnetilsynPerioderHentet = perioder.get(BARNETILSYN)!!.map{ it.vedtak_id to it}.toMap()
+        assertThat(barnetilsynPerioderHentet[34L]!!.barnIdenter).isNotEmpty()
+        assertThat(barnetilsynPerioderHentet[35L]!!.barnIdenter).isNotEmpty()
+    }
+
     private fun lagPeriode(vedtakId: Long = 1) = Periode(
             personIdent = "123",
             sakstype = InfotrygdSakstype.SØKNAD,
