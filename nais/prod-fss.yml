@@ -58,8 +58,6 @@ spec:
       rules:
         - application: familie-ef-sak
           cluster: prod-gcp
-        - application: familie-ef-mottak
-          cluster: prod-gcp
   env:
     - name: APP_DATASOURCE_URL
       value: jdbc:oracle:thin:@a01dbfl037.adeo.no:1521/infotrygd_efp
