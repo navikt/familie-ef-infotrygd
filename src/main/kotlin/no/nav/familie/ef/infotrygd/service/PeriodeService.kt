@@ -5,14 +5,17 @@ import no.nav.familie.ef.infotrygd.model.StønadType.BARNETILSYN
 import no.nav.familie.ef.infotrygd.repository.PeriodeRepository
 import no.nav.familie.ef.infotrygd.rest.api.Periode
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeRequest
+import no.nav.familie.ef.infotrygd.utils.InfotrygdPeriodeUtil
 import org.springframework.stereotype.Service
 
 @Service
 class PeriodeService(private val periodeRepository: PeriodeRepository) {
 
     fun hentPerioder(request: PeriodeRequest): Map<StønadType, List<Periode>> {
-        val perioder = periodeRepository.hentPerioder(request).groupBy({ it.first }) { it.second }.toMutableMap()
-        perioder[BARNETILSYN] = hentBarnetilsynPerioderMedBarn(perioder)
+        val perioder =
+            periodeRepository.hentPerioder(request).groupBy({ it.first }) { it.second }.mapValues { slåSammenPerioder(it.value) }
+                .toMutableMap()
+        perioder[BARNETILSYN] = slåSammenPerioder(hentBarnetilsynPerioderMedBarn(perioder))
         return perioder
     }
 
@@ -59,5 +62,9 @@ class PeriodeService(private val periodeRepository: PeriodeRepository) {
         } else {
             emptyList()
         }
+    }
+
+    private fun slåSammenPerioder(perioder: List<Periode>): List<Periode> {
+        return InfotrygdPeriodeUtil.slåSammenInfotrygdperioder(perioder)
     }
 }

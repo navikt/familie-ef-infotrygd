@@ -5,7 +5,7 @@ val filformatVersion = "1.2019.06.26-14.50-746e7610cb12"
 val tokenSupportVersion = "1.3.2"
 val springfoxVersion = "3.0.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
-
+val kontrakterVersion = "2.0_20220712141639_0440c10"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 val ktlint by configurations.creating
 
@@ -33,7 +33,6 @@ configurations {
 repositories {
     mavenCentral()
     maven {
-        name = "Github"
         url = uri("https://maven.pkg.github.com/navikt/nav-foedselsnummer")
         credentials {
             username = "x-access-token" //project.findProperty("gpr.user") as String? ?: System.getenv("GPR_USER")
@@ -68,6 +67,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("net.ttddyy:datasource-proxy:1.4.1")
     implementation("no.nav.security:token-validation-spring:$tokenSupportVersion")
+    implementation("no.nav.familie.kontrakter:enslig-forsorger:$kontrakterVersion")
     testImplementation("no.nav.security:token-validation-test-support:$tokenSupportVersion")
     implementation("javax.inject:javax.inject:1")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
