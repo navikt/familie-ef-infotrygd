@@ -1,6 +1,6 @@
 package no.nav.familie.ef.infotrygd
 
-import no.nav.familie.ef.infotrygd.testutil.restClientNoAuth
+import no.nav.familie.ef.infotrygd.testutils.restClientNoAuth
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith

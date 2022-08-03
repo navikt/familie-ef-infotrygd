@@ -6,6 +6,7 @@ val tokenSupportVersion = "1.3.2"
 val springfoxVersion = "3.0.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
 val kontrakterVersion = "2.0_20220712141639_0440c10"
+val fellesVersion = "1.20220701144106_918df22"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 val ktlint by configurations.creating
 
@@ -33,6 +34,7 @@ configurations {
 repositories {
     mavenCentral()
     maven {
+        name = "Github"
         url = uri("https://maven.pkg.github.com/navikt/nav-foedselsnummer")
         credentials {
             username = "x-access-token" //project.findProperty("gpr.user") as String? ?: System.getenv("GPR_USER")
@@ -68,6 +70,7 @@ dependencies {
     implementation("net.ttddyy:datasource-proxy:1.4.1")
     implementation("no.nav.security:token-validation-spring:$tokenSupportVersion")
     implementation("no.nav.familie.kontrakter:enslig-forsorger:$kontrakterVersion")
+    implementation("no.nav.familie.kontrakter:felles:$kontrakterVersion")
     testImplementation("no.nav.security:token-validation-test-support:$tokenSupportVersion")
     implementation("javax.inject:javax.inject:1")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -80,6 +83,7 @@ dependencies {
     implementation("com.oracle.ojdbc:ojdbc8:19.3.0.0")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.3.0")
     testImplementation("org.testcontainers:oracle-xe:1.12.1")
     testImplementation("com.h2database:h2")
     testImplementation("org.flywaydb:flyway-core")
