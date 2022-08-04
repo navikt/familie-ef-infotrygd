@@ -1,11 +1,11 @@
 package no.nav.familie.ef.infotrygd.testutils
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
+import no.nav.familie.ef.infotrygd.perioder.InternPeriode
+import no.nav.familie.ef.infotrygd.perioder.tilInternPeriode
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdEndringKode
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSakstype
 import no.nav.familie.ef.infotrygd.rest.api.Periode
-import no.nav.familie.ef.infotrygd.utils.InternPeriode
-import no.nav.familie.ef.infotrygd.utils.tilInternPeriode
 import java.net.URL
 import java.time.LocalDate
 import java.time.LocalDateTime

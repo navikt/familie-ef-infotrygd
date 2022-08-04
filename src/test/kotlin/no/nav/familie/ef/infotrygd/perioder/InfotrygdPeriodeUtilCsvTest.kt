@@ -1,7 +1,8 @@
-package no.nav.familie.ef.infotrygd.utils
+package no.nav.familie.ef.infotrygd.perioder
 
 import no.nav.familie.ef.infotrygd.rest.api.Periode
 import no.nav.familie.ef.infotrygd.testutils.InfotrygdPeriodeParser
+import no.nav.familie.ef.infotrygd.utils.InfotrygdPeriodeUtil
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test

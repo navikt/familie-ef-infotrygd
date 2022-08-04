@@ -1,4 +1,4 @@
-package no.nav.familie.ef.infotrygd.utils
+package no.nav.familie.ef.infotrygd.perioder
 
 import no.nav.familie.ef.infotrygd.rest.api.Periode
 import no.nav.familie.kontrakter.felles.ef.PeriodeOvergangsstønad
