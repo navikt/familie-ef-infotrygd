@@ -13,6 +13,14 @@ class PeriodeService(private val periodeRepository: PeriodeRepository) {
 
     fun hentPerioder(request: PeriodeRequest): Map<StønadType, List<Periode>> {
         val perioder =
+            periodeRepository.hentPerioder(request).groupBy({ it.first }) { it.second }
+                .toMutableMap()
+        perioder[BARNETILSYN] = hentBarnetilsynPerioderMedBarn(perioder)
+        return perioder
+    }
+
+    fun hentSammenslåttePerioder(request: PeriodeRequest): Map<StønadType, List<Periode>> {
+        val perioder =
             periodeRepository.hentPerioder(request).groupBy({ it.first }) { it.second }.mapValues { slåSammenPerioder(it.value) }
                 .toMutableMap()
         perioder[BARNETILSYN] = slåSammenPerioder(hentBarnetilsynPerioderMedBarn(perioder))
