@@ -46,7 +46,7 @@ class PeriodeController(private val periodeRepository: PeriodeRepository, privat
     }
 
     @ApiOperation("Henter sammenslåtte perioder")
-    @PostMapping("/sammenslåtte")
+    @PostMapping("/sammenslatte")
     @ApiImplicitParams(
         ApiImplicitParam(
             name = "request",
