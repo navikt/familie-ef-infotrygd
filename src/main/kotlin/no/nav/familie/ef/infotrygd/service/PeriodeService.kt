@@ -16,7 +16,7 @@ class PeriodeService(private val periodeRepository: PeriodeRepository) {
             periodeRepository.hentPerioder(request).groupBy({ it.first }) { it.second }
                 .toMutableMap()
         perioder[BARNETILSYN] = hentBarnetilsynPerioderMedBarn(perioder)
-        return perioder
+        return perioder.map { it.key to it.value.sortedByDescending { it.stønadFom } }.toMap()
     }
 
     fun hentSammenslåttePerioder(request: PeriodeRequest): Map<StønadType, List<Periode>> {
