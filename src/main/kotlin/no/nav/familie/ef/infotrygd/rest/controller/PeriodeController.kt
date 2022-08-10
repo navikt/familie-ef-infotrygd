@@ -34,7 +34,7 @@ class PeriodeController(private val periodeRepository: PeriodeRepository, privat
             name = "request",
             dataType = "PeriodeRequest",
             value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
-                    " \"stønadstyper\": [\n\"OVERGANGSSTØNAD\"\n] \n}"
+                " \"stønadstyper\": [\n\"OVERGANGSSTØNAD\"\n] \n}"
         )
     )
     fun hentPerioder(@RequestBody request: PeriodeRequest): ResponseEntity<Any> {
@@ -52,7 +52,7 @@ class PeriodeController(private val periodeRepository: PeriodeRepository, privat
             name = "request",
             dataType = "PeriodeRequest",
             value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
-                    " \"stønadstyper\": [\n\"OVERGANGSSTØNAD\"\n] \n}"
+                " \"stønadstyper\": [\n\"OVERGANGSSTØNAD\"\n] \n}"
         )
     )
     fun hentSammenslåttePerioder(@RequestBody request: PeriodeRequest): ResponseEntity<Any> {
@@ -73,7 +73,7 @@ class PeriodeController(private val periodeRepository: PeriodeRepository, privat
             name = "request",
             dataType = "PeriodeArenaRequest",
             value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
-                    " \"fomDato\": \"2020-01-01\",\n  \"tomDato\": \"2021-01-01\"\n}"
+                " \"fomDato\": \"2020-01-01\",\n  \"tomDato\": \"2021-01-01\"\n}"
         )
     )
     fun hentPerioderForArena(@RequestBody request: PeriodeArenaRequest): ResponseEntity<Any> {

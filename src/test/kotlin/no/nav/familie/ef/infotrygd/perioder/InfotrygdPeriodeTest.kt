@@ -115,7 +115,7 @@ internal class InfotrygdPeriodeTest {
 
     private fun Periode.erPeriodeOverlappende(periode: Periode): Boolean {
         return (erDatoInnenforPeriode(periode.stønadFom) || erDatoInnenforPeriode(periode.stønadTom)) ||
-                omslutter(periode)
+            omslutter(periode)
     }
 
     private fun lagPeriode(fom: LocalDate, tom: LocalDate) =
