@@ -66,8 +66,8 @@ internal class PeriodeServiceTest {
         )
         val uendretPeriode = lagPeriode()
         every { periodeRepository.hentPerioder(any()) } returns listOf(
-            Pair(BARNETILSYN, lagPeriode(vedtakId = 35L, "FI")),
-            Pair(BARNETILSYN, lagPeriode(vedtakId = 34L)),
+            Pair(BARNETILSYN, lagPeriode(vedtakId = 35L, "FI", stønadFom = LocalDate.MIN.plusDays(4), stønadTom = LocalDate.MAX)),
+            Pair(BARNETILSYN, lagPeriode(vedtakId = 34L, stønadFom = LocalDate.MIN, stønadTom = LocalDate.MIN.plusDays(3))),
             Pair(OVERGANGSSTØNAD, uendretPeriode)
         )
         every { periodeRepository.hentBarnForPerioder(any()) } returns mapOf(34L to listOf("123"))
@@ -78,7 +78,12 @@ internal class PeriodeServiceTest {
         assertThat(barnetilsynPerioderHentet[35L]!!.barnIdenter).isNotEmpty
     }
 
-    private fun lagPeriode(vedtakId: Long = 1, vedtakKodeResultat: String = "I") = Periode(
+    private fun lagPeriode(
+        vedtakId: Long = 1,
+        vedtakKodeResultat: String = "I",
+        stønadFom: LocalDate = LocalDate.MIN,
+        stønadTom: LocalDate = LocalDate.MAX
+    ) = Periode(
         personIdent = "123",
         sakstype = InfotrygdSakstype.SØKNAD,
         kode = InfotrygdEndringKode.FØRSTEGANGSVEDTAK,
@@ -95,8 +100,8 @@ internal class PeriodeServiceTest {
         utgifterBarnetilsyn = 0,
         månedsbeløp = 0,
         startDato = LocalDate.MIN,
-        stønadFom = LocalDate.MIN,
-        stønadTom = LocalDate.MAX,
+        stønadFom = stønadFom,
+        stønadTom = stønadTom,
         opphørsdato = null,
         barnIdenter = emptyList(),
         vedtakKodeResultat = vedtakKodeResultat

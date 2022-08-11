@@ -1,4 +1,4 @@
-package no.nav.familie.ef.infotrygd.testutil
+package no.nav.familie.ef.infotrygd.testutils
 
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT

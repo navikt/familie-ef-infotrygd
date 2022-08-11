@@ -2,9 +2,9 @@ package no.nav.familie.ef.infotrygd.rest.controller
 
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdFinnesResponse
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSøkRequest
-import no.nav.familie.ef.infotrygd.testutil.TestData
-import no.nav.familie.ef.infotrygd.testutil.restClient
-import no.nav.familie.ef.infotrygd.testutil.restClientNoAuth
+import no.nav.familie.ef.infotrygd.testutils.TestData
+import no.nav.familie.ef.infotrygd.testutils.restClient
+import no.nav.familie.ef.infotrygd.testutils.restClientNoAuth
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
