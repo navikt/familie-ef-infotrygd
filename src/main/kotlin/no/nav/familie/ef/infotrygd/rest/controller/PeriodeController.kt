@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import no.nav.familie.ef.infotrygd.model.StønadType
 import no.nav.familie.ef.infotrygd.repository.PeriodeRepository
+import no.nav.familie.ef.infotrygd.rest.api.Periode
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeArenaRequest
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeArenaResponse
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeRequest
@@ -41,13 +42,25 @@ class PeriodeController(private val periodeRepository: PeriodeRepository, privat
             return ResponseEntity.badRequest().build()
         }
         val perioder = periodeService.hentPerioder(request)
-        return ResponseEntity.ok(
-            PeriodeResponse(
-                overgangsstønad = perioder.getOrDefault(StønadType.OVERGANGSSTØNAD, emptyList()),
-                barnetilsyn = perioder.getOrDefault(StønadType.BARNETILSYN, emptyList()),
-                skolepenger = perioder.getOrDefault(StønadType.SKOLEPENGER, emptyList())
-            )
+        return ResponseEntity.ok(lagPeriodeResponse(perioder))
+    }
+
+    @ApiOperation("Henter sammenslåtte perioder")
+    @PostMapping("/sammenslatte")
+    @ApiImplicitParams(
+        ApiImplicitParam(
+            name = "request",
+            dataType = "PeriodeRequest",
+            value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
+                " \"stønadstyper\": [\n\"OVERGANGSSTØNAD\"\n] \n}"
         )
+    )
+    fun hentSammenslåttePerioder(@RequestBody request: PeriodeRequest): ResponseEntity<Any> {
+        if (request.personIdenter.isEmpty()) {
+            return ResponseEntity.badRequest().build()
+        }
+        val perioder = periodeService.hentSammenslåttePerioder(request)
+        return ResponseEntity.ok(lagPeriodeResponse(perioder))
     }
 
     /**
@@ -79,5 +92,13 @@ class PeriodeController(private val periodeRepository: PeriodeRepository, privat
     fun hentMigreringspersoner(@RequestParam antall: Int): ResponseEntity<Any> {
         val personerForMigrering = periodeRepository.hentPersonerForMigrering(antall)
         return ResponseEntity.ok(personerForMigrering)
+    }
+
+    private fun lagPeriodeResponse(perioder: Map<StønadType, List<Periode>>): PeriodeResponse {
+        return PeriodeResponse(
+            overgangsstønad = perioder.getOrDefault(StønadType.OVERGANGSSTØNAD, emptyList()),
+            barnetilsyn = perioder.getOrDefault(StønadType.BARNETILSYN, emptyList()),
+            skolepenger = perioder.getOrDefault(StønadType.SKOLEPENGER, emptyList())
+        )
     }
 }

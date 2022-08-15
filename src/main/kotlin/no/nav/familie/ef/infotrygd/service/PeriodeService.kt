@@ -5,15 +5,22 @@ import no.nav.familie.ef.infotrygd.model.StønadType.BARNETILSYN
 import no.nav.familie.ef.infotrygd.repository.PeriodeRepository
 import no.nav.familie.ef.infotrygd.rest.api.Periode
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeRequest
+import no.nav.familie.ef.infotrygd.utils.InfotrygdPeriodeUtil
 import org.springframework.stereotype.Service
 
 @Service
 class PeriodeService(private val periodeRepository: PeriodeRepository) {
 
     fun hentPerioder(request: PeriodeRequest): Map<StønadType, List<Periode>> {
-        val perioder = periodeRepository.hentPerioder(request).groupBy({ it.first }) { it.second }.toMutableMap()
+        val perioder =
+            periodeRepository.hentPerioder(request).groupBy({ it.first }) { it.second }
+                .toMutableMap()
         perioder[BARNETILSYN] = hentBarnetilsynPerioderMedBarn(perioder)
-        return perioder
+        return perioder.map { it.key to it.value.sortedByDescending { it.stønadFom } }.toMap()
+    }
+
+    fun hentSammenslåttePerioder(request: PeriodeRequest): Map<StønadType, List<Periode>> {
+        return hentPerioder(request).map { it.key to slåSammenPerioder(it.value) }.toMap()
     }
 
     private fun hentBarnetilsynPerioderMedBarn(perioder: Map<StønadType, List<Periode>>): List<Periode> {
@@ -59,5 +66,9 @@ class PeriodeService(private val periodeRepository: PeriodeRepository) {
         } else {
             emptyList()
         }
+    }
+
+    private fun slåSammenPerioder(perioder: List<Periode>): List<Periode> {
+        return InfotrygdPeriodeUtil.slåSammenInfotrygdperioder(perioder)
     }
 }
