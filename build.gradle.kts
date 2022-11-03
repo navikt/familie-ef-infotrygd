@@ -2,7 +2,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val mockkVersion = "1.13.2"
 val filformatVersion = "1.2019.06.26-14.50-746e7610cb12"
-val tokenSupportVersion = "2.1.6"
+val tokenSupportVersion = "1.3.2"
+//val tokenSupportVersion = "2.1.6"
 val springdocVersion = "1.6.12"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
 val kontrakterVersion = "2.0_20221027151559_d8da825"
@@ -72,6 +73,7 @@ dependencies {
     implementation("no.nav.familie.kontrakter:enslig-forsorger:$kontrakterVersion")
     implementation("no.nav.familie.kontrakter:felles:$kontrakterVersion")
     testImplementation("no.nav.security:token-validation-test-support:$tokenSupportVersion")
+    //testImplementation("no.nav.security:token-validation-spring-test:$tokenSupportVersion")
     implementation("javax.inject:javax.inject:1")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")

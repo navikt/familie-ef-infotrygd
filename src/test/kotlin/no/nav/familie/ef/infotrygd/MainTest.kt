@@ -5,10 +5,11 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
+import reactor.core.publisher.Mono
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -16,7 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner
 class MainTest {
 
     @LocalServerPort
-    var port: kotlin.Int = 0
+    var port: Int = 0
 
     @Test
     fun contextLoads() {
@@ -27,7 +28,7 @@ class MainTest {
         val response = restClientNoAuth(port)
             .get()
             .uri("/internal/health")
-            .exchange()
+            .exchangeToMono { Mono.just(it.mutate().build()) }
             .block() !!
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK)
