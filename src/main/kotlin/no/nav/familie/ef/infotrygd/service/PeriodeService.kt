@@ -23,8 +23,8 @@ class PeriodeService(private val periodeRepository: PeriodeRepository) {
         return hentPerioder(request).map { it.key to slåSammenPerioder(it.value) }.toMap()
     }
 
-    private fun hentBarnetilsynPerioderMedBarn(perioder: Map<StønadType, List<Periode>>): List<Periode> {
-        val barnetilsynPerioder = perioder.getOrDefault(BARNETILSYN, emptyList())
+    private fun hentBarnetilsynPerioderMedBarn(perioderPerStønadstype: Map<StønadType, List<Periode>>): List<Periode> {
+        val barnetilsynPerioder = perioderPerStønadstype.getOrDefault(BARNETILSYN, emptyList())
         val barnetilsynPeriodeBarnListe = periodeRepository.hentBarnForPerioder(barnetilsynPerioder)
 
         return barnetilsynPerioder.groupBy { it.stønadId }

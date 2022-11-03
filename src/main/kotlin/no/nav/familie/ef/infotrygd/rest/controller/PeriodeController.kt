@@ -1,9 +1,10 @@
 package no.nav.familie.ef.infotrygd.rest.controller
 
 import io.micrometer.core.annotation.Timed
-import io.swagger.annotations.ApiImplicitParam
-import io.swagger.annotations.ApiImplicitParams
-import io.swagger.annotations.ApiOperation
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.Parameters
+import io.swagger.v3.oas.annotations.media.ExampleObject
 import no.nav.familie.ef.infotrygd.model.StønadType
 import no.nav.familie.ef.infotrygd.repository.PeriodeRepository
 import no.nav.familie.ef.infotrygd.rest.api.Periode
@@ -27,14 +28,17 @@ import org.springframework.web.bind.annotation.RestController
 @ProtectedWithClaims(issuer = "azure")
 class PeriodeController(private val periodeRepository: PeriodeRepository, private val periodeService: PeriodeService) {
 
-    @ApiOperation("Henter perioder")
+    @Operation(summary = "Henter perioder")
     @PostMapping
-    @ApiImplicitParams(
-        ApiImplicitParam(
-            name = "request",
-            dataType = "PeriodeRequest",
-            value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
-                " \"stønadstyper\": [\n\"OVERGANGSSTØNAD\"\n] \n}"
+    @Parameters(
+        Parameter(
+            examples = [
+                ExampleObject(
+                    name = "request",
+                    value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
+                        " \"stønadstyper\": [\n\"OVERGANGSSTØNAD\"\n] \n}"
+                )
+            ]
         )
     )
     fun hentPerioder(@RequestBody request: PeriodeRequest): ResponseEntity<Any> {
@@ -45,14 +49,17 @@ class PeriodeController(private val periodeRepository: PeriodeRepository, privat
         return ResponseEntity.ok(lagPeriodeResponse(perioder))
     }
 
-    @ApiOperation("Henter sammenslåtte perioder")
+    @Operation(summary = "Henter sammenslåtte perioder")
     @PostMapping("/sammenslatte")
-    @ApiImplicitParams(
-        ApiImplicitParam(
-            name = "request",
-            dataType = "PeriodeRequest",
-            value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
-                " \"stønadstyper\": [\n\"OVERGANGSSTØNAD\"\n] \n}"
+    @Parameters(
+        Parameter(
+            examples = [
+                ExampleObject(
+                    name = "request",
+                    value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
+                        " \"stønadstyper\": [\n\"OVERGANGSSTØNAD\"\n] \n}"
+                )
+            ]
         )
     )
     fun hentSammenslåttePerioder(@RequestBody request: PeriodeRequest): ResponseEntity<Any> {
@@ -66,14 +73,17 @@ class PeriodeController(private val periodeRepository: PeriodeRepository, privat
     /**
      * Denne henter perioder for alle typer EF-stønader, då arena ønsker de sammenslåtte
      */
-    @ApiOperation("Henter perioder for Arena")
+    @Operation(summary = "Henter perioder for Arena")
     @PostMapping(path = ["/arena", "/overgangsstonad"])
-    @ApiImplicitParams(
-        ApiImplicitParam(
-            name = "request",
-            dataType = "PeriodeArenaRequest",
-            value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
-                " \"fomDato\": \"2020-01-01\",\n  \"tomDato\": \"2021-01-01\"\n}"
+    @Parameters(
+        Parameter(
+            examples = [
+                ExampleObject(
+                    name = "request",
+                    value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
+                        " \"fomDato\": \"2020-01-01\",\n  \"tomDato\": \"2021-01-01\"\n}"
+                )
+            ]
         )
     )
     fun hentPerioderForArena(@RequestBody request: PeriodeArenaRequest): ResponseEntity<Any> {

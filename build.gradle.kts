@@ -1,20 +1,20 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val mockkVersion = "1.10.4"
+val mockkVersion = "1.13.2"
 val filformatVersion = "1.2019.06.26-14.50-746e7610cb12"
-val tokenSupportVersion = "1.3.2"
-val springfoxVersion = "3.0.0"
+val tokenSupportVersion = "2.1.6"
+val springdocVersion = "1.6.12"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
-val kontrakterVersion = "2.0_20220712141639_0440c10"
-val fellesVersion = "1.20220701144106_918df22"
+val kontrakterVersion = "2.0_20221027151559_d8da825"
+val fellesVersion = "1.20221006150009_46021ed"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 val ktlint by configurations.creating
 
 plugins {
-    val kotlinVersion = "1.6.10"
-    val springBootVersion = "2.3.5.RELEASE"
+    val kotlinVersion = "1.7.20"
+    val springBootVersion = "2.7.5"
     id("org.springframework.boot") version springBootVersion
-    id("io.spring.dependency-management") version "1.0.10.RELEASE"
+    id("io.spring.dependency-management") version "1.1.0"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
@@ -23,7 +23,7 @@ plugins {
 
 group = "no.nav"
 version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 configurations {
     compileOnly {
@@ -75,7 +75,8 @@ dependencies {
     implementation("javax.inject:javax.inject:1")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("io.springfox:springfox-boot-starter:$springfoxVersion")
+    implementation("org.springdoc:springdoc-openapi-ui:$springdocVersion")
+    implementation("org.springdoc:springdoc-openapi-kotlin:$springdocVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:5.1")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -83,11 +84,11 @@ dependencies {
     implementation("com.oracle.ojdbc:ojdbc8:19.3.0.0")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.3.0")
+    testImplementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.6.0")
     testImplementation("org.testcontainers:oracle-xe:1.12.1")
     testImplementation("com.h2database:h2")
     testImplementation("org.flywaydb:flyway-core")
-    testImplementation("io.mockk:mockk:$mockkVersion")
+    testImplementation("io.mockk:mockk-jvm:$mockkVersion")
 }
 
 val inputFiles = project.fileTree(mapOf("dir" to "src", "include" to "**/*.kt"))
@@ -119,7 +120,7 @@ tasks.withType<KotlinCompile> {
     tasks.findByName("ktlintCheck")?.mustRunAfter("ktlintFormat")
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 }
 

@@ -1,8 +1,8 @@
-FROM navikt/java:11
+FROM ghcr.io/navikt/baseimages/temurin:17-appdynamics
 
 COPY init.sh /init-scripts/init.sh
 
-ENV JAVA_OPTS="${JAVA_OPTS} -Xms270M"
+ENV JAVA_OPTS="${JAVA_OPTS} -Xms270M -XX:MaxRAMPercentage=75"
 
 COPY build/libs/*.jar app.jar
 EXPOSE 8080

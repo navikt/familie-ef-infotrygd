@@ -1,46 +1,30 @@
 package no.nav.familie.ef.infotrygd
 
+import io.swagger.v3.oas.models.Components
+import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.oas.models.info.Info
+import io.swagger.v3.oas.models.security.SecurityRequirement
+import io.swagger.v3.oas.models.security.SecurityScheme
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import springfox.documentation.builders.PathSelectors
-import springfox.documentation.builders.RequestHandlerSelectors
-import springfox.documentation.service.ApiKey
-import springfox.documentation.service.AuthorizationScope
-import springfox.documentation.service.SecurityReference
-import springfox.documentation.spi.DocumentationType
-import springfox.documentation.spi.service.contexts.SecurityContext
-import springfox.documentation.spring.web.plugins.Docket
 
 @Configuration
 class SwaggerConfig {
+    private val bearer = "Bearer"
+
     @Bean
-    fun api(): Docket {
-        return Docket(DocumentationType.SWAGGER_2)
-            .securityContexts(listOf(securityContext()))
-            .securitySchemes(
-                listOf(
-                    ApiKey("JWT", "Authorization", "header")
-                )
-            )
-            .select()
-            .apis(RequestHandlerSelectors.basePackage("no.nav.infotrygd"))
-            .paths(PathSelectors.any())
-            .build()
+    fun openApi(): OpenAPI {
+        return OpenAPI().info(Info().title("Familie ef infotrygd api"))
+            .components(Components().addSecuritySchemes(bearer, bearerTokenSecurityScheme()))
+            .addSecurityItem(SecurityRequirement().addList(bearer, listOf("read", "write")))
     }
 
-    private fun securityContext(): SecurityContext {
-        return SecurityContext.builder()
-            .securityReferences(defaultAuth())
-            .forPaths(PathSelectors.regex(".*"))
-            .build()
-    }
-
-    fun defaultAuth(): List<SecurityReference> {
-        val authorizationScope = AuthorizationScope("global", "accessEverything")
-        val authorizationScopes = arrayOfNulls<AuthorizationScope>(1)
-        authorizationScopes[0] = authorizationScope
-        return listOf(
-            SecurityReference("JWT", authorizationScopes)
-        )
+    private fun bearerTokenSecurityScheme(): SecurityScheme {
+        return SecurityScheme()
+            .type(SecurityScheme.Type.APIKEY)
+            .scheme(bearer)
+            .bearerFormat("JWT")
+            .`in`(SecurityScheme.In.HEADER)
+            .name("Authorization")
     }
 }
