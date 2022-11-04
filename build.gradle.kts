@@ -80,7 +80,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("org.postgresql:postgresql")
-    implementation("com.oracle.ojdbc:ojdbc8:19.3.0.0")
+    implementation("com.oracle.ojdbc:ojdbc11:21.7.0.0")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.3.0")
