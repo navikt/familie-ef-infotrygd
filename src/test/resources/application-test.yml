@@ -13,9 +13,11 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
-    initialization-mode: always
-    platform: h2
-    continue-on-error: true
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+      platform: h2
 
 no.nav.security.jwt:
   expirythreshold: 60 #threshold in minutes until token expires

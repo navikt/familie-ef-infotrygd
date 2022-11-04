@@ -13,7 +13,7 @@ val ktlint by configurations.creating
 
 plugins {
     val kotlinVersion = "1.7.20"
-    val springBootVersion = "2.7.5"
+    val springBootVersion = "2.6.7"
     id("org.springframework.boot") version springBootVersion
     id("io.spring.dependency-management") version "1.1.0"
     kotlin("jvm") version kotlinVersion
@@ -86,7 +86,7 @@ dependencies {
     implementation("com.oracle.ojdbc:ojdbc8:19.3.0.0")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.6.0")
+    testImplementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.3.0")
     testImplementation("org.testcontainers:oracle-xe:1.12.1")
     testImplementation("com.h2database:h2")
     testImplementation("org.flywaydb:flyway-core")
