@@ -3,7 +3,7 @@
 Dette er en REST-tjeneste som gir tilgang til historiske data fra Infotrygd
 via replikert database.
 
-http://localhost:8093/swagger-ui.html
+Swagger: http://localhost:8080/swagger-ui.html
 
 Tabeller og kolonner som er i bruk: http://localhost:8080/tables 
 
