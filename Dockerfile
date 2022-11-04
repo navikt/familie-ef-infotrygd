@@ -1,4 +1,4 @@
-FROM ghcr.io/navikt/baseimages/temurin:17-appdynamics
+FROM ghcr.io/navikt/baseimages/temurin:17
 
 COPY init.sh /init-scripts/init.sh
 
