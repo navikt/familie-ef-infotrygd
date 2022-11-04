@@ -89,23 +89,23 @@ class RepoTest {
     private fun verifyColumnsExists(s: String) {
         val tables = """(FROM|JOIN) (\w+) (\w+)""".toRegex().findAll(s).map {
             val (_, table, tableKeyword) = it.destructured
-            tableKeyword.toLowerCase() to table.toLowerCase()
+            tableKeyword.lowercase() to table.lowercase()
         }.toMap()
 
         val columns = """[, \(](\w+)\.(\w+)""".toRegex().findAll(s).map {
             val (tableKeyword, column) = it.destructured
-            tableKeyword.toLowerCase() to column.toLowerCase()
+            tableKeyword.lowercase() to column.lowercase()
         }.groupBy({ it.first }) { it.second }
 
         val columnsOnTables = columns.map { it.key to Pair(tables[it.key]!!, it.value.toSet()) }.toMap()
 
-        columnsOnTables.forEach { (k, v) ->
+        columnsOnTables.forEach { (_, v) ->
             val table = v.first
             val hibernateColumns = hibernateTables[table] ?: error("Savner tabellen $table i hibernate")
-            val columns = v.second
-            assertThat(hibernateColumns).containsAll(columns)
+            val tableColumns = v.second
+            assertThat(hibernateColumns).containsAll(tableColumns)
 
-            definedTables[table]!!.removeAll(columns)
+            definedTables[table]!!.removeAll(tableColumns)
             checkedTables.add(table)
         }
     }
