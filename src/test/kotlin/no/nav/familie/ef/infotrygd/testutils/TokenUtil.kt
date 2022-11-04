@@ -1,5 +1,4 @@
 package no.nav.familie.ef.infotrygd.testutils
-/*
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import java.util.UUID
 
@@ -22,5 +21,3 @@ object TokenUtil {
         ).serialize()
     }
 }
-
- */

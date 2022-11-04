@@ -1,6 +1,7 @@
 package no.nav.familie.ef.infotrygd
 
 import no.nav.familie.ef.infotrygd.testutils.restClientNoAuth
+import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -14,6 +15,7 @@ import reactor.core.publisher.Mono
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@EnableMockOAuth2Server
 class MainTest {
 
     @LocalServerPort

@@ -23,7 +23,7 @@ no.nav.security.jwt:
   expirythreshold: 60 #threshold in minutes until token expires
   issuer:
     azure:
-      discoveryurl: http://metadata
+      discoveryurl: http://localhost:${mock-oauth2-server.port}/azuread/.well-known/openid-configuration
       accepted_audience: aud-localhost
       proxyurl: ~
       cookiename: localhost-idtoken

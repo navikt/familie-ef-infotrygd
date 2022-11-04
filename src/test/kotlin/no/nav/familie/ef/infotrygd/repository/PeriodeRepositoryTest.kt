@@ -6,6 +6,7 @@ import no.nav.familie.ef.infotrygd.rest.api.ArenaPeriode
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSakstype
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeArenaRequest
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeRequest
+import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
@@ -21,6 +22,7 @@ import java.time.LocalDate
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@EnableMockOAuth2Server
 internal class PeriodeRepositoryTest {
 
     @Autowired
