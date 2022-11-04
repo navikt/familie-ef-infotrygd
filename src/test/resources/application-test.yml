@@ -9,7 +9,7 @@ spring:
   flyway:
     enabled: true
   datasource:
-    url: jdbc:h2:mem:testdb:MODE=Oracle;INIT=CREATE SCHEMA IF NOT EXISTS INFOTRYGD_Q0
+    url: jdbc:h2:mem:testdb;MODE=Oracle;INIT=CREATE SCHEMA IF NOT EXISTS INFOTRYGD_Q0
     username: sa
     password:
     driver-class-name: org.h2.Driver
