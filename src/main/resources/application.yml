@@ -23,6 +23,12 @@ spring:
       hibernate:
         default_schema: ${APP_DEFAULT_SCHEMA}
 
+springdoc:
+  packagesToScan: no.nav.familie.ef.infotrygd
+  pathsToMatch: /v3/api-docs,/api/**
+  swagger-ui:
+    disable-swagger-default-url: true
+
 management:
   endpoint:
     health:

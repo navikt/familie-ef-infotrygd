@@ -3,6 +3,7 @@ package no.nav.familie.ef.infotrygd.service
 import no.nav.familie.ef.infotrygd.model.StønadType
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSøkRequest
 import no.nav.familie.ef.infotrygd.utils.reverserFnr
+import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
@@ -18,6 +19,7 @@ import java.time.LocalDate
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@EnableMockOAuth2Server
 internal class StønadServiceTest {
 
     @Autowired lateinit var jdbcTemplate: JdbcTemplate

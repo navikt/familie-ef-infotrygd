@@ -1,6 +1,7 @@
 package no.nav.familie.ef.infotrygd.repository
 
 import no.nav.familie.ef.infotrygd.model.StønadType
+import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Test
@@ -15,6 +16,7 @@ import java.time.LocalDate
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@EnableMockOAuth2Server
 internal class InfotrygdRepositoryTest {
 
     @Autowired lateinit var infotrygdRepository: InfotrygdRepository
