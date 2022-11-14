@@ -7,7 +7,6 @@ import no.nav.familie.ef.infotrygd.rest.api.PeriodeRequest
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,20 +24,14 @@ internal class PeriodeRepositoryTest {
 
     @Autowired
     lateinit var periodeRepository: PeriodeRepository
+
     @Autowired
     lateinit var jdbcTemplate: JdbcTemplate
 
     private val startdato = LocalDate.now().minusYears(1)
     private val sluttdato = LocalDate.now().plusYears(1)
-    private val førStartdato = startdato.minusYears(1)
-    private val etterSluttdato = sluttdato.plusYears(1)
 
-    @Before
-    fun setUp() {
-        lagVedtak(stønadType = "EO", vedtakId = 1, stønadId = 1)
-        jdbcTemplate.update("INSERT INTO t_beregn_grl (vedtak_id, type_belop, fom, belop, brukerid) VALUES (1,'ARBM',CURRENT_DATE, 100, 'A')")
-        jdbcTemplate.update("INSERT INTO t_beregn_grl (vedtak_id, type_belop, fom, belop, brukerid) VALUES (1,'ABCD',CURRENT_DATE, 50, 'A')")
-    }
+    private val fnr = "01234567890"
 
     @After
     fun tearDown() {
@@ -67,7 +60,7 @@ internal class PeriodeRepositoryTest {
 
         val perioder = periodeRepository.hentPerioder(
             PeriodeRequest(
-                setOf(FoedselsNr("01234567890")),
+                setOf(FoedselsNr(fnr)),
                 setOf(StønadType.BARNETILSYN)
             )
         )
@@ -75,7 +68,7 @@ internal class PeriodeRepositoryTest {
             .toMutableMap()
         assertThat(perioder).isNotEmpty
         val barn = periodeRepository.hentBarnForPerioder(perioder.getOrDefault(StønadType.BARNETILSYN, emptyList()))
-        assertThat(barn.get(2)).containsExactly("01234567891", "01234567892")
+        assertThat(barn[2]).containsExactly("01234567891", "01234567892")
     }
 
     @Test
@@ -85,18 +78,23 @@ internal class PeriodeRepositoryTest {
 
     @Test
     fun `skal hente perioder`() {
+        opprettPeriodeOvergangsstønad()
+
         val perioder = periodeRepository.hentPerioder(
             PeriodeRequest(
-                setOf(FoedselsNr("01234567890")),
+                setOf(FoedselsNr(fnr)),
                 setOf(StønadType.OVERGANGSSTØNAD)
             )
         )
         assertThat(perioder).hasSize(1)
         assertThat(perioder.first().first).isEqualTo(StønadType.OVERGANGSSTØNAD)
+        assertThat(perioder.first().second.oppdragId).isEqualTo(1)
     }
 
     @Test
     fun `henting av perioder er riktig`() {
+        opprettPeriodeOvergangsstønad()
+
         val perioder = hentPerioder()
         assertThat(perioder).hasSize(1)
         val periode = perioder.first().second
@@ -106,18 +104,41 @@ internal class PeriodeRepositoryTest {
 
     @Test
     fun `henting av perioder uten T_BEREGN_GRL gir 0 i inntektsgrunnlag`() {
-        jdbcTemplate.update("TRUNCATE TABLE t_beregn_grl")
+        lagVedtak(stønadType = "EO", vedtakId = 1, stønadId = 1)
+
         val perioder = hentPerioder()
         assertThat(perioder).hasSize(1)
         assertThat(perioder.first().second.inntektsgrunnlag).isEqualTo(0)
     }
 
+    @Test
+    fun `periode med oppdrag_id = null`() {
+        lagVedtak(stønadType = "EB", vedtakId = 2, stønadId = 2, oppdragId = null)
+
+        val hentPerioder = periodeRepository.hentPerioder(
+            PeriodeRequest(
+                setOf(FoedselsNr(fnr)),
+                setOf(StønadType.BARNETILSYN)
+            )
+        )
+        val perioder = hentPerioder.map { it.second }
+
+        assertThat(perioder).hasSize(1)
+        assertThat(perioder.single().oppdragId).isNull()
+    }
+
     private fun hentPerioder() =
-        periodeRepository.hentPerioder(PeriodeRequest(setOf(FoedselsNr("01234567890")), StønadType.values().toSet()))
+        periodeRepository.hentPerioder(PeriodeRequest(setOf(FoedselsNr(fnr)), StønadType.values().toSet()))
 
-    private fun lagVedtak(stønadType: String, vedtakId: Int, stønadId: Int) {
+    private fun opprettPeriodeOvergangsstønad() {
+        lagVedtak(stønadType = "EO", vedtakId = 1, stønadId = 1)
+        jdbcTemplate.update("INSERT INTO t_beregn_grl (vedtak_id, type_belop, fom, belop, brukerid) VALUES (1,'ARBM',CURRENT_DATE, 100, 'A')")
+        jdbcTemplate.update("INSERT INTO t_beregn_grl (vedtak_id, type_belop, fom, belop, brukerid) VALUES (1,'ABCD',CURRENT_DATE, 50, 'A')")
+    }
 
-        jdbcTemplate.update("INSERT INTO t_lopenr_fnr (person_lopenr, personnr) VALUES (1,  '01234567890')")
+    private fun lagVedtak(stønadType: String, vedtakId: Int, stønadId: Int, oppdragId: Int? = 1) {
+
+        jdbcTemplate.update("INSERT INTO t_lopenr_fnr (person_lopenr, personnr) VALUES (1,  ?)", fnr)
         jdbcTemplate.update(
             """INSERT INTO t_vedtak (vedtak_id, person_lopenr, stonad_id, kode_rutine, kode_resultat, 
                 dato_innv_fom, dato_innv_tom, brukerid, type_sak, tidspunkt_reg)
@@ -130,8 +151,9 @@ internal class PeriodeRepositoryTest {
         )
         jdbcTemplate.update(
             """INSERT INTO t_stonad (stonad_id, oppdrag_id, person_lopenr, dato_start, dato_opphor)
-                                         VALUES (?, 1, 1, sysdate, NULL)""",
-            stønadId
+                                         VALUES (?, ?, 1, sysdate, NULL)""",
+            stønadId,
+            oppdragId
         )
         jdbcTemplate.update("INSERT INTO t_endring (vedtak_id, kode) VALUES (?, 'F ')", vedtakId)
         jdbcTemplate.update(

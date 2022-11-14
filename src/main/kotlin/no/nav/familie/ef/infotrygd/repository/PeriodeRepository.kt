@@ -1,6 +1,7 @@
 package no.nav.familie.ef.infotrygd.repository
 
 import no.nav.familie.ef.infotrygd.model.StønadType
+import no.nav.familie.ef.infotrygd.repository.RepositoryUtil.getNullableInt
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdAktivitetstype
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdEndringKode
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdOvergangsstønadKode
@@ -53,14 +54,14 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
             v.dato_innv_tom,
             s.dato_opphor,
             ef.barnt_utg,
-            (SELECT bg.belop FROM t_beregn_grl bg WHERE bg.vedtak_id = v.vedtak_id AND bg.type_belop = 'ARBM') inntektsgrunnlag
+            (SELECT bg.belop FROM t_beregn_grl bg WHERE bg.vedtak_id = v.vedtak_id AND bg.type_belop = 'ARBM') inntektsgrunnlag,
+            s.oppdrag_id
            FROM t_lopenr_fnr l
             JOIN t_stonad s ON s.person_lopenr = l.person_lopenr
             JOIN t_vedtak v ON v.stonad_id = s.stonad_id
             JOIN t_endring e ON e.vedtak_id = v.vedtak_id 
             JOIN t_ef ef ON ef.vedtak_id = v.vedtak_id
            WHERE l.personnr IN (:personIdenter)
-              AND s.oppdrag_id IS NOT NULL
               AND v.kode_rutine IN (:stønadskoder)
               AND v.dato_innv_fom < v.dato_innv_tom
            ORDER BY s.stonad_id ASC, vedtak_id ASC, dato_innv_fom DESC
@@ -94,7 +95,8 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
                     stønadFom = rs.getDate("dato_innv_fom").toLocalDate(),
                     stønadTom = rs.getDate("dato_innv_tom").toLocalDate(),
                     opphørsdato = rs.getDate("dato_opphor")?.toLocalDate(),
-                    vedtakKodeResultat = rs.getString("kode_resultat").trim()
+                    vedtakKodeResultat = rs.getString("kode_resultat").trim(),
+                    oppdragId = rs.getNullableInt("oppdrag_id")
                 )
         }
     }

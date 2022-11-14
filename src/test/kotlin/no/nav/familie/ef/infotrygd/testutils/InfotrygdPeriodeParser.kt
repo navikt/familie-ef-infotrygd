@@ -75,7 +75,8 @@ object InfotrygdPeriodeParser {
             aktivitetstype = null,
             startDato = LocalDate.now(),
             vedtakstidspunkt = LocalDateTime.now(),
-            vedtakKodeResultat = ""
+            vedtakKodeResultat = "",
+            oppdragId = 1
         )
 
     private fun getValue(row: Map<String, String>, key: String) = row[key]?.trim()

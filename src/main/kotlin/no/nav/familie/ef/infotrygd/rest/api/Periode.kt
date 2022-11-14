@@ -42,7 +42,8 @@ data class Periode(
     val stønadTom: LocalDate,
     val opphørsdato: LocalDate?,
     val barnIdenter: List<String> = emptyList(),
-    val vedtakKodeResultat: String
+    val vedtakKodeResultat: String,
+    val oppdragId: Int?
 ) {
     fun erFortsattInnvilget() = vedtakKodeResultat == "FI"
 }
