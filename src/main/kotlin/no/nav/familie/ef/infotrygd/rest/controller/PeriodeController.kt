@@ -8,8 +8,6 @@ import io.swagger.v3.oas.annotations.media.ExampleObject
 import no.nav.familie.ef.infotrygd.model.StønadType
 import no.nav.familie.ef.infotrygd.repository.PeriodeRepository
 import no.nav.familie.ef.infotrygd.rest.api.Periode
-import no.nav.familie.ef.infotrygd.rest.api.PeriodeArenaRequest
-import no.nav.familie.ef.infotrygd.rest.api.PeriodeArenaResponse
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeRequest
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeResponse
 import no.nav.familie.ef.infotrygd.service.PeriodeService
@@ -70,34 +68,6 @@ class PeriodeController(private val periodeRepository: PeriodeRepository, privat
         return ResponseEntity.ok(lagPeriodeResponse(perioder))
     }
 
-    /**
-     * Denne henter perioder for alle typer EF-stønader, då arena ønsker de sammenslåtte
-     */
-    @Operation(summary = "Henter perioder for Arena")
-    @PostMapping(path = ["/arena", "/overgangsstonad"])
-    @Parameters(
-        Parameter(
-            examples = [
-                ExampleObject(
-                    name = "request",
-                    value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
-                        " \"fomDato\": \"2020-01-01\",\n  \"tomDato\": \"2021-01-01\"\n}"
-                )
-            ]
-        )
-    )
-    fun hentPerioderForArena(@RequestBody request: PeriodeArenaRequest): ResponseEntity<Any> {
-        if (request.personIdenter.isEmpty()) {
-            return ResponseEntity.badRequest().build()
-        }
-
-        val perioder = periodeRepository.hentPerioderForArena(request)
-        return ResponseEntity.ok(PeriodeArenaResponse(perioder))
-    }
-
-    /**
-     * Denne henter perioder for alle typer EF-stønader, då arena ønsker de sammenslåtte
-     */
     @GetMapping(path = ["/migreringspersoner"])
     fun hentMigreringspersoner(@RequestParam antall: Int): ResponseEntity<Any> {
         val personerForMigrering = periodeRepository.hentPersonerForMigrering(antall)
