@@ -12,12 +12,21 @@ import org.springframework.stereotype.Service
 class PeriodeService(private val periodeRepository: PeriodeRepository) {
 
     fun hentPerioder(request: PeriodeRequest): Map<StønadType, List<Periode>> {
-        val perioder =
-            periodeRepository.hentPerioder(request).groupBy({ it.first }) { it.second }
-                .toMutableMap()
+        val perioder = periodeRepository.hentPerioder(request)
+            .filter { harOppdragIdEller0beløp(it.second) }
+            .groupBy({ it.first }) { it.second }
+            .toMutableMap()
         perioder[BARNETILSYN] = hentBarnetilsynPerioderMedBarn(perioder)
         return perioder.map { it.key to it.value.sortedByDescending { it.stønadFom } }.toMap()
     }
+
+    /**
+     * Skal filtrere vekk perioder som mangler oppdragId, og har beløp over 0kr
+     * Først var det kommunisert at vi skulle filtrere vekk alle perioder som mangler oppdrag_id då disse ikke var iverksatte
+     * Vi fant senere ut at de som manglet oppdragId og hadde beløp 0 var besluttet, men ikke sendt til oppdrag
+     */
+    private fun harOppdragIdEller0beløp(periode: Periode) =
+        periode.oppdragId != null || (periode.engangsbeløp == 0 && periode.månedsbeløp == 0)
 
     fun hentSammenslåttePerioder(request: PeriodeRequest): Map<StønadType, List<Periode>> {
         return hentPerioder(request).map { it.key to slåSammenPerioder(it.value) }.toMap()

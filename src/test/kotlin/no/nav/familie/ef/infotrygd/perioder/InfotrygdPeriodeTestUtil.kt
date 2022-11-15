@@ -50,7 +50,8 @@ object InfotrygdPeriodeTestUtil {
             stønadTom = stønadTom,
             opphørsdato = opphørsdato,
             barnIdenter = barnIdenter,
-            vedtakKodeResultat = ""
+            vedtakKodeResultat = "",
+            oppdragId = 1
         )
     }
 }
