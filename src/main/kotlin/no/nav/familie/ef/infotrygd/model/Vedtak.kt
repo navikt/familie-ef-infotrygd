@@ -18,9 +18,6 @@ data class Vedtak(
     @Column(name = "STONAD_ID")
     val stønadId: Long,
 
-    @Column(name = "TKNR")
-    val tknr: String,
-
     @Column(name = "KODE_RUTINE")
     val kodeRutine: String,
 

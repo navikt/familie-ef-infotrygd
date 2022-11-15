@@ -2,9 +2,7 @@ package no.nav.familie.ef.infotrygd.repository
 
 import no.nav.commons.foedselsnummer.FoedselsNr
 import no.nav.familie.ef.infotrygd.model.StønadType
-import no.nav.familie.ef.infotrygd.rest.api.ArenaPeriode
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSakstype
-import no.nav.familie.ef.infotrygd.rest.api.PeriodeArenaRequest
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeRequest
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.assertj.core.api.Assertions.assertThat
@@ -49,7 +47,6 @@ internal class PeriodeRepositoryTest {
             "T_LOPENR_FNR",
             "T_VEDTAK",
             "T_STONAD",
-            "T_DELYTELSE",
             "T_ENDRING",
             "T_EF",
             "T_BEREGN_GRL"
@@ -99,75 +96,6 @@ internal class PeriodeRepositoryTest {
     }
 
     @Test
-    fun `uten datoer`() {
-        assertThat(hentPerioderForArena()).hasSize(1)
-    }
-
-    @Test
-    fun `beløp er riktig`() {
-        val perioder = hentPerioderForArena()
-        assertThat(perioder).hasSize(1)
-        assertThat(perioder.first().beløp).isEqualTo(100.34f)
-    }
-
-    @Test
-    fun `fom og tom datoer`() {
-        assertThat(hentPerioderForArena(førStartdato, LocalDate.now()))
-            .withFailMessage("FOM dato < TOM dato(db)")
-            .hasSize(1)
-
-        assertThat(hentPerioderForArena(førStartdato, etterSluttdato))
-            .withFailMessage("FOM dato < TOM dato(db)")
-            .hasSize(1)
-
-        assertThat(hentPerioderForArena(LocalDate.now(), LocalDate.now()))
-            .withFailMessage("FOM dato < TOM dato(db)")
-            .hasSize(1)
-
-        assertThat(hentPerioderForArena(LocalDate.now(), etterSluttdato))
-            .withFailMessage("FOM dato < TOM dato(db)")
-            .hasSize(1)
-
-        assertThat(hentPerioderForArena(førStartdato, førStartdato))
-            .withFailMessage("TOM dato < FOM dato(db)")
-            .isEmpty()
-
-        assertThat(hentPerioderForArena(etterSluttdato, etterSluttdato))
-            .withFailMessage("FOM dato > TOM dato(db)")
-            .isEmpty()
-    }
-
-    @Test
-    fun `uten tom dato`() {
-        assertThat(hentPerioderForArena(førStartdato, null))
-            .withFailMessage("FOM dato < TOM dato(db)")
-            .hasSize(1)
-
-        assertThat(hentPerioderForArena(LocalDate.now(), null))
-            .withFailMessage("FOM dato < TOM dato(db)")
-            .hasSize(1)
-
-        assertThat(hentPerioderForArena(etterSluttdato, null))
-            .withFailMessage("FOM dato > TOM dato(db)")
-            .isEmpty()
-    }
-
-    @Test
-    fun `uten fom dato`() {
-        assertThat(hentPerioderForArena(null, førStartdato))
-            .withFailMessage("TOM dato < FOM dato(db)")
-            .isEmpty()
-
-        assertThat(hentPerioderForArena(null, LocalDate.now()))
-            .withFailMessage("FOM dato < TOM dato(db)")
-            .hasSize(1)
-
-        assertThat(hentPerioderForArena(null, etterSluttdato))
-            .withFailMessage("FOM dato > TOM dato(db)")
-            .hasSize(1)
-    }
-
-    @Test
     fun `henting av perioder er riktig`() {
         val perioder = hentPerioder()
         assertThat(perioder).hasSize(1)
@@ -187,15 +115,6 @@ internal class PeriodeRepositoryTest {
     private fun hentPerioder() =
         periodeRepository.hentPerioder(PeriodeRequest(setOf(FoedselsNr("01234567890")), StønadType.values().toSet()))
 
-    private fun hentPerioderForArena(fomDato: LocalDate? = null, tomDato: LocalDate? = null): List<ArenaPeriode> =
-        periodeRepository.hentPerioderForArena(
-            PeriodeArenaRequest(
-                personIdenter = setOf(FoedselsNr("01234567890")),
-                fomDato,
-                tomDato
-            )
-        )
-
     private fun lagVedtak(stønadType: String, vedtakId: Int, stønadId: Int) {
 
         jdbcTemplate.update("INSERT INTO t_lopenr_fnr (person_lopenr, personnr) VALUES (1,  '01234567890')")
@@ -214,7 +133,6 @@ internal class PeriodeRepositoryTest {
                                          VALUES (?, 1, 1, sysdate, NULL)""",
             stønadId
         )
-        jdbcTemplate.update("INSERT INTO t_delytelse (vedtak_id, type_sats, belop) VALUES (?, '', 100.34)", vedtakId)
         jdbcTemplate.update("INSERT INTO t_endring (vedtak_id, kode) VALUES (?, 'F ')", vedtakId)
         jdbcTemplate.update(
             "INSERT INTO t_ef (vedtak_id, stonad_belop, innt_fradrag, netto_belop, sam_fradrag, kode_overg, aktivitet, barnt_utg)" +

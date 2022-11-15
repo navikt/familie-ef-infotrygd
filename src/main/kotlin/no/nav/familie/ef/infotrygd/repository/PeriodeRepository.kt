@@ -1,20 +1,16 @@
 package no.nav.familie.ef.infotrygd.repository
 
-import no.nav.commons.foedselsnummer.FoedselsNr
 import no.nav.familie.ef.infotrygd.model.StønadType
-import no.nav.familie.ef.infotrygd.rest.api.ArenaPeriode
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdAktivitetstype
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdEndringKode
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdOvergangsstønadKode
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSakstype
 import no.nav.familie.ef.infotrygd.rest.api.Periode
-import no.nav.familie.ef.infotrygd.rest.api.PeriodeArenaRequest
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeRequest
 import no.nav.familie.ef.infotrygd.rest.api.PersonerForMigrering
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
-import java.time.LocalDate
 import java.time.YearMonth
 
 /**
@@ -29,61 +25,6 @@ import java.time.YearMonth
  */
 @Repository
 class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
-
-    /**
-     * Forenkled versjon av spørringen på https://confluence.adeo.no/pages/viewpage.action?pageId=395741283
-     *
-     * INFO: Det er riktig att det står
-     *      AND V.DATO_INNV_FOM <= :tom
-     *      AND V.DATO_INNV_TOM >= :fom
-     *
-     *
-     *      fom/tom settes til dagens dato som default, det er slik InfotrygdVedtak_v1 gjorde det.
-     */
-    fun hentPerioderForArena(request: PeriodeArenaRequest): List<ArenaPeriode> {
-        val values = MapSqlParameterSource()
-            .addValue("personIdenter", request.personIdenter.map { it.asString })
-            .addValue("stønadskoder", StønadType.values().map { it.kodeRutine })
-            .addValue("kodeAnnulert", InfotrygdEndringKode.ANNULERT.infotrygdKode)
-            .addValue("kodeUaktuell", InfotrygdEndringKode.UAKTUELL.infotrygdKode)
-            .addValue("fom", request.fomDato ?: LocalDate.now())
-            .addValue("tom", request.tomDato ?: LocalDate.now())
-        return jdbcTemplate.query(
-            """
-            SELECT DISTINCT l.personnr
-              ,v.tknr
-              ,s.stonad_id
-              ,d.type_sats
-              ,s.dato_start
-              ,v.dato_innv_fom
-              ,v.dato_innv_tom
-              ,d.belop
-              ,s.dato_opphor
-           FROM t_lopenr_fnr l
-            JOIN t_stonad s ON s.person_lopenr = l.person_lopenr
-            JOIN t_vedtak v ON v.stonad_id = s.stonad_id
-            JOIN t_delytelse d ON d.vedtak_id = v.vedtak_id
-            JOIN t_endring e ON e.vedtak_id = v.vedtak_id 
-           WHERE l.personnr IN (:personIdenter)
-              AND s.oppdrag_id IS NOT NULL
-              AND v.kode_rutine IN (:stønadskoder) 
-              AND e.kode <> :kodeAnnulert
-              AND e.kode <> :kodeUaktuell
-              AND v.dato_innv_fom <= :tom
-              AND v.dato_innv_tom >= :fom
-              AND v.dato_innv_fom < v.dato_innv_tom
-      """,
-            values
-        ) { rs, _ ->
-            ArenaPeriode(
-                FoedselsNr(rs.getString("PERSONNR")),
-                rs.getDate("DATO_INNV_FOM").toLocalDate(),
-                rs.getDate("DATO_INNV_TOM").toLocalDate(),
-                rs.getDate("DATO_OPPHOR")?.toLocalDate(),
-                rs.getFloat("BELOP")
-            )
-        }
-    }
 
     fun hentPerioder(request: PeriodeRequest): List<Pair<StønadType, Periode>> {
         val values = MapSqlParameterSource()

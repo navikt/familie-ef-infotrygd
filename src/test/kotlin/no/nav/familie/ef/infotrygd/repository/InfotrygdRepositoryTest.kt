@@ -47,7 +47,7 @@ internal class InfotrygdRepositoryTest {
 
     @After
     fun tearDown() {
-        listOf("T_LOPENR_FNR", "T_VEDTAK", "T_STONAD", "T_DELYTELSE").forEach {
+        listOf("T_LOPENR_FNR", "T_VEDTAK", "T_STONAD").forEach {
             jdbcTemplate.update("TRUNCATE TABLE $it")
         }
     }

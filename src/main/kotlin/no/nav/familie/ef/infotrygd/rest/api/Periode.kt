@@ -10,22 +10,6 @@ data class PeriodeRequest(
     val stønadstyper: Set<StønadType>
 )
 
-data class PeriodeArenaRequest(
-    val personIdenter: Set<FoedselsNr>,
-    val fomDato: LocalDate?,
-    val tomDato: LocalDate?
-)
-
-data class PeriodeArenaResponse(val perioder: List<ArenaPeriode>)
-
-data class ArenaPeriode(
-    val personIdent: FoedselsNr,
-    val fomDato: LocalDate,
-    val tomDato: LocalDate,
-    val opphørsdato: LocalDate?,
-    val beløp: Float
-)
-
 data class PeriodeResponse(
     val overgangsstønad: List<Periode>,
     val barnetilsyn: List<Periode>,
