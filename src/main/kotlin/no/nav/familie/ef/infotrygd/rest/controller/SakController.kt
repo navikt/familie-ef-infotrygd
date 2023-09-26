@@ -25,4 +25,10 @@ class SakController(private val sakRepository: SakRepository) {
 
         return ResponseEntity.ok(InfotrygdSakResponse(sakRepository.finnSaker(request.personIdenter)))
     }
+
+    @PostMapping(path = ["/hentrapport"])
+    fun finnÅpneSaker(): ResponseEntity<Any> {
+        return ResponseEntity.ok(sakRepository.hentÅpneSaker())
+    }
+
 }

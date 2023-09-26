@@ -13,10 +13,29 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
 
+data class ÅpnesakerRapport(val typeMedAntall: List<Pair<String, String>>)
+
 @Repository
 class SakRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
 
     private val datoConverter = NavReversedLocalDateConverter()
+
+    fun hentÅpneSaker(): ÅpnesakerRapport{
+
+        val map = mutableMapOf<String, String>()
+
+        val resultat = jdbcTemplate.query(
+            """select S10_TYPE, count(*)
+        from sa_sak_10 s
+        where S10_RESULTAT = '  ' and
+        s.s10_kapittelnr = 'EF'
+        group by S10_TYPE
+        order by 1
+        """){ resultSet, _ ->
+            Pair(resultSet.getString("S10_TYPE"), resultSet.getString("count"))
+        }
+      return ÅpnesakerRapport(resultat)
+    }
 
     fun finnesSaker(personIdenter: Set<String>): List<Saktreff> {
 
