@@ -6,6 +6,7 @@ import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSakResponse
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSøkRequest
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -26,9 +27,9 @@ class SakController(private val sakRepository: SakRepository) {
         return ResponseEntity.ok(InfotrygdSakResponse(sakRepository.finnSaker(request.personIdenter)))
     }
 
-    @PostMapping(path = ["/hentrapport"])
-    fun finnÅpneSaker(): ResponseEntity<Any> {
-        return ResponseEntity.ok(sakRepository.hentÅpneSaker())
+    @GetMapping(path = ["/hentrapport"])
+    fun finnÅpneSaker(): ResponseEntity<String> {
+        return ResponseEntity.ok(sakRepository.hentÅpneSaker().toString())
     }
 
 }
