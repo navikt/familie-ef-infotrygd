@@ -28,8 +28,8 @@ class SakController(private val sakRepository: SakRepository) {
     }
 
     @GetMapping(path = ["/hentrapport"])
-    fun finnÅpneSaker(): ResponseEntity<String> {
-        return ResponseEntity.ok(sakRepository.hentÅpneSaker().toString())
+    fun finnÅpneSaker(): ResponseEntity<Any> {
+        return ResponseEntity.ok(sakRepository.hentÅpneSaker())
     }
 
 }
