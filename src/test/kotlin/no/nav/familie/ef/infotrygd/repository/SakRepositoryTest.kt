@@ -54,4 +54,41 @@ internal class SakRepositoryTest {
         assertThat(resultat).hasSize(1)
         assertThat(resultat[0].personIdent).isEqualTo("03047012345")
     }
+
+    @Test
+    fun hentÅpneSaker() {
+
+        leggInnÅpenSakIDb(type = "K")
+        leggInnÅpenSakIDb(type = "KT")
+        leggInnÅpenSakIDb(type = "KT")
+
+        val resultat = sakRepository.hentÅpneSaker()
+        assertThat(resultat).isNotNull
+        assertThat(resultat.typeMedAntall).isNotNull
+        assertThat(resultat.typeMedAntall).isNotEmpty
+        val klageTilbakeAntall = resultat.typeMedAntall.get("KT")
+        assertThat(klageTilbakeAntall).isEqualTo(2)
+
+        val klageAntall = resultat.typeMedAntall.get("K")
+        assertThat(klageAntall).isEqualTo(1)
+    }
+
+    private fun leggInnÅpenSakIDb(type: String, resultat:String= " ") {
+        jdbcTemplate.update(
+            """
+                INSERT INTO sa_sak_10 (s01_personkey,s05_saksblokk,s10_saksnr,s10_reg_dato,s10_mottattdato,s10_kapittelnr,s10_valg,
+                s10_undervalg,s10_dublett_feil,s10_type,s10_innstilling,s10_resultat,s10_nivaa,s10_innstilldato,s10_vedtaksdato,
+                s10_iverksattdato,s10_grunnbl_dato,s10_aarsakskode,s10_tellepunkt,s10_telletype,s10_telledato,s10_eval_kode,
+                s10_eval_tir,s10_fremlegg,s10_innstilling2,s10_innstilldato2,s10_annen_instans,s10_behen_type,s10_behen_enhet,
+                s10_reg_av_type,s10_reg_av_enhet,s10_diff_framlegg,s10_innstillt_av_type,s10_innstillt_av_enhet,s10_vedtatt_av_type,
+                s10_vedtatt_av_enhet,s10_prio_tab,s10_aoe,s10_es_system,s10_es_gsak_oppdragsid,s10_knyttet_til_sak,s10_vedtakstype,
+                s10_reell_enhet,s10_mod_endret,tk_nr,f_nr,opprettet,endret_i_kilde,kilde_is,region,id_sak,oppdatert,db_splitt) VALUES
+                 ('304170040312346','M','04','1012011','1012011','EF','BT','  ',' ','$type','  ','$resultat','TK ','0','1012010','0','1012010',
+                 '00','000',' ','0','    ',' ','000','  ','0',' ','TK ','0617','TK ','0617','000','   ','0000','NFE','0689','      ',
+                 '   ',' ','0','00',' ','0000',' ','3041','70040312345',
+                 TO_TIMESTAMP('14.01.2022 21.48.43,830464000','DD.MM.RRRR HH24.MI.SSXFF'),
+                 TO_TIMESTAMP('14.01.2022 21.48.43,788490000','DD.MM.RRRR HH24.MI.SSXFF'),'RG01','1','17529101',
+                 TO_TIMESTAMP('14.01.2022 21.48.43,830464000','DD.MM.RRRR HH24.MI.SSXFF'),'EF')"""
+        )
+    }
 }
