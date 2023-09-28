@@ -31,5 +31,4 @@ class SakController(private val sakRepository: SakRepository) {
     fun finnÅpneSaker(): ResponseEntity<Any> {
         return ResponseEntity.ok(sakRepository.hentÅpneSaker())
     }
-
 }

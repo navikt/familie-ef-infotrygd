@@ -20,21 +20,21 @@ class SakRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
 
     private val datoConverter = NavReversedLocalDateConverter()
 
-    fun hentÅpneSaker(): ÅpnesakerRapport{
-
-        val map = mutableMapOf<String, String>()
+    fun hentÅpneSaker(): ÅpnesakerRapport {
 
         val resultat = jdbcTemplate.query(
-            """select S10_TYPE, count(*)
-        from sa_sak_10 s
-        where S10_RESULTAT = '  ' and
-        s.s10_kapittelnr = 'EF'
-        group by S10_TYPE
-        order by 1
-        """){ resultSet, _ ->
-            Pair(resultSet.getString("S10_TYPE"), resultSet.getString("count"))
+            """ 
+                select S10_TYPE, COUNT(*) AS ANTALL
+                from sa_sak_10 s
+                where S10_RESULTAT = '  ' and
+                s.s10_kapittelnr = 'EF'
+                group by S10_TYPE
+                order by 1
+                """
+        ) { resultSet, _ ->
+            Pair(resultSet.getString("S10_TYPE").trim(), resultSet.getString("ANTALL"))
         }
-      return ÅpnesakerRapport(resultat)
+        return ÅpnesakerRapport(resultat)
     }
 
     fun finnesSaker(personIdenter: Set<String>): List<Saktreff> {
