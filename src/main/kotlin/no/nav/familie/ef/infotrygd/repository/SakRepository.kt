@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
 
-data class ÅpnesakerRapport(val typeMedAntall: List<Pair<String, String>>)
+data class ÅpnesakerRapport(val typeMedAntall: Map<String, Int>)
 
 @Repository
 class SakRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
@@ -34,7 +34,7 @@ class SakRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
         ) { resultSet, _ ->
             Pair(resultSet.getString("S10_TYPE").trim(), resultSet.getString("ANTALL"))
         }
-        return ÅpnesakerRapport(resultat)
+        return ÅpnesakerRapport(resultat.associate { it.first to it.second.toInt() })
     }
 
     fun finnesSaker(personIdenter: Set<String>): List<Saktreff> {
