@@ -5,6 +5,7 @@ import no.nav.familie.ef.infotrygd.repository.SakRepository
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSakResponse
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSøkRequest
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController
 @ProtectedWithClaims(issuer = "azure")
 class SakController(private val sakRepository: SakRepository) {
 
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     @PostMapping(path = ["/finn"])
     fun finnSaker(@RequestBody request: InfotrygdSøkRequest): ResponseEntity<Any> {
         if (request.personIdenter.isEmpty()) {
@@ -29,6 +32,8 @@ class SakController(private val sakRepository: SakRepository) {
 
     @GetMapping(path = ["/hentrapport"])
     fun finnÅpneSaker(): ResponseEntity<Any> {
-        return ResponseEntity.ok(sakRepository.hentÅpneSaker())
+        val hentÅpneSaker = sakRepository.hentÅpneSaker()
+        logger.info("Åpne saker: ${hentÅpneSaker.typeMedAntall}")
+        return ResponseEntity.ok(hentÅpneSaker)
     }
 }
