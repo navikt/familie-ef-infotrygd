@@ -46,6 +46,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+          github-token: ${{ (github.actor != 'dependabot[bot]' && secrets.READER_TOKEN) || secrets.GITHUB_TOKEN }}
 
       - name: build
         uses: gradle/gradle-build-action@v2
