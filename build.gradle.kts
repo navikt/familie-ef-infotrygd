@@ -1,19 +1,19 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val mockkVersion = "1.13.2"
-val tokenSupportVersion = "2.1.6"
-val springdocVersion = "1.6.12"
+val mockkVersion = "1.13.8"
+val tokenSupportVersion = "3.2.0"
+val springdocVersion = "1.7.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
-val kontrakterVersion = "2.0_20221027151559_d8da825"
+val kontrakterVersion = "3.0_20231206111937_3c866af"
 val fellesVersion = "1.20221006150009_46021ed"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 val ktlint by configurations.creating
 
 plugins {
-    val kotlinVersion = "1.7.20"
-    val springBootVersion = "2.7.5"
+    val kotlinVersion = "1.9.21"
+    val springBootVersion = "3.2.0"
     id("org.springframework.boot") version springBootVersion
-    id("io.spring.dependency-management") version "1.1.0"
+    id("io.spring.dependency-management") version "1.1.4"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
@@ -51,7 +51,7 @@ allOpen {
 dependencies {
 
 
-    ktlint("com.pinterest:ktlint:0.45.2") {
+    ktlint("com.pinterest:ktlint:0.51.0-FINAL") {
         attributes {
             attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
         }
@@ -66,7 +66,7 @@ dependencies {
     implementation("io.micrometer:micrometer-core")
     implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("net.ttddyy:datasource-proxy:1.8")
+    implementation("net.ttddyy:datasource-proxy:1.10")
     implementation("no.nav.security:token-validation-spring:$tokenSupportVersion")
     implementation("no.nav.familie.kontrakter:enslig-forsorger:$kontrakterVersion")
     implementation("no.nav.familie.kontrakter:felles:$kontrakterVersion")
@@ -76,15 +76,15 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.springdoc:springdoc-openapi-ui:$springdocVersion")
     implementation("org.springdoc:springdoc-openapi-kotlin:$springdocVersion")
-    implementation("net.logstash.logback:logstash-logback-encoder:7.2")
+    implementation("net.logstash.logback:logstash-logback-encoder:7.4")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("org.postgresql:postgresql")
-    implementation("com.oracle.database.jdbc:ojdbc8:21.7.0.0")
+    implementation("com.oracle.database.jdbc:ojdbc8:23.3.0.23.09")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.6.0")
-    testImplementation("org.testcontainers:oracle-xe:1.17.5")
+    testImplementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.9.2")
+    testImplementation("org.testcontainers:oracle-xe:1.19.3")
     testImplementation("com.h2database:h2")
     testImplementation("org.flywaydb:flyway-core")
     testImplementation("io.mockk:mockk-jvm:$mockkVersion")
