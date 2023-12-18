@@ -10,7 +10,7 @@ val mainClass = "no.nav.familie.ef.infotrygd.Main"
 val ktlint by configurations.creating
 
 plugins {
-    val kotlinVersion = "1.7.20"
+    val kotlinVersion = "1.9.21"
     val springBootVersion = "2.7.5"
     id("org.springframework.boot") version springBootVersion
     id("io.spring.dependency-management") version "1.1.0"
