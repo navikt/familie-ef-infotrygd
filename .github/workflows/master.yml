@@ -23,7 +23,9 @@ jobs:
       - name: Test and build
         env: 
           GPR_API_KEY: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew test build
+        run: |
+          ./gradlew wrapper --gradle-version=8.5
+          ./gradlew test build
       - name: Build docker image
         run: |
           docker build -t $IMAGE -t ${IMAGE_LATEST} .
