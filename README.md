@@ -15,6 +15,7 @@ gpr.user = GITHUB_USERNAME</br>
 gpr.key = GITHUB_TOKEN
 
 Confluence:
+- https://confluence.adeo.no/display/MODNAV/Databaser+-+EF
 - https://confluence.adeo.no/display/MODNAV/Databaser
 
 Dokumentasjon:
