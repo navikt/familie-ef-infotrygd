@@ -17,31 +17,30 @@ data class ÅpnesakerRapport(val typeMedAntall: Map<String, Int>)
 
 @Repository
 class SakRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
-
     private val datoConverter = NavReversedLocalDateConverter()
 
     fun hentÅpneSaker(): ÅpnesakerRapport {
-
-        val resultat = jdbcTemplate.query(
-            """ 
+        val resultat =
+            jdbcTemplate.query(
+                """ 
                 select S10_TYPE, COUNT(*) AS ANTALL
                 from sa_sak_10 s
                 where S10_RESULTAT = '  ' and
                 s.s10_kapittelnr = 'EF'
                 group by S10_TYPE
                 order by 1
-                """
-        ) { resultSet, _ ->
-            Pair(resultSet.getString("S10_TYPE").trim(), resultSet.getString("ANTALL"))
-        }
+                """,
+            ) { resultSet, _ ->
+                Pair(resultSet.getString("S10_TYPE").trim(), resultSet.getString("ANTALL"))
+            }
         return ÅpnesakerRapport(resultat.associate { it.first to it.second.toInt() })
     }
 
     fun finnesSaker(personIdenter: Set<String>): List<Saktreff> {
-
-        val values = MapSqlParameterSource()
-            .addValue("personIdenter", personIdenter.map(String::reverserFnr))
-            .addValue("s10_valg", StønadType.values().map { it.saS10Valg })
+        val values =
+            MapSqlParameterSource()
+                .addValue("personIdenter", personIdenter.map(String::reverserFnr))
+                .addValue("s10_valg", StønadType.values().map { it.saS10Valg })
 
         return jdbcTemplate.query(
             """
@@ -51,19 +50,20 @@ class SakRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
             AND s.s10_valg IN (:s10_valg)
             GROUP BY s.f_nr, s.s10_valg
         """,
-            values
+            values,
         ) { resultSet, _ ->
             Saktreff(
                 resultSet.getString("f_nr").reverserFnr(),
-                StønadType.fraS10Valg(resultSet.getString("s10_valg"))
+                StønadType.fraS10Valg(resultSet.getString("s10_valg")),
             )
         }
     }
 
     fun finnSaker(personIdenter: Set<String>): List<InfotrygdSak> {
-        val values = MapSqlParameterSource()
-            .addValue("personIdenter", personIdenter.map(String::reverserFnr))
-            .addValue("s10_valg", StønadType.values().map { it.saS10Valg })
+        val values =
+            MapSqlParameterSource()
+                .addValue("personIdenter", personIdenter.map(String::reverserFnr))
+                .addValue("s10_valg", StønadType.values().map { it.saS10Valg })
         return jdbcTemplate.query(
             """
             SELECT s.ID_SAK,s.S10_SAKSNR,s.S05_SAKSBLOKK,s.S10_REG_DATO,s.S10_MOTTATTDATO,s.S10_KAPITTELNR,s.S10_VALG,
@@ -74,7 +74,7 @@ class SakRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
             AND s.s10_valg IN (:s10_valg)
             AND s.s10_kapittelnr = 'EF'
         """,
-            values
+            values,
         ) { rs, _ ->
             InfotrygdSak(
                 personIdent = rs.getString("F_NR").reverserFnr(),

@@ -12,7 +12,6 @@ data class LopenrFnr(
     @Id
     @Column(name = "PERSON_LOPENR")
     val personKey: Long,
-
     @Column(name = "PERSONNR")
-    val fnr: String
+    val fnr: String,
 )

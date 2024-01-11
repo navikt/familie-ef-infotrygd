@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController
 @Timed(value = "infotrygd_historikk_enslig_forsoerger_controller", percentiles = [0.5, 0.95])
 @ProtectedWithClaims(issuer = "azure")
 class PeriodeController(private val periodeRepository: PeriodeRepository, private val periodeService: PeriodeService) {
-
     @Operation(summary = "Henter perioder")
     @PostMapping
     @Parameters(
@@ -33,13 +32,16 @@ class PeriodeController(private val periodeRepository: PeriodeRepository, privat
             examples = [
                 ExampleObject(
                     name = "request",
-                    value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
-                        " \"stønadstyper\": [\n\"OVERGANGSSTØNAD\"\n] \n}"
-                )
-            ]
-        )
+                    value =
+                        "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
+                            " \"stønadstyper\": [\n\"OVERGANGSSTØNAD\"\n] \n}",
+                ),
+            ],
+        ),
     )
-    fun hentPerioder(@RequestBody request: PeriodeRequest): ResponseEntity<Any> {
+    fun hentPerioder(
+        @RequestBody request: PeriodeRequest,
+    ): ResponseEntity<Any> {
         if (request.personIdenter.isEmpty()) {
             return ResponseEntity.badRequest().build()
         }
@@ -54,13 +56,16 @@ class PeriodeController(private val periodeRepository: PeriodeRepository, privat
             examples = [
                 ExampleObject(
                     name = "request",
-                    value = "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
-                        " \"stønadstyper\": [\n\"OVERGANGSSTØNAD\"\n] \n}"
-                )
-            ]
-        )
+                    value =
+                        "{\n  \"identer\": [\n\"<fnr>\"\n],\n" +
+                            " \"stønadstyper\": [\n\"OVERGANGSSTØNAD\"\n] \n}",
+                ),
+            ],
+        ),
     )
-    fun hentSammenslåttePerioder(@RequestBody request: PeriodeRequest): ResponseEntity<Any> {
+    fun hentSammenslåttePerioder(
+        @RequestBody request: PeriodeRequest,
+    ): ResponseEntity<Any> {
         if (request.personIdenter.isEmpty()) {
             return ResponseEntity.badRequest().build()
         }
@@ -69,7 +74,9 @@ class PeriodeController(private val periodeRepository: PeriodeRepository, privat
     }
 
     @GetMapping(path = ["/migreringspersoner"])
-    fun hentMigreringspersoner(@RequestParam antall: Int): ResponseEntity<Any> {
+    fun hentMigreringspersoner(
+        @RequestParam antall: Int,
+    ): ResponseEntity<Any> {
         val personerForMigrering = periodeRepository.hentPersonerForMigrering(antall)
         return ResponseEntity.ok(personerForMigrering)
     }
@@ -78,7 +85,7 @@ class PeriodeController(private val periodeRepository: PeriodeRepository, privat
         return PeriodeResponse(
             overgangsstønad = perioder.getOrDefault(StønadType.OVERGANGSSTØNAD, emptyList()),
             barnetilsyn = perioder.getOrDefault(StønadType.BARNETILSYN, emptyList()),
-            skolepenger = perioder.getOrDefault(StønadType.SKOLEPENGER, emptyList())
+            skolepenger = perioder.getOrDefault(StønadType.SKOLEPENGER, emptyList()),
         )
     }
 }

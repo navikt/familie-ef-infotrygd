@@ -17,7 +17,6 @@ import reactor.core.publisher.Mono
 @ActiveProfiles("test")
 @EnableMockOAuth2Server
 class MainTest {
-
     @LocalServerPort
     var port: Int = 0
 
@@ -27,11 +26,12 @@ class MainTest {
 
     @Test
     fun health() {
-        val response = restClientNoAuth(port)
-            .get()
-            .uri("/internal/health")
-            .exchangeToMono { Mono.just(it.mutate().build()) }
-            .block() !!
+        val response =
+            restClientNoAuth(port)
+                .get()
+                .uri("/internal/health")
+                .exchangeToMono { Mono.just(it.mutate().build()) }
+                .block()!!
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK)
     }

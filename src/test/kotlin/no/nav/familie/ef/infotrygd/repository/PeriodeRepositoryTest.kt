@@ -21,7 +21,6 @@ import java.time.LocalDate
 @ActiveProfiles("test")
 @EnableMockOAuth2Server
 internal class PeriodeRepositoryTest {
-
     @Autowired
     lateinit var periodeRepository: PeriodeRepository
 
@@ -42,7 +41,7 @@ internal class PeriodeRepositoryTest {
             "T_STONAD",
             "T_ENDRING",
             "T_EF",
-            "T_BEREGN_GRL"
+            "T_BEREGN_GRL",
         ).forEach {
             jdbcTemplate.update("TRUNCATE TABLE $it")
         }
@@ -58,14 +57,15 @@ internal class PeriodeRepositoryTest {
     fun `hent barnetilsyn-barn gitt barnetilsynperioder som finnes`() {
         insertBarnetilsynsak()
 
-        val perioder = periodeRepository.hentPerioder(
-            PeriodeRequest(
-                setOf(FoedselsNr(fnr)),
-                setOf(StønadType.BARNETILSYN)
+        val perioder =
+            periodeRepository.hentPerioder(
+                PeriodeRequest(
+                    setOf(FoedselsNr(fnr)),
+                    setOf(StønadType.BARNETILSYN),
+                ),
             )
-        )
-            .groupBy({ it.first }) { it.second }
-            .toMutableMap()
+                .groupBy({ it.first }) { it.second }
+                .toMutableMap()
         assertThat(perioder).isNotEmpty
         val barn = periodeRepository.hentBarnForPerioder(perioder.getOrDefault(StønadType.BARNETILSYN, emptyList()))
         assertThat(barn[2]).containsExactly("01234567891", "01234567892")
@@ -80,12 +80,13 @@ internal class PeriodeRepositoryTest {
     fun `skal hente perioder`() {
         opprettPeriodeOvergangsstønad()
 
-        val perioder = periodeRepository.hentPerioder(
-            PeriodeRequest(
-                setOf(FoedselsNr(fnr)),
-                setOf(StønadType.OVERGANGSSTØNAD)
+        val perioder =
+            periodeRepository.hentPerioder(
+                PeriodeRequest(
+                    setOf(FoedselsNr(fnr)),
+                    setOf(StønadType.OVERGANGSSTØNAD),
+                ),
             )
-        )
         assertThat(perioder).hasSize(1)
         assertThat(perioder.first().first).isEqualTo(StønadType.OVERGANGSSTØNAD)
         assertThat(perioder.first().second.oppdragId).isEqualTo(1)
@@ -115,29 +116,37 @@ internal class PeriodeRepositoryTest {
     fun `periode med oppdrag_id = null`() {
         lagVedtak(stønadType = "EB", vedtakId = 2, stønadId = 2, oppdragId = null)
 
-        val hentPerioder = periodeRepository.hentPerioder(
-            PeriodeRequest(
-                setOf(FoedselsNr(fnr)),
-                setOf(StønadType.BARNETILSYN)
+        val hentPerioder =
+            periodeRepository.hentPerioder(
+                PeriodeRequest(
+                    setOf(FoedselsNr(fnr)),
+                    setOf(StønadType.BARNETILSYN),
+                ),
             )
-        )
         val perioder = hentPerioder.map { it.second }
 
         assertThat(perioder).hasSize(1)
         assertThat(perioder.single().oppdragId).isNull()
     }
 
-    private fun hentPerioder() =
-        periodeRepository.hentPerioder(PeriodeRequest(setOf(FoedselsNr(fnr)), StønadType.values().toSet()))
+    private fun hentPerioder() = periodeRepository.hentPerioder(PeriodeRequest(setOf(FoedselsNr(fnr)), StønadType.values().toSet()))
 
     private fun opprettPeriodeOvergangsstønad() {
         lagVedtak(stønadType = "EO", vedtakId = 1, stønadId = 1)
-        jdbcTemplate.update("INSERT INTO t_beregn_grl (vedtak_id, type_belop, fom, belop, brukerid) VALUES (1,'ARBM',CURRENT_DATE, 100, 'A')")
-        jdbcTemplate.update("INSERT INTO t_beregn_grl (vedtak_id, type_belop, fom, belop, brukerid) VALUES (1,'ABCD',CURRENT_DATE, 50, 'A')")
+        jdbcTemplate.update(
+            "INSERT INTO t_beregn_grl (vedtak_id, type_belop, fom, belop, brukerid) VALUES (1,'ARBM',CURRENT_DATE, 100, 'A')",
+        )
+        jdbcTemplate.update(
+            "INSERT INTO t_beregn_grl (vedtak_id, type_belop, fom, belop, brukerid) VALUES (1,'ABCD',CURRENT_DATE, 50, 'A')",
+        )
     }
 
-    private fun lagVedtak(stønadType: String, vedtakId: Int, stønadId: Int, oppdragId: Int? = 1) {
-
+    private fun lagVedtak(
+        stønadType: String,
+        vedtakId: Int,
+        stønadId: Int,
+        oppdragId: Int? = 1,
+    ) {
         jdbcTemplate.update("INSERT INTO t_lopenr_fnr (person_lopenr, personnr) VALUES (1,  ?)", fnr)
         jdbcTemplate.update(
             """INSERT INTO t_vedtak (vedtak_id, person_lopenr, stonad_id, kode_rutine, kode_resultat, 
@@ -147,19 +156,19 @@ internal class PeriodeRepositoryTest {
             stønadId,
             stønadType,
             startdato,
-            sluttdato
+            sluttdato,
         )
         jdbcTemplate.update(
             """INSERT INTO t_stonad (stonad_id, oppdrag_id, person_lopenr, dato_start, dato_opphor)
                                          VALUES (?, ?, 1, sysdate, NULL)""",
             stønadId,
-            oppdragId
+            oppdragId,
         )
         jdbcTemplate.update("INSERT INTO t_endring (vedtak_id, kode) VALUES (?, 'F ')", vedtakId)
         jdbcTemplate.update(
             "INSERT INTO t_ef (vedtak_id, stonad_belop, innt_fradrag, netto_belop, sam_fradrag, kode_overg, aktivitet, barnt_utg)" +
                 " VALUES (?,1,1,1,1,' ',' ', 1)",
-            vedtakId
+            vedtakId,
         )
     }
 
@@ -172,14 +181,21 @@ internal class PeriodeRepositoryTest {
 
         // barnetilsynbarn 1 på barnetilsynvedtak
         jdbcTemplate.update(
-            "INSERT INTO t_rolle (vedtak_id,type,tidspunkt_reg,fom,tom,person_lopenr_r,brukerid,barn_type,bor_sammen_med,trygdetid_faktisk,trygdetid_anvendt,trygdetid_unntak,trygd_medlem_siden,utenlandsopphold,bt_1_sum,bt_1_antall,bt_2_sum,bt_2_antall,bt_s_sum,bt_s_antall,opprettet,oppdatert) " +
-                "VALUES (2,'EB',CURRENT_TIMESTAMP, CURRENT_DATE,CURRENT_DATE,2,'MIA4408',  NULL, NULL, NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, CURRENT_DATE,CURRENT_DATE)"
+            "INSERT INTO t_rolle (vedtak_id,type,tidspunkt_reg,fom,tom,person_lopenr_r,brukerid,barn_type," +
+                "bor_sammen_med,trygdetid_faktisk,trygdetid_anvendt,trygdetid_unntak," +
+                "trygd_medlem_siden,utenlandsopphold,bt_1_sum,bt_1_antall,bt_2_sum,bt_2_antall,bt_s_sum,bt_s_antall," +
+                "opprettet,oppdatert) " +
+                "VALUES (2,'EB',CURRENT_TIMESTAMP, CURRENT_DATE,CURRENT_DATE,2,'MIA4408',  NULL, NULL, NULL,NULL,NULL," +
+                "NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, CURRENT_DATE,CURRENT_DATE)",
         )
 
         // barnetilsynbarn 2 på barnetilsynvedtak
         jdbcTemplate.update(
-            "INSERT INTO t_rolle (vedtak_id,type,tidspunkt_reg,fom,tom,person_lopenr_r,brukerid,barn_type,bor_sammen_med,trygdetid_faktisk,trygdetid_anvendt,trygdetid_unntak,trygd_medlem_siden,utenlandsopphold,bt_1_sum,bt_1_antall,bt_2_sum,bt_2_antall,bt_s_sum,bt_s_antall,opprettet,oppdatert) " +
-                "VALUES (2,'EB',CURRENT_TIMESTAMP, CURRENT_DATE,CURRENT_DATE,3,'MIA4409',  NULL, NULL, NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, CURRENT_DATE,CURRENT_DATE)"
+            "INSERT INTO t_rolle (vedtak_id,type,tidspunkt_reg,fom,tom,person_lopenr_r,brukerid,barn_type," +
+                "bor_sammen_med,trygdetid_faktisk,trygdetid_anvendt,trygdetid_unntak,trygd_medlem_siden," +
+                "utenlandsopphold,bt_1_sum,bt_1_antall,bt_2_sum,bt_2_antall,bt_s_sum,bt_s_antall,opprettet,oppdatert) " +
+                "VALUES (2,'EB',CURRENT_TIMESTAMP, CURRENT_DATE,CURRENT_DATE,3,'MIA4409',  NULL, NULL, NULL,NULL,NULL," +
+                "NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, CURRENT_DATE,CURRENT_DATE)",
         )
     }
 }
