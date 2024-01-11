@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val mockkVersion = "1.13.9"
-val tokenSupportVersion = "4.0.3"
+val tokenSupportVersion = "2.1.6"
 val springdocVersion = "1.7.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
 val kontrakterVersion = "3.0_20240109111848_d97569f"
@@ -11,7 +11,7 @@ val ktlint by configurations.creating
 
 plugins {
     val kotlinVersion = "1.9.22"
-    val springBootVersion = "3.2.1"
+    val springBootVersion = "2.7.5"
     id("org.springframework.boot") version springBootVersion
     id("io.spring.dependency-management") version "1.1.4"
     kotlin("jvm") version kotlinVersion
