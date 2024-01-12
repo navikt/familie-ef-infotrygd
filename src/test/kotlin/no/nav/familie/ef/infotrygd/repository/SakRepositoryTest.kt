@@ -73,7 +73,7 @@ internal class SakRepositoryTest {
         assertThat(klageAntall).isEqualTo(1)
     }
 
-    private fun leggInnÅpenSakIDb(type: String, resultat:String= " ") {
+    private fun leggInnÅpenSakIDb(type: String, resultat: String = " ") {
         jdbcTemplate.update(
             """
                 INSERT INTO sa_sak_10 (s01_personkey,s05_saksblokk,s10_saksnr,s10_reg_dato,s10_mottattdato,s10_kapittelnr,s10_valg,

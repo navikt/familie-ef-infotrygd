@@ -1,7 +1,7 @@
 package no.nav.familie.ef.infotrygd.perioder
 
 import no.nav.familie.ef.infotrygd.rest.api.Periode
-import no.nav.familie.kontrakter.felles.ef.PeriodeOvergangsstønad
+import no.nav.familie.kontrakter.felles.ef.Datakilde
 import java.time.LocalDate
 
 data class InternPeriode(
@@ -14,7 +14,7 @@ data class InternPeriode(
     val stønadFom: LocalDate,
     val stønadTom: LocalDate,
     val opphørsdato: LocalDate?,
-    val datakilde: PeriodeOvergangsstønad.Datakilde
+    val datakilde: Datakilde
 )
 
 fun Periode.tilInternPeriode(): InternPeriode = InternPeriode(
@@ -27,5 +27,5 @@ fun Periode.tilInternPeriode(): InternPeriode = InternPeriode(
     stønadFom = this.stønadFom,
     stønadTom = this.stønadTom,
     opphørsdato = this.opphørsdato,
-    datakilde = PeriodeOvergangsstønad.Datakilde.INFOTRYGD
+    datakilde = Datakilde.INFOTRYGD
 )
