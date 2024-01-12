@@ -9,6 +9,7 @@ open class AbstractNavLocalDateConverter(datePattern: String) : AttributeConvert
     private val logger = LoggerFactory.getLogger(javaClass)
 
     private val formatter = DateTimeFormatter.ofPattern(datePattern)
+
     override fun convertToDatabaseColumn(attribute: LocalDate?): Int? {
         return attribute?.format(formatter)?.toInt()
     }

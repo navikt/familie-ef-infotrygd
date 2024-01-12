@@ -11,11 +11,10 @@ import javax.servlet.http.HttpServletResponse
 @Component
 @Order(0)
 class AuthorizationFilter : OncePerRequestFilter() {
-
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        filterChain: FilterChain
+        filterChain: FilterChain,
     ) {
         when (acceptedClient()) {
             true -> filterChain.doFilter(request, response)
@@ -37,9 +36,10 @@ class AuthorizationFilter : OncePerRequestFilter() {
             val claims = SpringTokenValidationContextHolder().tokenValidationContext.getClaims("azure")
 
             @Suppress("UNCHECKED_CAST")
-            val accessAsApplication = (
-                claims.get("roles") as List<String>?
-                    ?: emptyList()
+            val accessAsApplication =
+                (
+                    claims.get("roles") as List<String>?
+                        ?: emptyList()
                 ).contains("access_as_application")
             val clientId = claims?.get("azp") as String?
 

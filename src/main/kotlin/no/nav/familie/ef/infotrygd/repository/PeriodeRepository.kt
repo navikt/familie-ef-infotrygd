@@ -26,11 +26,11 @@ import java.time.YearMonth
  */
 @Repository
 class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
-
     fun hentPerioder(request: PeriodeRequest): List<Pair<StønadType, Periode>> {
-        val values = MapSqlParameterSource()
-            .addValue("personIdenter", request.personIdenter.map { it.asString })
-            .addValue("stønadskoder", mapStønadskoder(request))
+        val values =
+            MapSqlParameterSource()
+                .addValue("personIdenter", request.personIdenter.map { it.asString })
+                .addValue("stønadskoder", mapStønadskoder(request))
         return jdbcTemplate.query(
             """
             SELECT 
@@ -66,21 +66,23 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
               AND v.dato_innv_fom < v.dato_innv_tom
            ORDER BY s.stonad_id ASC, vedtak_id ASC, dato_innv_fom DESC
       """,
-            values
+            values,
         ) { rs, _ ->
             StønadType.fraKodeRutine(rs.getString("kode_rutine")) to
                 Periode(
                     personIdent = rs.getString("personnr"),
                     sakstype = InfotrygdSakstype.fraInfotrygdKode(rs.getString("type_sak").trim()),
                     kode = InfotrygdEndringKode.fraInfotrygdKode(rs.getString("kode").trim()),
-                    kodeOvergangsstønad = mapVerdi(
-                        rs.getString("kode_overg"),
-                        InfotrygdOvergangsstønadKode.Companion::fraInfotrygdKode
-                    ),
-                    aktivitetstype = mapVerdi(
-                        rs.getString("aktivitet"),
-                        InfotrygdAktivitetstype.Companion::fraInfotrygdKode
-                    ),
+                    kodeOvergangsstønad =
+                        mapVerdi(
+                            rs.getString("kode_overg"),
+                            InfotrygdOvergangsstønadKode.Companion::fraInfotrygdKode,
+                        ),
+                    aktivitetstype =
+                        mapVerdi(
+                            rs.getString("aktivitet"),
+                            InfotrygdAktivitetstype.Companion::fraInfotrygdKode,
+                        ),
                     brukerId = rs.getString("brukerid"),
                     stønadId = rs.getLong("stonad_id"),
                     vedtakId = rs.getLong("vedtak_id"),
@@ -96,7 +98,7 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
                     stønadTom = rs.getDate("dato_innv_tom").toLocalDate(),
                     opphørsdato = rs.getDate("dato_opphor")?.toLocalDate(),
                     vedtakKodeResultat = rs.getString("kode_resultat").trim(),
-                    oppdragId = rs.getNullableInt("oppdrag_id")
+                    oppdragId = rs.getNullableInt("oppdrag_id"),
                 )
         }
     }
@@ -104,14 +106,15 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
     /**
      * Finner personer med vedtak som har tom-dato fra neste måned
      */
-    // language=PostgreSQL
     fun hentPersonerForMigrering(antall: Int): PersonerForMigrering {
-        val values = MapSqlParameterSource()
-            .addValue("stønadskode", StønadType.OVERGANGSSTØNAD.kodeRutine)
-            .addValue("nesteMåned", YearMonth.now().plusMonths(1).atDay(1))
-            .addValue("antall", antall)
-        val identer = jdbcTemplate.query(
-            """
+        val values =
+            MapSqlParameterSource()
+                .addValue("stønadskode", StønadType.OVERGANGSSTØNAD.kodeRutine)
+                .addValue("nesteMåned", YearMonth.now().plusMonths(1).atDay(1))
+                .addValue("antall", antall)
+        val identer =
+            jdbcTemplate.query(
+                """
             WITH vedtak AS (SELECT l.personnr, s.stonad_id, v.vedtak_id, v.dato_innv_fom fom, 
             (CASE WHEN (NVL(s.dato_opphor, v.dato_innv_tom) < v.dato_innv_tom) THEN s.dato_opphor ELSE v.dato_innv_tom END) tom
             FROM t_lopenr_fnr l
@@ -130,10 +133,10 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
             WHERE q2.tom > :nesteMåned
             GROUP BY q1.personnr) WHERE rownum < :antall
         """,
-            values
-        ) { rs, _ ->
-            rs.getString("personnr")
-        }
+                values,
+            ) { rs, _ ->
+                rs.getString("personnr")
+            }
         return PersonerForMigrering(identer.toSet())
     }
 
@@ -141,32 +144,38 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
         if (barnetilsynPerioder.isEmpty()) {
             return emptyMap()
         }
-        val values = MapSqlParameterSource()
-            .addValue("vedtakIdListe", barnetilsynPerioder.map { it.vedtakId })
+        val values =
+            MapSqlParameterSource()
+                .addValue("vedtakIdListe", barnetilsynPerioder.map { it.vedtakId })
 
-        val resultatliste = jdbcTemplate.query(
-            """
+        val resultatliste =
+            jdbcTemplate.query(
+                """
                 SELECT r.vedtak_id, barn.personnr
                 FROM t_rolle r 
                 JOIN t_lopenr_fnr barn ON barn.person_lopenr = r.person_lopenr_r
                 WHERE r.vedtak_id IN (:vedtakIdListe)
         """,
-            values
-        ) { rs, _ -> rs.getLong("vedtak_id") to rs.getString("personnr") }
+                values,
+            ) { rs, _ -> rs.getLong("vedtak_id") to rs.getString("personnr") }
         return resultatliste.groupBy({ it.first }, { it.second })
     }
 
-    private fun <T> mapVerdi(kode: String, mapper: (String) -> T): T? = kode
-        .trim()
-        .takeIf(String::isNotEmpty)
-        ?.let(mapper)
+    private fun <T> mapVerdi(
+        kode: String,
+        mapper: (String) -> T,
+    ): T? =
+        kode
+            .trim()
+            .takeIf(String::isNotEmpty)
+            ?.let(mapper)
 
     private fun mapStønadskoder(request: PeriodeRequest): List<String> {
         return request.stønadstyper.ifEmpty {
             setOf(
                 StønadType.OVERGANGSSTØNAD,
                 StønadType.SKOLEPENGER,
-                StønadType.BARNETILSYN
+                StønadType.BARNETILSYN,
             )
         }.map { it.kodeRutine }
     }

@@ -4,7 +4,7 @@ import no.nav.familie.ef.infotrygd.model.StønadType
 import java.time.LocalDate
 
 data class InfotrygdSakResponse(
-    val saker: List<InfotrygdSak>
+    val saker: List<InfotrygdSak>,
 )
 
 data class InfotrygdSak(
@@ -30,7 +30,6 @@ data class InfotrygdSak(
 )
 
 enum class InfotrygdSakType(val infotrygdKode: String, val beskrivelse: String) {
-
     ANKE("A", "Anke"),
     DISPENSASJON_FORELDELSE("DF", "Dispensasjon foreldelse"),
     DOKUMENTINNSYN("DI", "Dokumentinnsyn"),
@@ -60,11 +59,12 @@ enum class InfotrygdSakType(val infotrygdKode: String, val beskrivelse: String) 
     TILBAKEBETALING_ENDRING("TE", "Tilbakebetaling endring"),
     TIPSUTREDNING("TU", "Tipsutredning"),
     UTBETALING_TIL_ANNEN("UA", "Utbetaling til annen"),
-    VURDERING_UTESTENGING("VU", "Vurdering utestenging");
+    VURDERING_UTESTENGING("VU", "Vurdering utestenging"),
+    ;
 
     companion object {
-
         private val kodeMap = values().associateBy(InfotrygdSakType::infotrygdKode)
+
         fun fraInfotrygdKode(kode: String): InfotrygdSakType? {
             if (kode.isBlank()) return null
             return kodeMap[kode.trim()] ?: error("Fant ikke sakType for $kode")
@@ -103,12 +103,12 @@ enum class InfotrygdSakResultat(val infotrygdKode: String, val beskrivelse: Stri
     TVANGSGEBYR_FASTHOLDES("TF", "Tvangsgebyr fastholdes"),
     TIPS_OPPFØLGING("TO", "Tips oppfølging"),
     VU("VU", ""), // TODO
-    ØKNING("Ø", "Økning")
+    ØKNING("Ø", "Økning"),
     ;
 
     companion object {
-
         private val kodeMap = values().associateBy(InfotrygdSakResultat::infotrygdKode)
+
         fun fraInfotrygdKode(kode: String): InfotrygdSakResultat {
             return kodeMap[kode.trim()] ?: error("Fant ikke sakResultat for $kode")
         }
@@ -116,7 +116,6 @@ enum class InfotrygdSakResultat(val infotrygdKode: String, val beskrivelse: Stri
 }
 
 enum class InfotrygdSakNivå(val infotrygdKode: String, val beskrivelse: String) {
-
     AN("AN", ""),
     FOLKETRYGDKONTORET_FOR_UTENLANDSSAKER("FFU", "Folketrygdkontoret for utenlandssaker"),
     HTF("HTF", ""),
@@ -129,8 +128,8 @@ enum class InfotrygdSakNivå(val infotrygdKode: String, val beskrivelse: String)
     ;
 
     companion object {
-
         private val kodeMap = values().associateBy(InfotrygdSakNivå::infotrygdKode)
+
         fun fraInfotrygdKode(kode: String): InfotrygdSakNivå? {
             if (kode.isBlank()) return null
             return kodeMap[kode.trim()] ?: error("Fant ikke sakNivå for $kode")
@@ -142,16 +141,15 @@ enum class InfotrygdSakNivå(val infotrygdKode: String, val beskrivelse: String)
  * Disse mappes til ulike verdier beroende på hvilken typ av stønad det gjelder.
  */
 enum class InfotrygdSakUndervalg {
-
     AK,
     NY,
     OL,
-    OR
+    OR,
     ;
 
     companion object {
-
         private val kodeMap = values().associateBy { it.name }
+
         fun fraInfotrygdKode(kode: String): InfotrygdSakUndervalg? {
             if (kode.isBlank()) return null
             return kodeMap[kode.trim()] ?: error("Fant ikke sakUndervalg for $kode")

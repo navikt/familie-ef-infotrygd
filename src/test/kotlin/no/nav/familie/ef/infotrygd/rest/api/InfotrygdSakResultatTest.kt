@@ -5,7 +5,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 internal class InfotrygdSakResultatTest {
-
     @Test
     fun skalMappeVerdierFraResultat() {
         assertThat(fraInfotrygdKode("  ")).isEqualTo(InfotrygdSakResultat.ÅPEN_SAK)
