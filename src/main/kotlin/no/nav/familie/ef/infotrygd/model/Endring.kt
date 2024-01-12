@@ -12,7 +12,6 @@ data class Endring(
     @Id
     @Column(name = "VEDTAK_ID")
     val id: Long,
-
     @Column(name = "KODE")
-    val kode: String
+    val kode: String,
 )

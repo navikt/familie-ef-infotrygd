@@ -4,7 +4,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 internal class ReversedFoedselsNrConverterTest {
-
     private val dbValue = "54010150572"
     private val entity = "01015450572" // TestData.foedselsNr(foedselsdato = LocalDate.of(1854, 1, 1))
 

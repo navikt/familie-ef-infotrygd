@@ -14,18 +14,19 @@ data class InternPeriode(
     val stønadFom: LocalDate,
     val stønadTom: LocalDate,
     val opphørsdato: LocalDate?,
-    val datakilde: Datakilde
+    val datakilde: Datakilde,
 )
 
-fun Periode.tilInternPeriode(): InternPeriode = InternPeriode(
-    personIdent = this.personIdent,
-    inntektsreduksjon = this.inntektsreduksjon,
-    samordningsfradrag = this.samordningsfradrag,
-    utgifterBarnetilsyn = this.utgifterBarnetilsyn,
-    månedsbeløp = this.månedsbeløp,
-    engangsbeløp = this.engangsbeløp,
-    stønadFom = this.stønadFom,
-    stønadTom = this.stønadTom,
-    opphørsdato = this.opphørsdato,
-    datakilde = Datakilde.INFOTRYGD
-)
+fun Periode.tilInternPeriode(): InternPeriode =
+    InternPeriode(
+        personIdent = this.personIdent,
+        inntektsreduksjon = this.inntektsreduksjon,
+        samordningsfradrag = this.samordningsfradrag,
+        utgifterBarnetilsyn = this.utgifterBarnetilsyn,
+        månedsbeløp = this.månedsbeløp,
+        engangsbeløp = this.engangsbeløp,
+        stønadFom = this.stønadFom,
+        stønadTom = this.stønadTom,
+        opphørsdato = this.opphørsdato,
+        datakilde = Datakilde.INFOTRYGD,
+    )

@@ -13,9 +13,8 @@ import javax.transaction.Transactional
 @Transactional
 class TableController(
     private val tableIntegrator: TableIntegrator,
-    private val jdbcTemplate: NamedParameterJdbcTemplate
+    private val jdbcTemplate: NamedParameterJdbcTemplate,
 ) {
-
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @GetMapping(path = ["/tables"])

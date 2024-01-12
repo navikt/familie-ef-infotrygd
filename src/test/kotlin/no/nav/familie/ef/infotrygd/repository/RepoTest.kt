@@ -26,7 +26,6 @@ import org.springframework.test.context.junit4.SpringRunner
 @ActiveProfiles("test")
 @EnableMockOAuth2Server
 class RepoTest {
-
     @Autowired
     private lateinit var tableIntegrator: TableIntegrator
 
@@ -77,24 +76,27 @@ class RepoTest {
         }
     }
 
-    private fun kombinasjonerAvQueries() = listOf(
-        { periodeRepository.hentPerioder(mockk(relaxed = true)) },
-        { sakRepository.finnesSaker(emptySet()) },
-        { sakRepository.finnSaker(emptySet()) },
-        { infotrygdRepository.harStønad(emptySet(), true) },
-        { infotrygdRepository.harStønad(emptySet(), false) }
-    )
+    private fun kombinasjonerAvQueries() =
+        listOf(
+            { periodeRepository.hentPerioder(mockk(relaxed = true)) },
+            { sakRepository.finnesSaker(emptySet()) },
+            { sakRepository.finnSaker(emptySet()) },
+            { infotrygdRepository.harStønad(emptySet(), true) },
+            { infotrygdRepository.harStønad(emptySet(), false) },
+        )
 
     private fun verifyColumnsExists(s: String) {
-        val tables = """(FROM|JOIN) (\w+) (\w+)""".toRegex().findAll(s).map {
-            val (_, table, tableKeyword) = it.destructured
-            tableKeyword.lowercase() to table.lowercase()
-        }.toMap()
+        val tables =
+            """(FROM|JOIN) (\w+) (\w+)""".toRegex().findAll(s).map {
+                val (_, table, tableKeyword) = it.destructured
+                tableKeyword.lowercase() to table.lowercase()
+            }.toMap()
 
-        val columns = """[, \(](\w+)\.(\w+)""".toRegex().findAll(s).map {
-            val (tableKeyword, column) = it.destructured
-            tableKeyword.lowercase() to column.lowercase()
-        }.groupBy({ it.first }) { it.second }
+        val columns =
+            """[, \(](\w+)\.(\w+)""".toRegex().findAll(s).map {
+                val (tableKeyword, column) = it.destructured
+                tableKeyword.lowercase() to column.lowercase()
+            }.groupBy({ it.first }) { it.second }
 
         val columnsOnTables = columns.map { it.key to Pair(tables[it.key]!!, it.value.toSet()) }.toMap()
 
