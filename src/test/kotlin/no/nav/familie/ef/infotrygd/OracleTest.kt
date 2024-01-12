@@ -11,9 +11,10 @@ import org.testcontainers.containers.OracleContainer
 @Ignore
 class OracleTest {
     @get:Rule
-    val oracle = OracleContainer("navoracle:12")
-        .withStartupTimeoutSeconds(15)
-        .withConnectTimeoutSeconds(1)
+    val oracle =
+        OracleContainer("navoracle:12")
+            .withStartupTimeoutSeconds(15)
+            .withConnectTimeoutSeconds(1)
 
     @Test
     fun test() {

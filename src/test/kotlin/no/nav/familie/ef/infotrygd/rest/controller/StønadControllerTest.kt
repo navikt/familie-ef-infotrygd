@@ -25,7 +25,6 @@ import org.springframework.web.reactive.function.client.toEntity
 @ActiveProfiles("test")
 @EnableMockOAuth2Server
 class StønadControllerTest {
-
     @LocalServerPort
     private var port: Int = 0
 
@@ -73,7 +72,7 @@ class StønadControllerTest {
     private fun kallStønadController(
         uri: String,
         client: WebClient,
-        request: InfotrygdSøkRequest
+        request: InfotrygdSøkRequest,
     ): WebClient.RequestHeadersSpec<*> {
         return client.post()
             .uri("/api$uri")
@@ -82,8 +81,7 @@ class StønadControllerTest {
     }
 }
 
-private fun WebClient.RequestHeadersSpec<*>.statusCode(): HttpStatus =
-    this.exchangeToMono { it.toBodilessEntity() }.block()!!.statusCode
+private fun WebClient.RequestHeadersSpec<*>.statusCode(): HttpStatus = this.exchangeToMono { it.toBodilessEntity() }.block()!!.statusCode
 
 private fun WebClient.RequestHeadersSpec<*>.responseBody(): InfotrygdFinnesResponse =
     this.retrieve().toEntity<InfotrygdFinnesResponse>().block()!!.body!!

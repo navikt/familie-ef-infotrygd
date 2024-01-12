@@ -18,8 +18,8 @@ import java.time.LocalDate
 @ActiveProfiles("test")
 @EnableMockOAuth2Server
 internal class InfotrygdRepositoryTest {
-
     @Autowired lateinit var infotrygdRepository: InfotrygdRepository
+
     @Autowired lateinit var jdbcTemplate: JdbcTemplate
 
     private val personIdent = "01234567890"
@@ -36,12 +36,12 @@ internal class InfotrygdRepositoryTest {
             """INSERT INTO T_VEDTAK (VEDTAK_ID, PERSON_LOPENR, STONAD_ID, KODE_RUTINE, DATO_INNV_FOM,
                          DATO_INNV_TOM) VALUES (1,1,1,'EO',?,?)""",
             startdato,
-            sluttdato
+            sluttdato,
         )
         jdbcTemplate.update(
             """INSERT INTO T_STONAD (STONAD_ID, OPPDRAG_ID, PERSON_LOPENR, KODE_RUTINE, DATO_START, DATO_OPPHOR)
                                          VALUES (1, 1, 1, 'EO', sysdate, ?)""",
-            opphørsdato
+            opphørsdato,
         )
     }
 
@@ -98,10 +98,12 @@ internal class InfotrygdRepositoryTest {
     fun `harStønad - kun aktive, har opphør - finner ingen aktiv stønad når dagens dato er etter opphørsdato`() {
         leggInnData(true)
         val dagensDato = opphørsdato.plusDays(5)
-        val harStønad = infotrygdRepository.harStønad(
-            setOf(personIdent), true,
-            dagensDato
-        )
+        val harStønad =
+            infotrygdRepository.harStønad(
+                setOf(personIdent),
+                true,
+                dagensDato,
+            )
         assertThat(harStønad).isEmpty()
     }
 }

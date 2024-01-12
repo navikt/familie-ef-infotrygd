@@ -12,7 +12,6 @@ import java.time.LocalDate
  * sånn att en senere periode overskrever en tidligere periode
  */
 object InfotrygdPeriodeUtil {
-
     fun filtrerOgSorterPerioderFraInfotrygd(perioderFraInfotrygd: List<Periode>): List<Periode> {
         return perioderFraInfotrygd.toSet()
             .map { brukOpphørsdatoSomTomHvisDenFinnes(it) }
@@ -48,8 +47,8 @@ object InfotrygdPeriodeUtil {
     }
 
     /* NB! forventer sorterte infotrygdperioder - nyest først.
-    * NB 2 - dette er ikke en slå sammen, men en kutt periode som ikke gjelder (vi bruker den senest vedtatte versjonen av en periode),
-    */
+     * NB 2 - dette er ikke en slå sammen, men en kutt periode som ikke gjelder (vi bruker den senest vedtatte versjonen av en periode),
+     */
     private fun fjernPerioderSomErOverskrevet(perioder: List<Periode>): MutableList<Periode> {
         val list = mutableListOf<Periode>()
 
@@ -77,9 +76,9 @@ object InfotrygdPeriodeUtil {
             omslutter(periode)
     }
 
-    private fun Periode.omslutter(periode: Periode) =
-        periode.stønadFom.isBefore(stønadFom) && periode.stønadTom.isAfter(stønadTom)
+    private fun Periode.omslutter(periode: Periode) = periode.stønadFom.isBefore(stønadFom) && periode.stønadTom.isAfter(stønadTom)
 }
 
 fun LocalDate.isEqualOrBefore(other: LocalDate) = this == other || this.isBefore(other)
+
 fun LocalDate.isEqualOrAfter(other: LocalDate) = this == other || this.isAfter(other)
