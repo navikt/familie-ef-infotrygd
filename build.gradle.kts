@@ -66,7 +66,7 @@ dependencies {
     implementation("io.micrometer:micrometer-core")
     implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("net.ttddyy:datasource-proxy:1.9")
+    implementation("net.ttddyy:datasource-proxy:1.10")
     implementation("no.nav.security:token-validation-spring:$tokenSupportVersion")
     implementation("no.nav.familie.kontrakter:enslig-forsorger:$kontrakterVersion")
     implementation("no.nav.familie.kontrakter:felles:$kontrakterVersion")
