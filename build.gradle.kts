@@ -11,7 +11,7 @@ val ktlint by configurations.creating
 
 plugins {
     val kotlinVersion = "1.9.22"
-    val springBootVersion = "2.7.17"
+    val springBootVersion = "2.7.18"
     id("org.springframework.boot") version springBootVersion
     id("io.spring.dependency-management") version "1.1.4"
     kotlin("jvm") version kotlinVersion
@@ -136,5 +136,10 @@ extensions.findByName("buildScan")?.withGroovyBuilder {
     setProperty("termsOfServiceUrl", "https://gradle.com/terms-of-service")
     setProperty("termsOfServiceAgree", "yes")
 }
+
+tasks.test {
+    jvmArgs = listOf("-Dnet.bytebuddy.experimental=true")
+}
+
 
 // tasks.findByName('publish').mustRunAfter 'build'
