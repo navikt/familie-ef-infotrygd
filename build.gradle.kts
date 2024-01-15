@@ -1,6 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val mockkVersion = "1.13.8"
+val mockkVersion = "1.13.9"
 val tokenSupportVersion = "2.1.6"
 val springdocVersion = "1.7.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
@@ -11,7 +11,7 @@ val ktlint by configurations.creating
 
 plugins {
     val kotlinVersion = "1.9.22"
-    val springBootVersion = "2.7.5"
+    val springBootVersion = "2.7.18"
     id("org.springframework.boot") version springBootVersion
     id("io.spring.dependency-management") version "1.1.4"
     kotlin("jvm") version kotlinVersion
@@ -22,8 +22,8 @@ plugins {
 
 group = "no.nav"
 version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_17
-
+java.sourceCompatibility = JavaVersion.VERSION_21
+java.targetCompatibility = JavaVersion.VERSION_21
 configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
@@ -128,7 +128,7 @@ tasks.withType<KotlinCompile> {
     tasks.findByName("ktlintCheck")?.mustRunAfter("ktlintFormat")
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "17"
+        jvmTarget = "21"
     }
 }
 
@@ -136,5 +136,10 @@ extensions.findByName("buildScan")?.withGroovyBuilder {
     setProperty("termsOfServiceUrl", "https://gradle.com/terms-of-service")
     setProperty("termsOfServiceAgree", "yes")
 }
+
+tasks.test {
+    jvmArgs = listOf("-Dnet.bytebuddy.experimental=true")
+}
+
 
 // tasks.findByName('publish').mustRunAfter 'build'
