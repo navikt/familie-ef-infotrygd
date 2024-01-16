@@ -12,7 +12,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 object InfotrygdPeriodeParser {
-
     data class InfotrygdTestData(val input: List<Periode>, val output: List<InternPeriode>)
 
     private const val KEY_TYPE = "type"
@@ -33,16 +32,17 @@ object InfotrygdPeriodeParser {
         val fileContent = url.openStream()!!
         val rows: List<Map<String, String>> = csvReader().readAllWithHeader(fileContent)
 
-        val inputOutput = rows
-            .map { row -> row.entries.associate { it.key.trim() to it.value } }
-            .map { row ->
-                getValue(row, KEY_TYPE)!! to parseInfotrygdPeriode(row)
-            }.groupBy({ it.first }, { it.second })
+        val inputOutput =
+            rows
+                .map { row -> row.entries.associate { it.key.trim() to it.value } }
+                .map { row ->
+                    getValue(row, KEY_TYPE)!! to parseInfotrygdPeriode(row)
+                }.groupBy({ it.first }, { it.second })
         return InfotrygdTestData(
             inputOutput["INPUT"]!!,
             inputOutput["OUTPUT"]!!
                 .map(Periode::tilInternPeriode)
-                .sortedBy(InternPeriode::stønadFom)
+                .sortedBy(InternPeriode::stønadFom),
         )
     }
 
@@ -56,17 +56,20 @@ object InfotrygdPeriodeParser {
             utgifterBarnetilsyn = 0,
             månedsbeløp = getValue(row, KEY_NETTO_BELØP)!!.toInt(),
             engangsbeløp = 0,
-            stønadFom = LocalDate.parse(
-                getValue(row, KEY_STØNAD_FOM)!!,
-                DATO_FORMATTERER
-            ),
-            stønadTom = LocalDate.parse(
-                getValue(row, KEY_STØNAD_TOM)!!,
-                DATO_FORMATTERER
-            ),
-            opphørsdato = getValue(row, KEY_DATO_OPPHØR)
-                ?.let { emptyAsNull(it) }
-                ?.let { LocalDate.parse(it, DATO_FORMATTERER) },
+            stønadFom =
+                LocalDate.parse(
+                    getValue(row, KEY_STØNAD_FOM)!!,
+                    DATO_FORMATTERER,
+                ),
+            stønadTom =
+                LocalDate.parse(
+                    getValue(row, KEY_STØNAD_TOM)!!,
+                    DATO_FORMATTERER,
+                ),
+            opphørsdato =
+                getValue(row, KEY_DATO_OPPHØR)
+                    ?.let { emptyAsNull(it) }
+                    ?.let { LocalDate.parse(it, DATO_FORMATTERER) },
             personIdent = "",
             brukerId = "",
             kode = InfotrygdEndringKode.ENDRING_BEREGNINGSGRUNNLAG,
@@ -76,10 +79,13 @@ object InfotrygdPeriodeParser {
             startDato = LocalDate.now(),
             vedtakstidspunkt = LocalDateTime.now(),
             vedtakKodeResultat = "",
-            oppdragId = 1
+            oppdragId = 1,
         )
 
-    private fun getValue(row: Map<String, String>, key: String) = row[key]?.trim()
+    private fun getValue(
+        row: Map<String, String>,
+        key: String,
+    ) = row[key]?.trim()
 
     private fun emptyAsNull(s: String): String? = s.ifEmpty { null }
 }

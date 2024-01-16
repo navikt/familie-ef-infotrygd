@@ -1,19 +1,19 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val mockkVersion = "1.13.2"
+val mockkVersion = "1.13.9"
 val tokenSupportVersion = "2.1.6"
-val springdocVersion = "1.6.12"
+val springdocVersion = "1.7.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
-val kontrakterVersion = "2.0_20221027151559_d8da825"
+val kontrakterVersion = "3.0_20240109111848_d97569f"
 val fellesVersion = "1.20221006150009_46021ed"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 val ktlint by configurations.creating
 
 plugins {
-    val kotlinVersion = "1.7.20"
-    val springBootVersion = "2.7.5"
+    val kotlinVersion = "1.9.22"
+    val springBootVersion = "2.7.18"
     id("org.springframework.boot") version springBootVersion
-    id("io.spring.dependency-management") version "1.1.0"
+    id("io.spring.dependency-management") version "1.1.4"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
@@ -22,8 +22,8 @@ plugins {
 
 group = "no.nav"
 version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_17
-
+java.sourceCompatibility = JavaVersion.VERSION_21
+java.targetCompatibility = JavaVersion.VERSION_21
 configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
@@ -51,7 +51,7 @@ allOpen {
 dependencies {
 
 
-    ktlint("com.pinterest:ktlint:0.45.2") {
+    ktlint("com.pinterest:ktlint:0.51.0-FINAL") {
         attributes {
             attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
         }
@@ -66,7 +66,7 @@ dependencies {
     implementation("io.micrometer:micrometer-core")
     implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("net.ttddyy:datasource-proxy:1.8")
+    implementation("net.ttddyy:datasource-proxy:1.10")
     implementation("no.nav.security:token-validation-spring:$tokenSupportVersion")
     implementation("no.nav.familie.kontrakter:enslig-forsorger:$kontrakterVersion")
     implementation("no.nav.familie.kontrakter:felles:$kontrakterVersion")
@@ -80,7 +80,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("org.postgresql:postgresql")
-    implementation("com.oracle.database.jdbc:ojdbc8:21.7.0.0")
+    implementation("com.oracle.database.jdbc:ojdbc8:23.3.0.23.09")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.6.0")
@@ -128,7 +128,7 @@ tasks.withType<KotlinCompile> {
     tasks.findByName("ktlintCheck")?.mustRunAfter("ktlintFormat")
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "17"
+        jvmTarget = "21"
     }
 }
 
@@ -136,5 +136,10 @@ extensions.findByName("buildScan")?.withGroovyBuilder {
     setProperty("termsOfServiceUrl", "https://gradle.com/terms-of-service")
     setProperty("termsOfServiceAgree", "yes")
 }
+
+tasks.test {
+    jvmArgs = listOf("-Dnet.bytebuddy.experimental=true")
+}
+
 
 // tasks.findByName('publish').mustRunAfter 'build'

@@ -8,26 +8,28 @@ import java.time.LocalDate
 
 @Repository
 class InfotrygdRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
-
     fun harAktivStønad(personIdenter: Set<String>) = harStønad(personIdenter, kunAktive = true)
 
     fun harStønad(
         personIdenter: Set<String>,
         kunAktive: Boolean = false,
-        dagensDato: LocalDate = LocalDate.now()
+        dagensDato: LocalDate = LocalDate.now(),
     ): List<Pair<String, StønadType>> {
-        val values = MapSqlParameterSource()
-            .addValue("personIdenter", personIdenter)
-            .addValue("kodeRutiner", StønadType.values().map { it.kodeRutine })
-        val filter: String = if (kunAktive) {
-            values.addValue("dagensDato", dagensDato)
-            " AND nvl(S.DATO_OPPHOR,V.DATO_INNV_TOM) > :dagensDato "
-        } else {
-            ""
-        }
+        val values =
+            MapSqlParameterSource()
+                .addValue("personIdenter", personIdenter)
+                .addValue("kodeRutiner", StønadType.values().map { it.kodeRutine })
+        val filter: String =
+            if (kunAktive) {
+                values.addValue("dagensDato", dagensDato)
+                " AND nvl(S.DATO_OPPHOR,V.DATO_INNV_TOM) > :dagensDato "
+            } else {
+                ""
+            }
 
-        val result = jdbcTemplate.query(
-            """
+        val result =
+            jdbcTemplate.query(
+                """
             SELECT L.PERSONNR, S.KODE_RUTINE 
               FROM T_LOPENR_FNR L
               JOIN T_STONAD S ON S.PERSON_LOPENR = L.PERSON_LOPENR
@@ -37,13 +39,13 @@ class InfotrygdRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) 
               $filter
             GROUP BY L.personnr, S.KODE_RUTINE
         """,
-            values
-        ) { resultSet, _ ->
-            Pair(
-                resultSet.getString("PERSONNR"),
-                StønadType.fraKodeRutine(resultSet.getString("KODE_RUTINE"))
-            )
-        }
+                values,
+            ) { resultSet, _ ->
+                Pair(
+                    resultSet.getString("PERSONNR"),
+                    StønadType.fraKodeRutine(resultSet.getString("KODE_RUTINE")),
+                )
+            }
         return result.toList()
     }
 }

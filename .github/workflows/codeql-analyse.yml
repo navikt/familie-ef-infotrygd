@@ -27,11 +27,13 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 21
       - name: Test and build
         env:
           GPR_API_KEY: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew test build
+        run: |
+          ./gradlew wrapper --gradle-version=8.5
+          ./gradlew test build --no-daemon
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         with:

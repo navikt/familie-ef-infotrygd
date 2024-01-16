@@ -11,9 +11,7 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 internal class InfotrygdPeriodeTest {
-
     companion object {
-
         private val FOM = LocalDate.of(2021, 3, 1)
         private val TOM = LocalDate.of(2021, 5, 31)
 
@@ -79,35 +77,34 @@ internal class InfotrygdPeriodeTest {
 
     @Test
     internal fun `skal filtrere vekk perioder som er annulert eller uaktuelle`() {
-
-        val perioder = slåSammenInfotrygdperioder(
-            listOf(
-                lagInfotrygdPeriode(
-                    stønadFom = LocalDate.parse("2021-01-01"),
-                    stønadTom = LocalDate.parse("2021-01-02"),
-                    beløp = 1,
-                    kode = InfotrygdEndringKode.ANNULERT
+        val perioder =
+            slåSammenInfotrygdperioder(
+                listOf(
+                    lagInfotrygdPeriode(
+                        stønadFom = LocalDate.parse("2021-01-01"),
+                        stønadTom = LocalDate.parse("2021-01-02"),
+                        beløp = 1,
+                        kode = InfotrygdEndringKode.ANNULERT,
+                    ),
+                    lagInfotrygdPeriode(
+                        stønadFom = LocalDate.parse("2021-02-01"),
+                        stønadTom = LocalDate.parse("2021-02-02"),
+                        beløp = 2,
+                    ),
+                    lagInfotrygdPeriode(
+                        stønadFom = LocalDate.parse("2021-03-01"),
+                        stønadTom = LocalDate.parse("2021-03-02"),
+                        beløp = 3,
+                        kode = InfotrygdEndringKode.UAKTUELL,
+                    ),
                 ),
-                lagInfotrygdPeriode(
-                    stønadFom = LocalDate.parse("2021-02-01"),
-                    stønadTom = LocalDate.parse("2021-02-02"),
-                    beløp = 2
-                ),
-                lagInfotrygdPeriode(
-                    stønadFom = LocalDate.parse("2021-03-01"),
-                    stønadTom = LocalDate.parse("2021-03-02"),
-                    beløp = 3,
-                    kode = InfotrygdEndringKode.UAKTUELL
-                )
             )
-        )
 
         assertThat(perioder).hasSize(1)
         assertThat(perioder[0].månedsbeløp).isEqualTo(2)
     }
 
-    private fun Periode.omslutter(periode: Periode) =
-        periode.stønadFom.isBefore(stønadFom) && periode.stønadTom.isAfter(stønadTom)
+    private fun Periode.omslutter(periode: Periode) = periode.stønadFom.isBefore(stønadFom) && periode.stønadTom.isAfter(stønadTom)
 
     private fun Periode.erDatoInnenforPeriode(dato: LocalDate): Boolean {
         return dato.isEqualOrBefore(stønadTom) && dato.isEqualOrAfter(stønadFom)
@@ -118,6 +115,8 @@ internal class InfotrygdPeriodeTest {
             omslutter(periode)
     }
 
-    private fun lagPeriode(fom: LocalDate, tom: LocalDate) =
-        InfotrygdPeriodeTestUtil.lagInfotrygdPeriode(stønadFom = fom, stønadTom = tom)
+    private fun lagPeriode(
+        fom: LocalDate,
+        tom: LocalDate,
+    ) = InfotrygdPeriodeTestUtil.lagInfotrygdPeriode(stønadFom = fom, stønadTom = tom)
 }

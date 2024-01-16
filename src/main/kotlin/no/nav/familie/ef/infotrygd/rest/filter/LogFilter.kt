@@ -7,7 +7,7 @@ import org.springframework.core.Ordered.HIGHEST_PRECEDENCE
 import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.GenericFilterBean
-import java.util.*
+import java.util.UUID
 import javax.servlet.FilterChain
 import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
@@ -16,18 +16,25 @@ import javax.servlet.http.HttpServletResponse
 
 @Component
 @Order(HIGHEST_PRECEDENCE)
-class LogFilter(@Value("\${spring.application.name}") private val applicationName: String) : GenericFilterBean() {
+class LogFilter(
+    @Value("\${spring.application.name}") private val applicationName: String,
+) : GenericFilterBean() {
     private val log = LoggerFactory.getLogger(javaClass)
     private val consumerIdHeader = "Nav-Consumer-Id"
     private val callIdHeader = "Nav-Call-Id"
 
-    private val dontLog = setOf(
-        "/internal/status/isAlive",
-        "/internal/prometheus",
-        "/api/ping"
-    )
+    private val dontLog =
+        setOf(
+            "/internal/status/isAlive",
+            "/internal/prometheus",
+            "/api/ping",
+        )
 
-    override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
+    override fun doFilter(
+        request: ServletRequest,
+        response: ServletResponse,
+        chain: FilterChain,
+    ) {
         putValues(HttpServletRequest::class.java.cast(request))
         val req = request as HttpServletRequest
         val res = response as HttpServletResponse
@@ -56,7 +63,10 @@ class LogFilter(@Value("\${spring.application.name}") private val applicationNam
         return "${javaClass.simpleName} [applicationName=$applicationName]"
     }
 
-    fun toMDC(key: String, value: String) {
+    fun toMDC(
+        key: String,
+        value: String,
+    ) {
         MDC.put(key, value)
     }
 }

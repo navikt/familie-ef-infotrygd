@@ -21,7 +21,6 @@ import java.time.LocalDate
 @ActiveProfiles("test")
 @EnableMockOAuth2Server
 internal class StønadServiceTest {
-
     @Autowired lateinit var jdbcTemplate: JdbcTemplate
 
     @Autowired
@@ -50,24 +49,35 @@ internal class StønadServiceTest {
         jdbcTemplate.update("INSERT INTO sa_sak_10 (f_nr, s10_kapittelnr, s10_valg) VALUES ('${IDENT4.reverserFnr()}', 'EF', 'OG')")
     }
 
-    private fun leggInnStønad(id: Int, stønadType: StønadType, opphørsdato: LocalDate?) {
+    private fun leggInnStønad(
+        id: Int,
+        stønadType: StønadType,
+        opphørsdato: LocalDate?,
+    ) {
         jdbcTemplate.update(
             """INSERT INTO T_STONAD (STONAD_ID, OPPDRAG_ID, PERSON_LOPENR, KODE_RUTINE, DATO_START, DATO_OPPHOR)
                                          VALUES (?, ?, ?, ?, sysdate, ?)""",
-            id, id, id,
+            id,
+            id,
+            id,
             stønadType.kodeRutine,
-            opphørsdato
+            opphørsdato,
         )
     }
 
-    private fun leggInnVedtak(id: Int, stønadType: StønadType) {
+    private fun leggInnVedtak(
+        id: Int,
+        stønadType: StønadType,
+    ) {
         jdbcTemplate.update(
             """INSERT INTO T_VEDTAK (VEDTAK_ID, PERSON_LOPENR, STONAD_ID, KODE_RUTINE, DATO_INNV_FOM,
                              DATO_INNV_TOM) VALUES (?,?,?,?,?,?)""",
-            id, id, id,
+            id,
+            id,
+            id,
             stønadType.kodeRutine,
             startdato,
-            sluttdato
+            sluttdato,
         )
     }
 
@@ -130,7 +140,6 @@ internal class StønadServiceTest {
     }
 
     companion object {
-
         const val IDENT = "01234567890"
         const val IDENT2 = "01234567891"
         const val IDENT3 = "01234567892"

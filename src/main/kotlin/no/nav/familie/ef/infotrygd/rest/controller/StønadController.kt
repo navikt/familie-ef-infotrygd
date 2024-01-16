@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController
 @Timed(value = "infotrygd_historikk_enslig_forsoerger_controller", percentiles = [0.5, 0.95])
 @ProtectedWithClaims(issuer = "azure")
 class StønadController(private val stønadService: StønadService) {
-
     @Operation(summary = "Søker etter oppgitte fødselssnummere med stønadstype")
     @PostMapping(path = ["/eksisterer"])
     @Parameters(
@@ -27,12 +26,14 @@ class StønadController(private val stønadService: StønadService) {
             examples = [
                 ExampleObject(
                     name = "request",
-                    value = "{\n  \"personIdenter\": [\n\"12345612345\"\n]}"
-                )
-            ]
-        )
+                    value = "{\n  \"personIdenter\": [\n\"12345612345\"\n]}",
+                ),
+            ],
+        ),
     )
-    fun eksisterer(@RequestBody request: InfotrygdSøkRequest): ResponseEntity<Any> {
+    fun eksisterer(
+        @RequestBody request: InfotrygdSøkRequest,
+    ): ResponseEntity<Any> {
         if (request.personIdenter.isEmpty()) {
             return ResponseEntity.badRequest().build()
         }
