@@ -1,7 +1,7 @@
 package no.nav.familie.ef.infotrygd.model.converters
 
+import jakarta.persistence.AttributeConverter
 import no.nav.familie.ef.infotrygd.utils.reverserFnr
-import javax.persistence.AttributeConverter
 
 class ReversedFoedselNrConverter : AttributeConverter<String?, String?> {
     override fun convertToDatabaseColumn(attribute: String?): String? {

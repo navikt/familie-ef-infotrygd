@@ -1,6 +1,6 @@
 package no.nav.familie.ef.infotrygd.model.converters
 
-import javax.persistence.AttributeConverter
+import jakarta.persistence.AttributeConverter
 
 class ReversedLongFoedselNrConverter : AttributeConverter<String?, Long?> {
     private val converter = ReversedFoedselNrConverter()

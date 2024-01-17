@@ -1,7 +1,7 @@
 package no.nav.familie.ef.infotrygd.model.converters
 
+import jakarta.persistence.AttributeConverter
 import no.nav.commons.foedselsnummer.FoedselsNr
-import javax.persistence.AttributeConverter
 
 class FoedselNrConverter : AttributeConverter<FoedselsNr?, String?> {
     override fun convertToDatabaseColumn(attribute: FoedselsNr?): String? {

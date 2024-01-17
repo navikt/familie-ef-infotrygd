@@ -1,11 +1,10 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val mockkVersion = "1.13.9"
-val tokenSupportVersion = "4.1.0"
+val tokenSupportVersion = "3.2.0"
 val springdocVersion = "1.7.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
 val kontrakterVersion = "3.0_20240116082529_ee44807"
-val fellesVersion = "1.20221006150009_46021ed"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 val ktlint by configurations.creating
 
@@ -17,7 +16,6 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
-// id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
 }
 
 group = "no.nav"
@@ -42,11 +40,6 @@ repositories {
     }
 }
 
-allOpen {
-    annotation("javax.persistence.Entity")
-    annotation("javax.persistence.MappedSuperclass")
-    annotation("javax.persistence.Embeddable")
-}
 
 dependencies {
 
@@ -71,7 +64,6 @@ dependencies {
     implementation("no.nav.familie.kontrakter:enslig-forsorger:$kontrakterVersion")
     implementation("no.nav.familie.kontrakter:felles:$kontrakterVersion")
     testImplementation("no.nav.security:token-validation-spring-test:$tokenSupportVersion")
-    implementation("javax.inject:javax.inject:1")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.springdoc:springdoc-openapi-ui:$springdocVersion")
@@ -89,13 +81,6 @@ dependencies {
     testImplementation("org.flywaydb:flyway-core")
     testImplementation("io.mockk:mockk-jvm:$mockkVersion")
 
-    // overskrever spring sin versjon, blir brukt av mock-oauth2-server
-    testImplementation("com.squareup.okhttp3", "mockwebserver").version {
-        strictly("4.10.0")
-    }
-    testImplementation("com.squareup.okhttp3", "okhttp").version {
-        strictly("4.9.2")
-    }
 
 }
 

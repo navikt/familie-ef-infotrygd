@@ -1,8 +1,8 @@
 package no.nav.familie.ef.infotrygd.model.converters
 
+import jakarta.persistence.AttributeConverter
+import jakarta.persistence.Converter
 import java.time.LocalDate
-import javax.persistence.AttributeConverter
-import javax.persistence.Converter
 
 @Converter
 class NavCharDateConverter : AttributeConverter<LocalDate?, String?> {
