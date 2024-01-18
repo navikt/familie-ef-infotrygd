@@ -10,7 +10,6 @@ spring:
     url: ${APP_DATASOURCE_URL}
     username: ${APP_DATASOURCE_USERNAME}
     password: ${APP_DATASOURCE_PASSWORD}
-    platform: ${APP_DATASOURCE_PLATFORM}
     driver-class-name: ${APP_DATASOURCE_DRIVER}
     hikari:
       schema: ${APP_DEFAULT_SCHEMA}
@@ -22,6 +21,9 @@ spring:
     properties:
       hibernate:
         default_schema: ${APP_DEFAULT_SCHEMA}
+  sql:
+    init:
+      platform: ${APP_DATASOURCE_PLATFORM}
 
 springdoc:
   packagesToScan: no.nav.familie.ef.infotrygd
