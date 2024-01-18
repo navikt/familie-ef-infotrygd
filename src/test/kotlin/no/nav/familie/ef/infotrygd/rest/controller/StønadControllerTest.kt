@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
@@ -81,7 +82,10 @@ class StønadControllerTest {
     }
 }
 
-private fun WebClient.RequestHeadersSpec<*>.statusCode(): HttpStatus = this.exchangeToMono { it.toBodilessEntity() }.block()!!.statusCode
+private fun WebClient.RequestHeadersSpec<*>.statusCode(): HttpStatusCode =
+    this.exchangeToMono {
+        it.toBodilessEntity()
+    }.block()!!.statusCode
 
 private fun WebClient.RequestHeadersSpec<*>.responseBody(): InfotrygdFinnesResponse =
     this.retrieve().toEntity<InfotrygdFinnesResponse>().block()!!.body!!

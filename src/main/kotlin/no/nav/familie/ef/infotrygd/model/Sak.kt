@@ -1,16 +1,16 @@
 package no.nav.familie.ef.infotrygd.model
 
+import jakarta.persistence.Column
+import jakarta.persistence.Convert
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 import no.nav.commons.foedselsnummer.FoedselsNr
 import no.nav.familie.ef.infotrygd.model.converters.Char2Converter
 import no.nav.familie.ef.infotrygd.model.converters.Char3Converter
 import no.nav.familie.ef.infotrygd.model.converters.NavReversedLocalDateConverter
 import no.nav.familie.ef.infotrygd.model.converters.ReversedFoedselNrConverter
 import java.time.LocalDate
-import javax.persistence.Column
-import javax.persistence.Convert
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Table
 
 @Entity
 @Table(name = "SA_SAK_10")
