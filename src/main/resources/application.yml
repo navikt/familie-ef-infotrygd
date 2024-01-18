@@ -14,7 +14,7 @@ spring:
     hikari:
       schema: ${APP_DEFAULT_SCHEMA}
   jpa:
-    # For Oracle: database-platform: org.hibernate.dialect.Oracle10gDialect
+    # For Oracle: org.hibernate.dialect.OracleDialect not database-platform: org.hibernate.dialect.Oracle10gDialect
     database-platform: ${APP_JPA_PLATFORM}
     hibernate:
       ddl-auto: none
