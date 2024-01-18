@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val mockkVersion = "1.13.9"
-val tokenSupportVersion = "3.2.0"
+val tokenSupportVersion = "4.1.0"
 val springdocVersion = "1.7.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
 val kontrakterVersion = "3.0_20240116082529_ee44807"
