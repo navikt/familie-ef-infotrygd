@@ -1,16 +1,16 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val mockkVersion = "1.13.9"
-val tokenSupportVersion = "3.2.0"
-val springdocVersion = "1.7.0"
+val mockkVersion = "1.13.10"
+val tokenSupportVersion = "4.1.3"
+val springdocVersion = "1.8.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
-val kontrakterVersion = "3.0_20240116082529_ee44807"
+val kontrakterVersion = "3.0_20240322142416_c108f69"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 val ktlint by configurations.creating
 
 plugins {
-    val kotlinVersion = "1.9.22"
-    val springBootVersion = "3.2.1"
+    val kotlinVersion = "1.9.23"
+    val springBootVersion = "3.2.4"
     id("org.springframework.boot") version springBootVersion
     id("io.spring.dependency-management") version "1.1.4"
     kotlin("jvm") version kotlinVersion
@@ -75,8 +75,8 @@ dependencies {
     implementation("com.oracle.database.jdbc:ojdbc8:23.3.0.23.09")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.9.2")
-    testImplementation("org.testcontainers:oracle-xe:1.19.3")
+    testImplementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.9.3")
+    testImplementation("org.testcontainers:oracle-xe:1.19.7")
     testImplementation("com.h2database:h2")
     testImplementation("org.flywaydb:flyway-core")
     testImplementation("io.mockk:mockk-jvm:$mockkVersion")
