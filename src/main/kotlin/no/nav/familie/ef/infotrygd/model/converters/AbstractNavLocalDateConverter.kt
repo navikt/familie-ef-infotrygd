@@ -1,14 +1,15 @@
 package no.nav.familie.ef.infotrygd.model.converters
 
+import jakarta.persistence.AttributeConverter
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import javax.persistence.AttributeConverter
 
 open class AbstractNavLocalDateConverter(datePattern: String) : AttributeConverter<LocalDate?, Int?> {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     private val formatter = DateTimeFormatter.ofPattern(datePattern)
+
     override fun convertToDatabaseColumn(attribute: LocalDate?): Int? {
         return attribute?.format(formatter)?.toInt()
     }

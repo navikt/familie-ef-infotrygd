@@ -2,7 +2,7 @@ name: Build-Deploy-Prod
 on:
   push:
     branches:
-      - master
+      - main
 
 env:
   IMAGE: ghcr.io/navikt/${{ github.repository }}:${{ github.sha }}
@@ -18,12 +18,14 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
           cache: 'gradle'
       - name: Test and build
         env: 
           GPR_API_KEY: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew test build
+        run: |
+          ./gradlew wrapper --gradle-version=8.5
+          ./gradlew test build --no-daemon
       - name: Build docker image
         run: |
           docker build -t $IMAGE -t ${IMAGE_LATEST} .
@@ -35,13 +37,13 @@ jobs:
           docker push ${IMAGE}
           docker push ${IMAGE_LATEST}
       - name: Deploy to dev-fss
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
           RESOURCE: nais/dev-fss.yml
       - name: Deploy to prod-fss
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-fss

@@ -10,7 +10,6 @@ import java.time.LocalDateTime
 import java.time.YearMonth
 
 object InfotrygdPeriodeTestUtil {
-
     fun lagInfotrygdPeriode(
         personIdent: String = "1",
         stønadFom: LocalDate = YearMonth.now().atDay(1),
@@ -27,7 +26,7 @@ object InfotrygdPeriodeTestUtil {
         sakstype: InfotrygdSakstype = InfotrygdSakstype.SØKNAD,
         aktivitetstype: InfotrygdAktivitetstype? = InfotrygdAktivitetstype.BRUKERKONTAKT,
         kodeOvergangsstønad: InfotrygdOvergangsstønadKode? = InfotrygdOvergangsstønadKode.BARN_UNDER_1_3_ÅR,
-        barnIdenter: List<String> = emptyList()
+        barnIdenter: List<String> = emptyList(),
     ): Periode {
         return Periode(
             personIdent = personIdent,
@@ -51,7 +50,7 @@ object InfotrygdPeriodeTestUtil {
             opphørsdato = opphørsdato,
             barnIdenter = barnIdenter,
             vedtakKodeResultat = "",
-            oppdragId = 1
+            oppdragId = 1,
         )
     }
 }

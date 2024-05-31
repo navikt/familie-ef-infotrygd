@@ -26,14 +26,11 @@ spec:
   leaderElection: false # Optional. If true, a http endpoint will be available at $ELECTOR_PATH that return the current leader
   # Compare this value with the $HOSTNAME to see if the current instance is the leader
   preStopHookPath: "" # Optional. A HTTP GET will be issued to this endpoint at least once before the pod is terminated.
-  # See https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
-  istio: # Optional.
-    enabled: false # Optional. When true, envoy-proxy sidecar will be injected into pod and https urls envvars will be rewritten
   resources: # Optional. See: http://kubernetes.io/docs/user-guide/compute-resources/
     limits:
       memory: 512Mi  # app will be killed if exceeding these limits
     requests: # App is guaranteed the requested resources and  will be scheduled on nodes with at least this amount of resources available
-      cpu: 500m
+      cpu: 50m
       memory: 256Mi
   ingresses: # Optional. List of ingress URLs that will route HTTP traffic to the application.
     - https://familie-ef-infotrygd.intern.nav.no
@@ -60,11 +57,11 @@ spec:
     - name: APP_DATASOURCE_URL
       value: jdbc:oracle:thin:@a01dbfl037.adeo.no:1521/infotrygd_efp
     - name: APP_DATASOURCE_PLATFORM
-      value: org.hibernate.dialect.Oracle10gDialect
+      value: org.hibernate.dialect.OracleDialect
     - name: APP_DATASOURCE_DRIVER
       value: oracle.jdbc.driver.OracleDriver
     - name: APP_JPA_PLATFORM
-      value: org.hibernate.dialect.Oracle10gDialect
+      value: org.hibernate.dialect.OracleDialect
     - name: APP_DEFAULT_SCHEMA
       value: INFOTRYGD_EFP
     - name: APP_AZURE_PROXY_URL

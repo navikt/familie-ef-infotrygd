@@ -1,21 +1,20 @@
 package no.nav.familie.ef.infotrygd.rest.filter
 
+import jakarta.servlet.FilterChain
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
 import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
-import javax.servlet.FilterChain
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 @Component
 @Order(0)
 class AuthorizationFilter : OncePerRequestFilter() {
-
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        filterChain: FilterChain
+        filterChain: FilterChain,
     ) {
         when (acceptedClient()) {
             true -> filterChain.doFilter(request, response)
@@ -37,9 +36,10 @@ class AuthorizationFilter : OncePerRequestFilter() {
             val claims = SpringTokenValidationContextHolder().tokenValidationContext.getClaims("azure")
 
             @Suppress("UNCHECKED_CAST")
-            val accessAsApplication = (
-                claims.get("roles") as List<String>?
-                    ?: emptyList()
+            val accessAsApplication =
+                (
+                    claims.get("roles") as List<String>?
+                        ?: emptyList()
                 ).contains("access_as_application")
             val clientId = claims?.get("azp") as String?
 

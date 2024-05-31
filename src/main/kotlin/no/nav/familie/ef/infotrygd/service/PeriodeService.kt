@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service
 
 @Service
 class PeriodeService(private val periodeRepository: PeriodeRepository) {
-
     fun hentPerioder(request: PeriodeRequest): Map<StønadType, List<Periode>> {
-        val perioder = periodeRepository.hentPerioder(request)
-            .filter { harOppdragIdEller0beløp(it.second) }
-            .groupBy({ it.first }) { it.second }
-            .toMutableMap()
+        val perioder =
+            periodeRepository.hentPerioder(request)
+                .filter { harOppdragIdEller0beløp(it.second) }
+                .groupBy({ it.first }) { it.second }
+                .toMutableMap()
         perioder[BARNETILSYN] = hentBarnetilsynPerioderMedBarn(perioder)
         return perioder.map { it.key to it.value.sortedByDescending { it.stønadFom } }.toMap()
     }
@@ -50,7 +50,7 @@ class PeriodeService(private val periodeRepository: PeriodeRepository) {
     private fun hentBarnIdenter(
         acc: List<Periode>,
         periode: Periode,
-        barnetilsynPeriodeBarnListe: Map<Long, List<String>>
+        barnetilsynPeriodeBarnListe: Map<Long, List<String>>,
     ): List<String> {
         val barnIdenter = barnetilsynPeriodeBarnListe[periode.vedtakId] ?: emptyList()
         if (barnIdenter.isNotEmpty()) return barnIdenter
@@ -65,7 +65,7 @@ class PeriodeService(private val periodeRepository: PeriodeRepository) {
     private fun brukBarnIdenterFraForrigeVedtak(
         acc: List<Periode>,
         periode: Periode,
-        barnIdenter: List<String>
+        barnIdenter: List<String>,
     ): List<String> {
         val last = acc.lastOrNull()
         return if (periode.erFortsattInnvilget() && barnIdenter.isEmpty() &&

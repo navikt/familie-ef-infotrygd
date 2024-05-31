@@ -1,5 +1,10 @@
 package no.nav.familie.ef.infotrygd.rest.filter
 
+import jakarta.servlet.FilterChain
+import jakarta.servlet.ServletRequest
+import jakarta.servlet.ServletResponse
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Value
@@ -7,27 +12,29 @@ import org.springframework.core.Ordered.HIGHEST_PRECEDENCE
 import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.GenericFilterBean
-import java.util.*
-import javax.servlet.FilterChain
-import javax.servlet.ServletRequest
-import javax.servlet.ServletResponse
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+import java.util.UUID
 
 @Component
 @Order(HIGHEST_PRECEDENCE)
-class LogFilter(@Value("\${spring.application.name}") private val applicationName: String) : GenericFilterBean() {
+class LogFilter(
+    @Value("\${spring.application.name}") private val applicationName: String,
+) : GenericFilterBean() {
     private val log = LoggerFactory.getLogger(javaClass)
     private val consumerIdHeader = "Nav-Consumer-Id"
     private val callIdHeader = "Nav-Call-Id"
 
-    private val dontLog = setOf(
-        "/internal/status/isAlive",
-        "/internal/prometheus",
-        "/api/ping"
-    )
+    private val dontLog =
+        setOf(
+            "/internal/status/isAlive",
+            "/internal/prometheus",
+            "/api/ping",
+        )
 
-    override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
+    override fun doFilter(
+        request: ServletRequest,
+        response: ServletResponse,
+        chain: FilterChain,
+    ) {
         putValues(HttpServletRequest::class.java.cast(request))
         val req = request as HttpServletRequest
         val res = response as HttpServletResponse
@@ -56,7 +63,10 @@ class LogFilter(@Value("\${spring.application.name}") private val applicationNam
         return "${javaClass.simpleName} [applicationName=$applicationName]"
     }
 
-    fun toMDC(key: String, value: String) {
+    fun toMDC(
+        key: String,
+        value: String,
+    ) {
         MDC.put(key, value)
     }
 }

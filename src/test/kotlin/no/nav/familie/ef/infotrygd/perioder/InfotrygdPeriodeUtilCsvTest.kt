@@ -8,7 +8,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 internal class InfotrygdPeriodeUtilCsvTest {
-
     /**
      * Output er lik input då det ikke er noen overlappende perioder
      */

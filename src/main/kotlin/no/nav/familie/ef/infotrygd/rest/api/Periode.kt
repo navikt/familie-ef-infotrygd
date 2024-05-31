@@ -7,13 +7,13 @@ import java.time.LocalDateTime
 
 data class PeriodeRequest(
     val personIdenter: Set<FoedselsNr>,
-    val stønadstyper: Set<StønadType>
+    val stønadstyper: Set<StønadType>,
 )
 
 data class PeriodeResponse(
     val overgangsstønad: List<Periode>,
     val barnetilsyn: List<Periode>,
-    val skolepenger: List<Periode>
+    val skolepenger: List<Periode>,
 )
 
 /**
@@ -43,7 +43,7 @@ data class Periode(
     val opphørsdato: LocalDate?,
     val barnIdenter: List<String> = emptyList(),
     val vedtakKodeResultat: String,
-    val oppdragId: Int?
+    val oppdragId: Int?,
 ) {
     fun erFortsattInnvilget() = vedtakKodeResultat == "FI"
 }
@@ -73,7 +73,6 @@ data class Periode(
  * OO      	Overf ny løsning
  */
 enum class InfotrygdEndringKode(val infotrygdKode: String, val beskrivelse: String) {
-
     ANNULERT("AN", "Annullert"),
     ENDRING_BEREGNINGSGRUNNLAG("E", "Endring i beregningsgrunnlag"),
     FØRSTEGANGSVEDTAK("F", "Førstegangsvedtak"),
@@ -82,11 +81,12 @@ enum class InfotrygdEndringKode(val infotrygdKode: String, val beskrivelse: Stri
     OPPHØRT("O", "Opphørt"),
     SATSENDRING("S", "Satsendring"),
     UAKTUELL("UA", "Uaktuell"),
-    OVERTFØRT_NY_LØSNING("OO", "Overf ny løsning");
+    OVERTFØRT_NY_LØSNING("OO", "Overf ny løsning"),
+    ;
 
     companion object {
-
         private val kodeMap = values().associateBy(InfotrygdEndringKode::infotrygdKode)
+
         fun fraInfotrygdKode(kode: String): InfotrygdEndringKode {
             return kodeMap[kode] ?: error("Fant ikke endringKode for $kode")
         }
@@ -102,11 +102,12 @@ enum class InfotrygdSakstype(val infotrygdKode: String, val beskrivelse: String)
     MASKINELL_SATSOMREGNING("MS", "Maskinell satsomregning"),
     ANKE("A", "Anke"),
     SØKNAD("S", "Søknad"),
-    SØKNAD_ØKNING_ENDRING("SØ", "Søknad om økning/endring");
+    SØKNAD_ØKNING_ENDRING("SØ", "Søknad om økning/endring"),
+    ;
 
     companion object {
-
         private val kodeMap = values().associateBy(InfotrygdSakstype::infotrygdKode)
+
         fun fraInfotrygdKode(kode: String): InfotrygdSakstype {
             return kodeMap[kode] ?: error("Fant ikke vedtakKode for $kode")
         }
@@ -117,11 +118,11 @@ enum class InfotrygdOvergangsstønadKode(val infotrygdKode: String, val beskrive
     BARN_UNDER_1_3_ÅR("1", "Barn under 1 år / 3 år (gamle tilfeller)"),
     YRKESRETTET_AKTIVITET_BARN_FYLT_1_3_ÅR(
         "2",
-        "Er i yrkesrettet aktivitet - barn har fylt 1 år / 3 år (gamle tilfeller)"
+        "Er i yrkesrettet aktivitet - barn har fylt 1 år / 3 år (gamle tilfeller)",
     ),
     UNNTAK_FRA_KRAV_TIL_YRKESRETTET_AKTIVITET(
         "3",
-        "Unntak fra krav til yrkesr. aktivitet når barn har fylt 1 år / år (gamle tilfeller)"
+        "Unntak fra krav til yrkesr. aktivitet når barn har fylt 1 år / år (gamle tilfeller)",
     ),
     UTVIDELSE_NØDVENDIG_UTDANNING("4", "Utvidelse på grunn av nødvendig utdanning jf 15-6. 3. ledd"),
     PÅVENTE_SKOLESTART_ARBEID_TILSYNSPLASS("5", "I påvente av skolestart/arbeid/tilsynsplass 15-6. 4. ledd"),
@@ -133,8 +134,8 @@ enum class InfotrygdOvergangsstønadKode(val infotrygdKode: String, val beskrive
     ;
 
     companion object {
-
         private val kodeMap = values().associateBy(InfotrygdOvergangsstønadKode::infotrygdKode)
+
         fun fraInfotrygdKode(kode: String): InfotrygdOvergangsstønadKode {
             return kodeMap[kode] ?: error("Fant ikke overgangsstønadskode for $kode")
         }
@@ -147,11 +148,12 @@ enum class InfotrygdAktivitetstype(val infotrygdKode: String, val beskrivelse: S
     TILMELDT_SOM_REELL_ARBEIDSSØKER("S", "Tilmeldt som reell arbeidssøker"),
     KURS("K", "Kurs o.l."),
     BRUKERKONTAKT("B", "Brukerkontakt"),
-    IKKE_I_AKTIVITET("N", "Ikke i aktivitet");
+    IKKE_I_AKTIVITET("N", "Ikke i aktivitet"),
+    ;
 
     companion object {
-
         private val kodeMap = values().associateBy(InfotrygdAktivitetstype::infotrygdKode)
+
         fun fraInfotrygdKode(kode: String): InfotrygdAktivitetstype {
             return kodeMap[kode] ?: error("Fant ikke aktivitetstype for $kode")
         }

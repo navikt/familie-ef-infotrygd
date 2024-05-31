@@ -4,18 +4,17 @@ import no.nav.familie.ef.infotrygd.integration.TableIntegrator
 import no.nav.security.token.support.core.api.Unprotected
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
-import javax.transaction.Transactional
 
 @RestController
 @Unprotected
 @Transactional
 class TableController(
     private val tableIntegrator: TableIntegrator,
-    private val jdbcTemplate: NamedParameterJdbcTemplate
+    private val jdbcTemplate: NamedParameterJdbcTemplate,
 ) {
-
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @GetMapping(path = ["/tables"])

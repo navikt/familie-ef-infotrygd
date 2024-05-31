@@ -19,20 +19,19 @@ class TableIntegrator : Integrator {
         }
 
     override fun integrate(
-        metadata: Metadata?,
-        sessionFactory: SessionFactoryImplementor?,
-        serviceRegistry: SessionFactoryServiceRegistry?
+        metadata: Metadata,
+        sessionFactory: SessionFactoryImplementor,
+        serviceRegistry: SessionFactoryServiceRegistry,
     ) {
         val result = mutableMapOf<String, List<String>>()
 
         for (
-            namespace in metadata!!
-                .getDatabase()
-                .getNamespaces()
+        namespace in metadata!!
+            .getDatabase()
+            .getNamespaces()
         ) {
-
             for (table in namespace.getTables()) {
-                val cols = table.columnIterator.asSequence().toList()
+                val cols = table.columns.toList()
                 val names = cols.map { (it as Column).canonicalName }
                 result[table.name] = names
             }
@@ -41,8 +40,8 @@ class TableIntegrator : Integrator {
     }
 
     override fun disintegrate(
-        sessionFactory: SessionFactoryImplementor?,
-        serviceRegistry: SessionFactoryServiceRegistry?
+        p0: SessionFactoryImplementor,
+        p1: SessionFactoryServiceRegistry,
     ) {
     }
 }
@@ -56,7 +55,6 @@ class TableIntegratorProvider(private val tableIntegrator: TableIntegrator) : In
 
 @Component
 class HibernateConfig(private val tableIntegratorProvider: TableIntegratorProvider) : HibernatePropertiesCustomizer {
-
     override fun customize(hibernateProperties: MutableMap<String, Any>) {
         hibernateProperties["hibernate.integrator_provider"] = tableIntegratorProvider
     }
