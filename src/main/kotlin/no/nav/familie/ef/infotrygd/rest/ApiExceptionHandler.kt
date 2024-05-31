@@ -5,12 +5,15 @@ import org.slf4j.LoggerFactory
 import org.springframework.core.NestedExceptionUtils
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
+import org.springframework.lang.Nullable
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
+import java.lang.Exception
 
 @Suppress("unused")
 @ControllerAdvice
@@ -24,14 +27,14 @@ class ApiExceptionHandler : ResponseEntityExceptionHandler() {
 
     override fun handleExceptionInternal(
         ex: Exception,
-        body: Any?,
+        @Nullable body: Any?,
         headers: HttpHeaders,
-        status: HttpStatus,
+        statusCode: HttpStatusCode,
         request: WebRequest,
-    ): ResponseEntity<Any> {
+    ): ResponseEntity<Any>? {
         secureLogger.error("En feil har oppstått", ex)
-        logger.error("En feil har oppstått - throwable=${rootCause(ex).javaClass.simpleName} status=${status.value()}")
-        return super.handleExceptionInternal(ex, body, headers, status, request)
+        logger.error("En feil har oppstått - throwable=${rootCause(ex).javaClass.simpleName} status=${statusCode.value()}")
+        return super.handleExceptionInternal(ex, body, headers, statusCode, request)
     }
 
     @ExceptionHandler(Throwable::class)
