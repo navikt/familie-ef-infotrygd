@@ -33,7 +33,7 @@ class AuthorizationFilter : OncePerRequestFilter() {
 
     private fun acceptedClient(): Boolean {
         return try {
-            val claims = SpringTokenValidationContextHolder().tokenValidationContext.getClaims("azure")
+            val claims = SpringTokenValidationContextHolder().getTokenValidationContext().getClaims("azure")
 
             @Suppress("UNCHECKED_CAST")
             val accessAsApplication =
