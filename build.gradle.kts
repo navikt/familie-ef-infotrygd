@@ -1,16 +1,16 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val mockkVersion = "1.13.11"
-val tokenSupportVersion = "3.2.0"
+val tokenSupportVersion = "4.1.8"
 val springdocVersion = "1.8.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
-val kontrakterVersion = "3.0_20240515103524_00490ae"
+val kontrakterVersion = "3.0_20240603143357_2992125"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 val ktlint by configurations.creating
 
 plugins {
     val kotlinVersion = "2.0.0"
-    val springBootVersion = "3.2.6"
+    val springBootVersion = "3.3.0"
     id("org.springframework.boot") version springBootVersion
     id("io.spring.dependency-management") version "1.1.5"
     kotlin("jvm") version kotlinVersion
