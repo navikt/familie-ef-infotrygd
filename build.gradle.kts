@@ -4,7 +4,7 @@ val mockkVersion = "1.13.11"
 val tokenSupportVersion = "4.1.8"
 val springdocVersion = "1.8.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
-val kontrakterVersion = "3.0_20240603143357_2992125"
+val kontrakterVersion = "3.0_20240607101709_d35e18c"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 val ktlint by configurations.creating
 
