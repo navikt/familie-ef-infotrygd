@@ -7,7 +7,7 @@ metadata:
     team: teamfamilie
 
 spec:
-  image: {{image}}
+  image: "{{image}}"
   port: 8080 # Required. The port number which is exposed by the container and should receive HTTP traffic.
   liveness:
     path: /internal/status/isAlive
