@@ -48,5 +48,5 @@ jobs:
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-fss
-          RESOURCE: nais/dev-fss.yaml
+          RESOURCE: nais/dev-fss.yml
           IMAGE: ${{ needs.build.outputs.image }}

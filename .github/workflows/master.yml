@@ -48,13 +48,13 @@ jobs:
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-fss
-          RESOURCE: nais/dev-fss.yaml
+          RESOURCE: nais/dev-fss.yml
           IMAGE: ${{ needs.build.outputs.image }}
       - name: Deploy til prod-fss
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: prod-fss
-          RESOURCE: nais/prod-fss.yaml
+          RESOURCE: nais/prod-fss.yml
           IMAGE: ${{ needs.build.outputs.image }}
       - name: Post deploy failures to Slack
         if: failure()
