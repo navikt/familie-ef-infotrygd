@@ -5,8 +5,6 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
 
-env:
-  IMAGE: ghcr.io/navikt/${{ github.repository }}:${{ github.sha }}
 jobs:
   build:
     name: Bygg app/image, push til github, deploy til prod-fss og dev-fss
