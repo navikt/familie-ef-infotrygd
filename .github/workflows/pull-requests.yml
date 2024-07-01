@@ -5,13 +5,13 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
 
+permissions:
+  contents: "read"
+  id-token: "write"
 jobs:
   build:
-    name: Bygg app/image, push til github, deploy til prod-fss og dev-fss
+    name: Bygg og deploy til dev-fss
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -29,22 +29,24 @@ jobs:
         id: docker-push
         with:
           team: teamfamilie
+          tag: latest
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
-  deploy-to-dev:
-    name: Deploy to FSS
+  deploy-dev:
+    name: Deploy to dev-fss
     needs: build
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      id-token: write
+      contents: "read"
+      id-token: "write"
     steps:
       - uses: actions/checkout@v4
       - name: Deploy til dev-fss
         uses: nais/deploy/actions/deploy@v2
         env:
+          APIKEY: ${{ secrets.DEPLOY_APIKEY }}
           CLUSTER: dev-fss
           RESOURCE: nais/dev-fss.yml
           VAR: image=${{ needs.build.outputs.image }}
