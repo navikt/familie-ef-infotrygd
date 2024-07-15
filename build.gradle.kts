@@ -1,18 +1,18 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val mockkVersion = "1.13.11"
-val tokenSupportVersion = "4.1.8"
+val mockkVersion = "1.13.12"
+val tokenSupportVersion = "5.0.1"
 val springdocVersion = "1.8.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
-val kontrakterVersion = "3.0_20240603143357_2992125"
+val kontrakterVersion = "3.0_20240607101709_d35e18c"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 val ktlint by configurations.creating
 
 plugins {
     val kotlinVersion = "2.0.0"
-    val springBootVersion = "3.3.0"
+    val springBootVersion = "3.3.1"
     id("org.springframework.boot") version springBootVersion
-    id("io.spring.dependency-management") version "1.1.5"
+    id("io.spring.dependency-management") version "1.1.6"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
