@@ -1,18 +1,18 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val mockkVersion = "1.13.11"
-val tokenSupportVersion = "4.1.8"
+val mockkVersion = "1.13.12"
+val tokenSupportVersion = "5.0.1"
 val springdocVersion = "1.8.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
-val kontrakterVersion = "3.0_20240603143357_2992125"
+val kontrakterVersion = "3.0_20240801145104_f611578"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 val ktlint by configurations.creating
 
 plugins {
-    val kotlinVersion = "2.0.0"
-    val springBootVersion = "3.3.0"
+    val kotlinVersion = "2.0.10"
+    val springBootVersion = "3.3.2"
     id("org.springframework.boot") version springBootVersion
-    id("io.spring.dependency-management") version "1.1.5"
+    id("io.spring.dependency-management") version "1.1.6"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
@@ -68,15 +68,15 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.springdoc:springdoc-openapi-ui:$springdocVersion")
     implementation("org.springdoc:springdoc-openapi-kotlin:$springdocVersion")
-    implementation("net.logstash.logback:logstash-logback-encoder:7.4")
+    implementation("net.logstash.logback:logstash-logback-encoder:8.0")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("org.postgresql:postgresql")
-    implementation("com.oracle.database.jdbc:ojdbc8:23.4.0.24.05")
+    implementation("com.oracle.database.jdbc:ojdbc8:23.5.0.24.07")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.9.3")
-    testImplementation("org.testcontainers:oracle-xe:1.19.8")
+    testImplementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.10.0")
+    testImplementation("org.testcontainers:oracle-xe:1.20.1")
     testImplementation("com.h2database:h2")
     testImplementation("org.flywaydb:flyway-core")
     testImplementation("io.mockk:mockk-jvm:$mockkVersion")
