@@ -1,10 +1,10 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val mockkVersion = "1.13.12"
-val tokenSupportVersion = "4.1.8"
+val tokenSupportVersion = "5.0.5"
 val springdocVersion = "1.8.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
-val kontrakterVersion = "3.0_20240903082713_4cc7504"
+val kontrakterVersion = "3.0_20240917154356_c550f90"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 val ktlint by configurations.creating
 
