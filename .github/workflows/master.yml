@@ -25,6 +25,8 @@ jobs:
         run: |
           ./gradlew wrapper --gradle-version=8.5
           ./gradlew test build --no-daemon
+      - name: Generer SBOM
+        run: ./gradlew cyclonedxBom
       - uses: nais/docker-build-push@v0
         id: docker-push
         with:
@@ -32,6 +34,7 @@ jobs:
           tag: latest
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+          byosbom: build/resources/main/META-INF/sbom/application.cdx.json
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
   deploy:
