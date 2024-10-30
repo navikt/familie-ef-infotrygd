@@ -16,6 +16,7 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
+    id("org.cyclonedx.bom") version "1.7.4"
 }
 
 group = "no.nav"
@@ -126,5 +127,11 @@ tasks.test {
     jvmArgs = listOf("-Dnet.bytebuddy.experimental=true")
 }
 
+tasks.register("generateSBOM") {
+    dependsOn("cyclonedxBom")
+    doLast {
+        println("SBOM generated at build/reports/bom.json")
+    }
+}
 
 // tasks.findByName('publish').mustRunAfter 'build'
