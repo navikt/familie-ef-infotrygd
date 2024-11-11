@@ -1,4 +1,3 @@
-import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val mockkVersion = "1.13.13"
@@ -75,13 +74,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("org.postgresql:postgresql")
     implementation("com.oracle.database.jdbc:ojdbc8:23.6.0.24.10")
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.10.0")
-    testImplementation("org.testcontainers:oracle-xe:1.20.3")
-    testImplementation("com.h2database:h2")
-    testImplementation("org.flywaydb:flyway-core")
-    testImplementation("io.mockk:mockk-jvm:$mockkVersion")
     implementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.xmlunit", module = "xmlunit-core")
     }
@@ -89,6 +81,13 @@ dependencies {
         exclude(group = "org.xmlunit", module = "xmlunit-core")
     }
     implementation("org.xmlunit:xmlunit-core:2.10.0")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.10.0")
+    testImplementation("org.testcontainers:oracle-xe:1.20.3")
+    testImplementation("com.h2database:h2")
+    testImplementation("org.flywaydb:flyway-core")
+    testImplementation("io.mockk:mockk-jvm:$mockkVersion")
 
 }
 
