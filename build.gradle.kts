@@ -1,3 +1,4 @@
+import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val mockkVersion = "1.13.13"
@@ -81,7 +82,13 @@ dependencies {
     testImplementation("com.h2database:h2")
     testImplementation("org.flywaydb:flyway-core")
     testImplementation("io.mockk:mockk-jvm:$mockkVersion")
-
+    implementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(group = "org.xmlunit", module = "xmlunit-core")
+    }
+    implementation("no.nav.security:token-validation-spring-test:$tokenSupportVersion") {
+        exclude(group = "org.xmlunit", module = "xmlunit-core")
+    }
+    implementation("org.xmlunit:xmlunit-core:2.10.0")
 
 }
 
