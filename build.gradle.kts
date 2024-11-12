@@ -127,5 +127,8 @@ tasks.test {
     jvmArgs = listOf("-Dnet.bytebuddy.experimental=true")
 }
 
+tasks.cyclonedxBom {
+    setSkipConfigs(listOf("testCompileClasspath"))
+}
 
 // tasks.findByName('publish').mustRunAfter 'build'
