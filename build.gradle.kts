@@ -128,7 +128,24 @@ tasks.test {
 }
 
 tasks.cyclonedxBom {
-    setSkipConfigs(listOf("testCompileClasspath"))
+    setSkipConfigs(
+        listOf(
+            "testAnnotationProcessor",
+            "testApi",
+            "testApiDependenciesMetadata",
+            "testCompileClasspath",
+            "testCompileOnly",
+            "testCompileOnlyDependenciesMetadata",
+            "testImplementation",
+            "testImplementationDependenciesMetadata",
+            "testIntransitiveDependenciesMetadata",
+            "testKotlinScriptDef",
+            "testKotlinScriptDefExtensions",
+            "testResultsElementsForTest",
+            "testRuntimeClasspath",
+            "testRuntimeOnly",
+            "developmentOnly"
+        )
+    )
 }
-
 // tasks.findByName('publish').mustRunAfter 'build'
