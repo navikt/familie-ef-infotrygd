@@ -1,22 +1,22 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val mockkVersion = "1.13.13"
-val tokenSupportVersion = "5.0.10"
+val mockkVersion = "1.13.14"
+val tokenSupportVersion = "5.0.14"
 val springdocVersion = "1.8.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
-val kontrakterVersion = "3.0_20241102131210_d65efd1"
+val kontrakterVersion = "3.0_20241220141021_9e86ad8"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 val ktlint by configurations.creating
 
 plugins {
-    val kotlinVersion = "2.0.21"
-    val springBootVersion = "3.3.5"
+    val kotlinVersion = "2.1.0"
+    val springBootVersion = "3.4.1"
     id("org.springframework.boot") version springBootVersion
-    id("io.spring.dependency-management") version "1.1.6"
+    id("io.spring.dependency-management") version "1.1.7"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
-    id("org.cyclonedx.bom") version "1.8.1"
+    id("org.cyclonedx.bom") version "1.10.0"
 }
 
 group = "no.nav"
@@ -60,7 +60,7 @@ dependencies {
     implementation("io.micrometer:micrometer-core")
     implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("net.ttddyy:datasource-proxy:1.10")
+    implementation("net.ttddyy:datasource-proxy:1.10.1")
     implementation("no.nav.security:token-validation-spring:$tokenSupportVersion")
     implementation("no.nav.familie.kontrakter:enslig-forsorger:$kontrakterVersion")
     implementation("no.nav.familie.kontrakter:felles:$kontrakterVersion")
@@ -77,7 +77,7 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.10.0")
-    testImplementation("org.testcontainers:oracle-xe:1.20.3")
+    testImplementation("org.testcontainers:oracle-xe:1.20.4")
     testImplementation("com.h2database:h2")
     testImplementation("org.flywaydb:flyway-core")
     testImplementation("io.mockk:mockk-jvm:$mockkVersion")
