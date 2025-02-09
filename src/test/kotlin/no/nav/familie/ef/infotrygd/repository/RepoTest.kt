@@ -87,16 +87,22 @@ class RepoTest {
 
     private fun verifyColumnsExists(s: String) {
         val tables =
-            """(FROM|JOIN) (\w+) (\w+)""".toRegex().findAll(s).map {
-                val (_, table, tableKeyword) = it.destructured
-                tableKeyword.lowercase() to table.lowercase()
-            }.toMap()
+            """(FROM|JOIN) (\w+) (\w+)"""
+                .toRegex()
+                .findAll(s)
+                .map {
+                    val (_, table, tableKeyword) = it.destructured
+                    tableKeyword.lowercase() to table.lowercase()
+                }.toMap()
 
         val columns =
-            """[, \(](\w+)\.(\w+)""".toRegex().findAll(s).map {
-                val (tableKeyword, column) = it.destructured
-                tableKeyword.lowercase() to column.lowercase()
-            }.groupBy({ it.first }) { it.second }
+            """[, \(](\w+)\.(\w+)"""
+                .toRegex()
+                .findAll(s)
+                .map {
+                    val (tableKeyword, column) = it.destructured
+                    tableKeyword.lowercase() to column.lowercase()
+                }.groupBy({ it.first }) { it.second }
 
         val columnsOnTables = columns.map { it.key to Pair(tables[it.key]!!, it.value.toSet()) }.toMap()
 

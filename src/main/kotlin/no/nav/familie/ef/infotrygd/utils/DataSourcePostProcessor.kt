@@ -28,7 +28,8 @@ class DataSourcePostProcessor : BeanPostProcessor {
         val loggingListener = SLF4JQueryLoggingListener()
         loggingListener.logLevel = SLF4JLogLevel.INFO
         loggingListener.queryLogEntryCreator = DefaultQueryLogEntryCreator()
-        return ProxyDataSourceBuilder.create(original)
+        return ProxyDataSourceBuilder
+            .create(original)
             .name("DataSourceProxy")
             .listener(loggingListener)
             .build()

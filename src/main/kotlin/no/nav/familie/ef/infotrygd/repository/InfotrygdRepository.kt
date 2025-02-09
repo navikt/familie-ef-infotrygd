@@ -7,7 +7,9 @@ import org.springframework.stereotype.Repository
 import java.time.LocalDate
 
 @Repository
-class InfotrygdRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
+class InfotrygdRepository(
+    private val jdbcTemplate: NamedParameterJdbcTemplate,
+) {
     fun harAktivStønad(personIdenter: Set<String>) = harStønad(personIdenter, kunAktive = true)
 
     fun harStønad(

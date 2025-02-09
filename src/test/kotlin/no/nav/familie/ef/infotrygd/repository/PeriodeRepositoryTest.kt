@@ -58,13 +58,13 @@ internal class PeriodeRepositoryTest {
         insertBarnetilsynsak()
 
         val perioder =
-            periodeRepository.hentPerioder(
-                PeriodeRequest(
-                    setOf(FoedselsNr(fnr)),
-                    setOf(StønadType.BARNETILSYN),
-                ),
-            )
-                .groupBy({ it.first }) { it.second }
+            periodeRepository
+                .hentPerioder(
+                    PeriodeRequest(
+                        setOf(FoedselsNr(fnr)),
+                        setOf(StønadType.BARNETILSYN),
+                    ),
+                ).groupBy({ it.first }) { it.second }
                 .toMutableMap()
         assertThat(perioder).isNotEmpty
         val barn = periodeRepository.hentBarnForPerioder(perioder.getOrDefault(StønadType.BARNETILSYN, emptyList()))

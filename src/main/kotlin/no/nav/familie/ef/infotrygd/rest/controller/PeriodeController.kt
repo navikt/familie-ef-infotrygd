@@ -24,7 +24,10 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/perioder")
 @Timed(value = "infotrygd_historikk_enslig_forsoerger_controller", percentiles = [0.5, 0.95])
 @ProtectedWithClaims(issuer = "azure")
-class PeriodeController(private val periodeRepository: PeriodeRepository, private val periodeService: PeriodeService) {
+class PeriodeController(
+    private val periodeRepository: PeriodeRepository,
+    private val periodeService: PeriodeService,
+) {
     @Operation(summary = "Henter perioder")
     @PostMapping
     @Parameters(
@@ -81,11 +84,10 @@ class PeriodeController(private val periodeRepository: PeriodeRepository, privat
         return ResponseEntity.ok(personerForMigrering)
     }
 
-    private fun lagPeriodeResponse(perioder: Map<StønadType, List<Periode>>): PeriodeResponse {
-        return PeriodeResponse(
+    private fun lagPeriodeResponse(perioder: Map<StønadType, List<Periode>>): PeriodeResponse =
+        PeriodeResponse(
             overgangsstønad = perioder.getOrDefault(StønadType.OVERGANGSSTØNAD, emptyList()),
             barnetilsyn = perioder.getOrDefault(StønadType.BARNETILSYN, emptyList()),
             skolepenger = perioder.getOrDefault(StønadType.SKOLEPENGER, emptyList()),
         )
-    }
 }

@@ -25,7 +25,9 @@ import java.time.YearMonth
  *     UA: Uavklart
  */
 @Repository
-class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
+class PeriodeRepository(
+    private val jdbcTemplate: NamedParameterJdbcTemplate,
+) {
     fun hentPerioder(request: PeriodeRequest): List<Pair<StønadType, Periode>> {
         val values =
             MapSqlParameterSource()
@@ -170,13 +172,13 @@ class PeriodeRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
             .takeIf(String::isNotEmpty)
             ?.let(mapper)
 
-    private fun mapStønadskoder(request: PeriodeRequest): List<String> {
-        return request.stønadstyper.ifEmpty {
-            setOf(
-                StønadType.OVERGANGSSTØNAD,
-                StønadType.SKOLEPENGER,
-                StønadType.BARNETILSYN,
-            )
-        }.map { it.kodeRutine }
-    }
+    private fun mapStønadskoder(request: PeriodeRequest): List<String> =
+        request.stønadstyper
+            .ifEmpty {
+                setOf(
+                    StønadType.OVERGANGSSTØNAD,
+                    StønadType.SKOLEPENGER,
+                    StønadType.BARNETILSYN,
+                )
+            }.map { it.kodeRutine }
 }

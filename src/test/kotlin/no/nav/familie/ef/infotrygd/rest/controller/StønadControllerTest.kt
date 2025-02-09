@@ -74,18 +74,24 @@ class StønadControllerTest {
         uri: String,
         client: WebClient,
         request: InfotrygdSøkRequest,
-    ): WebClient.RequestHeadersSpec<*> {
-        return client.post()
+    ): WebClient.RequestHeadersSpec<*> =
+        client
+            .post()
             .uri("/api$uri")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(request)
-    }
 }
 
 private fun WebClient.RequestHeadersSpec<*>.statusCode(): HttpStatusCode =
-    this.exchangeToMono {
-        it.toBodilessEntity()
-    }.block()!!.statusCode
+    this
+        .exchangeToMono {
+            it.toBodilessEntity()
+        }.block()!!
+        .statusCode
 
 private fun WebClient.RequestHeadersSpec<*>.responseBody(): InfotrygdFinnesResponse =
-    this.retrieve().toEntity<InfotrygdFinnesResponse>().block()!!.body!!
+    this
+        .retrieve()
+        .toEntity<InfotrygdFinnesResponse>()
+        .block()!!
+        .body!!

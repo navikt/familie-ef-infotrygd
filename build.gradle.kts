@@ -1,4 +1,5 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 val mockkVersion = "1.13.16"
 val tokenSupportVersion = "5.0.16"
@@ -6,7 +7,6 @@ val springdocVersion = "1.8.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
 val kontrakterVersion = "3.0_20250113155636_bb71360"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
-val ktlint by configurations.creating
 
 plugins {
     val kotlinVersion = "2.1.10"
@@ -17,6 +17,7 @@ plugins {
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
     id("org.cyclonedx.bom") version "2.1.0"
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.2"
 }
 
 group = "no.nav"
@@ -35,21 +36,14 @@ repositories {
         name = "Github"
         url = uri("https://maven.pkg.github.com/navikt/nav-foedselsnummer")
         credentials {
-            username = "x-access-token" //project.findProperty("gpr.user") as String? ?: System.getenv("GPR_USER")
+            username = "x-access-token" // project.findProperty("gpr.user") as String? ?: System.getenv("GPR_USER")
             password = System.getenv("GPR_API_KEY") ?: System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key") as String?
         }
     }
 }
 
-
 dependencies {
 
-
-    ktlint("com.pinterest:ktlint:0.51.0-FINAL") {
-        attributes {
-            attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
-        }
-    }
     implementation("nav-foedselsnummer:core:$navFoedselsnummerVersion")
     testImplementation("nav-foedselsnummer:testutils:$navFoedselsnummerVersion")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -81,40 +75,31 @@ dependencies {
     testImplementation("com.h2database:h2")
     testImplementation("org.flywaydb:flyway-core")
     testImplementation("io.mockk:mockk-jvm:$mockkVersion")
-
-
 }
 
 val inputFiles = project.fileTree(mapOf("dir" to "src", "include" to "**/*.kt"))
 
-val ktlintCheck by tasks.creating(JavaExec::class) {
-    inputs.files(inputFiles)
-    // outputs.dir(outputDir)
-
-    description = "Check Kotlin code style."
-    classpath = ktlint
-    mainClass.set("com.pinterest.ktlint.Main")
-    args = listOf("src/**/*.kt")
+allprojects {
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
 }
 
-val ktlintFormat by tasks.creating(JavaExec::class) {
-    inputs.files(inputFiles)
-    // outputs.dir(outputDir)
-
-    description = "Fix Kotlin code style deviations."
-    classpath = ktlint
-    mainClass.set("com.pinterest.ktlint.Main")
-    args = listOf("-F", "src/**/*.kt")
-    jvmArgs = listOf("--add-opens", "java.base/java.lang=ALL-UNNAMED")
+ktlint {
+    version = "1.5.0"
 }
 
-tasks.withType<KotlinCompile> {
-    dependsOn("ktlintFormat")
-    dependsOn("ktlintCheck")
-    tasks.findByName("ktlintCheck")?.mustRunAfter("ktlintFormat")
-    kotlinOptions {
+tasks.ktlintMainSourceSetCheck {
+    enabled = false
+}
+
+tasks.ktlintKotlinScriptCheck {
+    enabled = false
+}
+
+tasks.withType<KotlinJvmCompile> {
+    dependsOn(tasks.ktlintFormat)
+    compilerOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "21"
+        jvmTarget.set(JvmTarget.JVM_21)
     }
 }
 
@@ -130,4 +115,3 @@ tasks.test {
 tasks.cyclonedxBom {
     setIncludeConfigs(listOf("runtimeClasspath", "compileClasspath"))
 }
-// tasks.findByName('publish').mustRunAfter 'build'

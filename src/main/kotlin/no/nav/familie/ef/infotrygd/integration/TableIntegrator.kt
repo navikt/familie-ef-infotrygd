@@ -47,14 +47,16 @@ class TableIntegrator : Integrator {
 }
 
 @Component
-class TableIntegratorProvider(private val tableIntegrator: TableIntegrator) : IntegratorProvider {
-    override fun getIntegrators(): MutableList<Integrator> {
-        return mutableListOf(tableIntegrator)
-    }
+class TableIntegratorProvider(
+    private val tableIntegrator: TableIntegrator,
+) : IntegratorProvider {
+    override fun getIntegrators(): MutableList<Integrator> = mutableListOf(tableIntegrator)
 }
 
 @Component
-class HibernateConfig(private val tableIntegratorProvider: TableIntegratorProvider) : HibernatePropertiesCustomizer {
+class HibernateConfig(
+    private val tableIntegratorProvider: TableIntegratorProvider,
+) : HibernatePropertiesCustomizer {
     override fun customize(hibernateProperties: MutableMap<String, Any>) {
         hibernateProperties["hibernate.integrator_provider"] = tableIntegratorProvider
     }

@@ -106,14 +106,11 @@ internal class InfotrygdPeriodeTest {
 
     private fun Periode.omslutter(periode: Periode) = periode.stønadFom.isBefore(stønadFom) && periode.stønadTom.isAfter(stønadTom)
 
-    private fun Periode.erDatoInnenforPeriode(dato: LocalDate): Boolean {
-        return dato.isEqualOrBefore(stønadTom) && dato.isEqualOrAfter(stønadFom)
-    }
+    private fun Periode.erDatoInnenforPeriode(dato: LocalDate): Boolean = dato.isEqualOrBefore(stønadTom) && dato.isEqualOrAfter(stønadFom)
 
-    private fun Periode.erPeriodeOverlappende(periode: Periode): Boolean {
-        return (erDatoInnenforPeriode(periode.stønadFom) || erDatoInnenforPeriode(periode.stønadTom)) ||
+    private fun Periode.erPeriodeOverlappende(periode: Periode): Boolean =
+        (erDatoInnenforPeriode(periode.stønadFom) || erDatoInnenforPeriode(periode.stønadTom)) ||
             omslutter(periode)
-    }
 
     private fun lagPeriode(
         fom: LocalDate,

@@ -26,13 +26,14 @@ class AuthorizationFilter : OncePerRequestFilter() {
         val path = request.requestURI.substring(request.contextPath.length)
         return path.startsWith("/internal/") ||
             path.startsWith("/swagger-ui/") ||
-            path == "/tables" || path == "/tables2" ||
+            path == "/tables" ||
+            path == "/tables2" ||
             path.startsWith("/swagger-resources") ||
             path.startsWith("/v2/api-docs")
     }
 
-    private fun acceptedClient(): Boolean {
-        return try {
+    private fun acceptedClient(): Boolean =
+        try {
             val claims = SpringTokenValidationContextHolder().getTokenValidationContext().getClaims("azure")
 
             @Suppress("UNCHECKED_CAST")
@@ -51,5 +52,4 @@ class AuthorizationFilter : OncePerRequestFilter() {
             logger.error("Feilet med å hente azp fra token")
             false
         }
-    }
 }

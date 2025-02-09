@@ -21,9 +21,7 @@ class ApiExceptionHandler : ResponseEntityExceptionHandler() {
     private val logger = LoggerFactory.getLogger(ApiExceptionHandler::class.java)
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
-    private fun rootCause(throwable: Throwable): Throwable {
-        return NestedExceptionUtils.getMostSpecificCause(throwable)
-    }
+    private fun rootCause(throwable: Throwable): Throwable = NestedExceptionUtils.getMostSpecificCause(throwable)
 
     override fun handleExceptionInternal(
         ex: Exception,
@@ -90,5 +88,7 @@ class ApiExceptionHandler : ResponseEntityExceptionHandler() {
         }
     }
 
-    data class ErrorResponse(val errorMessage: String)
+    data class ErrorResponse(
+        val errorMessage: String,
+    )
 }

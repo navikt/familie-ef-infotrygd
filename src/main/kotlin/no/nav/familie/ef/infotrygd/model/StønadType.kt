@@ -4,7 +4,10 @@ package no.nav.familie.ef.infotrygd.model
  * @param kodeRutine Verdi fra kode_rutine fra v_vedtak
  * @param saS10Valg Verdi fra s10_valg fra sa_sak_10
  */
-enum class StønadType(val kodeRutine: String, val saS10Valg: String) {
+enum class StønadType(
+    val kodeRutine: String,
+    val saS10Valg: String,
+) {
     OVERGANGSSTØNAD("EO", "OG"),
     BARNETILSYN("EB", "BT"),
     SKOLEPENGER("EU", "UT"),
