@@ -13,10 +13,14 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
 
-data class ÅpnesakerRapport(val typeMedAntall: Map<String, Int>)
+data class ÅpnesakerRapport(
+    val typeMedAntall: Map<String, Int>,
+)
 
 @Repository
-class SakRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
+class SakRepository(
+    private val jdbcTemplate: NamedParameterJdbcTemplate,
+) {
     private val datoConverter = NavReversedLocalDateConverter()
 
     fun hentÅpneSaker(): ÅpnesakerRapport {

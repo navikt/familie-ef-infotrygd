@@ -12,16 +12,17 @@ fun restClient(
 ): WebClient {
     val token = clientToken(mockOAuth2Server, clientId, accessAsApplication)
 
-    return WebClient.builder()
+    return WebClient
+        .builder()
         .baseUrl(baseUrl(port))
         .defaultHeader("Authorization", "Bearer $token")
         .build()
 }
 
-fun restClientNoAuth(port: Int): WebClient {
-    return WebClient.builder()
+fun restClientNoAuth(port: Int): WebClient =
+    WebClient
+        .builder()
         .baseUrl("http://localhost:$port")
         .build()
-}
 
 private fun baseUrl(port: Int) = "http://localhost:$port"

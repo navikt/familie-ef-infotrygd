@@ -12,12 +12,12 @@ import java.time.LocalDate
  * sånn att en senere periode overskrever en tidligere periode
  */
 object InfotrygdPeriodeUtil {
-    fun filtrerOgSorterPerioderFraInfotrygd(perioderFraInfotrygd: List<Periode>): List<Periode> {
-        return perioderFraInfotrygd.toSet()
+    fun filtrerOgSorterPerioderFraInfotrygd(perioderFraInfotrygd: List<Periode>): List<Periode> =
+        perioderFraInfotrygd
+            .toSet()
             .map { brukOpphørsdatoSomTomHvisDenFinnes(it) }
             .filter { it.stønadTom > it.stønadFom } // Skal infotrygd rydde bort disse? (inkl de der opphørdato er før startdato)
             .sortedWith(compareBy<Periode>({ it.stønadId }, { it.vedtakId }, { it.stønadFom }).reversed())
-    }
 
     private fun brukOpphørsdatoSomTomHvisDenFinnes(it: Periode): Periode {
         val opphørsdato = it.opphørsdato
@@ -37,14 +37,13 @@ object InfotrygdPeriodeUtil {
     /**
      * Slår sammen perioder fra infotrygd, disse skal ikke slås sammen tvers ulike stønadId'er
      */
-    fun slåSammenInfotrygdperioder(infotrygdperioder: List<Periode>): List<Periode> {
-        return filtrerOgSorterPerioderFraInfotrygd(infotrygdperioder)
+    fun slåSammenInfotrygdperioder(infotrygdperioder: List<Periode>): List<Periode> =
+        filtrerOgSorterPerioderFraInfotrygd(infotrygdperioder)
             .filter { it.kode != InfotrygdEndringKode.ANNULERT && it.kode != InfotrygdEndringKode.UAKTUELL }
             .groupBy { it.stønadId }
             .values
             .flatMap(this::fjernPerioderSomErOverskrevet)
             .sortedByDescending { it.stønadFom }
-    }
 
     /* NB! forventer sorterte infotrygdperioder - nyest først.
      * NB 2 - dette er ikke en slå sammen, men en kutt periode som ikke gjelder (vi bruker den senest vedtatte versjonen av en periode),
@@ -67,14 +66,11 @@ object InfotrygdPeriodeUtil {
         return list
     }
 
-    private fun Periode.erDatoInnenforPeriode(dato: LocalDate): Boolean {
-        return dato.isEqualOrBefore(stønadTom) && dato.isEqualOrAfter(stønadFom)
-    }
+    private fun Periode.erDatoInnenforPeriode(dato: LocalDate): Boolean = dato.isEqualOrBefore(stønadTom) && dato.isEqualOrAfter(stønadFom)
 
-    fun Periode.erPeriodeOverlappende(periode: Periode): Boolean {
-        return (erDatoInnenforPeriode(periode.stønadFom) || erDatoInnenforPeriode(periode.stønadTom)) ||
+    fun Periode.erPeriodeOverlappende(periode: Periode): Boolean =
+        (erDatoInnenforPeriode(periode.stønadFom) || erDatoInnenforPeriode(periode.stønadTom)) ||
             omslutter(periode)
-    }
 
     private fun Periode.omslutter(periode: Periode) = periode.stønadFom.isBefore(stønadFom) && periode.stønadTom.isAfter(stønadTom)
 }

@@ -72,7 +72,10 @@ data class Periode(
  * AV      	Avslag
  * OO      	Overf ny løsning
  */
-enum class InfotrygdEndringKode(val infotrygdKode: String, val beskrivelse: String) {
+enum class InfotrygdEndringKode(
+    val infotrygdKode: String,
+    val beskrivelse: String,
+) {
     ANNULERT("AN", "Annullert"),
     ENDRING_BEREGNINGSGRUNNLAG("E", "Endring i beregningsgrunnlag"),
     FØRSTEGANGSVEDTAK("F", "Førstegangsvedtak"),
@@ -87,13 +90,14 @@ enum class InfotrygdEndringKode(val infotrygdKode: String, val beskrivelse: Stri
     companion object {
         private val kodeMap = values().associateBy(InfotrygdEndringKode::infotrygdKode)
 
-        fun fraInfotrygdKode(kode: String): InfotrygdEndringKode {
-            return kodeMap[kode] ?: error("Fant ikke endringKode for $kode")
-        }
+        fun fraInfotrygdKode(kode: String): InfotrygdEndringKode = kodeMap[kode] ?: error("Fant ikke endringKode for $kode")
     }
 }
 
-enum class InfotrygdSakstype(val infotrygdKode: String, val beskrivelse: String) {
+enum class InfotrygdSakstype(
+    val infotrygdKode: String,
+    val beskrivelse: String,
+) {
     KLAGE("K", "Klage"),
     MASKINELL_G_OMREGNING("MG", "Maskinell G-omregning"),
     REVURDERING("R", "Revurdering"),
@@ -108,13 +112,14 @@ enum class InfotrygdSakstype(val infotrygdKode: String, val beskrivelse: String)
     companion object {
         private val kodeMap = values().associateBy(InfotrygdSakstype::infotrygdKode)
 
-        fun fraInfotrygdKode(kode: String): InfotrygdSakstype {
-            return kodeMap[kode] ?: error("Fant ikke vedtakKode for $kode")
-        }
+        fun fraInfotrygdKode(kode: String): InfotrygdSakstype = kodeMap[kode] ?: error("Fant ikke vedtakKode for $kode")
     }
 }
 
-enum class InfotrygdOvergangsstønadKode(val infotrygdKode: String, val beskrivelse: String) {
+enum class InfotrygdOvergangsstønadKode(
+    val infotrygdKode: String,
+    val beskrivelse: String,
+) {
     BARN_UNDER_1_3_ÅR("1", "Barn under 1 år / 3 år (gamle tilfeller)"),
     YRKESRETTET_AKTIVITET_BARN_FYLT_1_3_ÅR(
         "2",
@@ -136,13 +141,15 @@ enum class InfotrygdOvergangsstønadKode(val infotrygdKode: String, val beskrive
     companion object {
         private val kodeMap = values().associateBy(InfotrygdOvergangsstønadKode::infotrygdKode)
 
-        fun fraInfotrygdKode(kode: String): InfotrygdOvergangsstønadKode {
-            return kodeMap[kode] ?: error("Fant ikke overgangsstønadskode for $kode")
-        }
+        fun fraInfotrygdKode(kode: String): InfotrygdOvergangsstønadKode =
+            kodeMap[kode] ?: error("Fant ikke overgangsstønadskode for $kode")
     }
 }
 
-enum class InfotrygdAktivitetstype(val infotrygdKode: String, val beskrivelse: String) {
+enum class InfotrygdAktivitetstype(
+    val infotrygdKode: String,
+    val beskrivelse: String,
+) {
     I_ARBEID("A", "I arbeid"),
     I_UTDANNING("U", "I utdanning"),
     TILMELDT_SOM_REELL_ARBEIDSSØKER("S", "Tilmeldt som reell arbeidssøker"),
@@ -154,8 +161,6 @@ enum class InfotrygdAktivitetstype(val infotrygdKode: String, val beskrivelse: S
     companion object {
         private val kodeMap = values().associateBy(InfotrygdAktivitetstype::infotrygdKode)
 
-        fun fraInfotrygdKode(kode: String): InfotrygdAktivitetstype {
-            return kodeMap[kode] ?: error("Fant ikke aktivitetstype for $kode")
-        }
+        fun fraInfotrygdKode(kode: String): InfotrygdAktivitetstype = kodeMap[kode] ?: error("Fant ikke aktivitetstype for $kode")
     }
 }

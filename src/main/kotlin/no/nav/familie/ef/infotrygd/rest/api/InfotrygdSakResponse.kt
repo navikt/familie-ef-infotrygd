@@ -29,7 +29,10 @@ data class InfotrygdSak(
     val region: String? = null,
 )
 
-enum class InfotrygdSakType(val infotrygdKode: String, val beskrivelse: String) {
+enum class InfotrygdSakType(
+    val infotrygdKode: String,
+    val beskrivelse: String,
+) {
     ANKE("A", "Anke"),
     DISPENSASJON_FORELDELSE("DF", "Dispensasjon foreldelse"),
     DOKUMENTINNSYN("DI", "Dokumentinnsyn"),
@@ -72,7 +75,10 @@ enum class InfotrygdSakType(val infotrygdKode: String, val beskrivelse: String) 
     }
 }
 
-enum class InfotrygdSakResultat(val infotrygdKode: String, val beskrivelse: String) {
+enum class InfotrygdSakResultat(
+    val infotrygdKode: String,
+    val beskrivelse: String,
+) {
     ÅPEN_SAK("", "Åpen sak"), // Denne er alltså blank, den har ikke verdiet blank
     AVSLAG("A", "Avslag"),
     AVSLAG_GODKJENT("AG", "Avslag godkjent"),
@@ -109,13 +115,14 @@ enum class InfotrygdSakResultat(val infotrygdKode: String, val beskrivelse: Stri
     companion object {
         private val kodeMap = values().associateBy(InfotrygdSakResultat::infotrygdKode)
 
-        fun fraInfotrygdKode(kode: String): InfotrygdSakResultat {
-            return kodeMap[kode.trim()] ?: error("Fant ikke sakResultat for $kode")
-        }
+        fun fraInfotrygdKode(kode: String): InfotrygdSakResultat = kodeMap[kode.trim()] ?: error("Fant ikke sakResultat for $kode")
     }
 }
 
-enum class InfotrygdSakNivå(val infotrygdKode: String, val beskrivelse: String) {
+enum class InfotrygdSakNivå(
+    val infotrygdKode: String,
+    val beskrivelse: String,
+) {
     AN("AN", ""),
     FOLKETRYGDKONTORET_FOR_UTENLANDSSAKER("FFU", "Folketrygdkontoret for utenlandssaker"),
     HTF("HTF", ""),

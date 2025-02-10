@@ -5,14 +5,14 @@ import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-open class AbstractNavLocalDateConverter(datePattern: String) : AttributeConverter<LocalDate?, Int?> {
+open class AbstractNavLocalDateConverter(
+    datePattern: String,
+) : AttributeConverter<LocalDate?, Int?> {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     private val formatter = DateTimeFormatter.ofPattern(datePattern)
 
-    override fun convertToDatabaseColumn(attribute: LocalDate?): Int? {
-        return attribute?.format(formatter)?.toInt()
-    }
+    override fun convertToDatabaseColumn(attribute: LocalDate?): Int? = attribute?.format(formatter)?.toInt()
 
     override fun convertToEntityAttribute(dbData: Int?): LocalDate? {
         if (dbData == null || dbData == NULL_VALUE) {

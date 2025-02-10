@@ -28,7 +28,5 @@ class JacksonJsonConfig {
     }
 
     @Bean
-    fun objectMapper(): ObjectMapper {
-        return OM
-    }
+    fun objectMapper(): ObjectMapper = OM
 }

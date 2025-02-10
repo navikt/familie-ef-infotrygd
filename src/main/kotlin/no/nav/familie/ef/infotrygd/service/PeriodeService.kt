@@ -9,10 +9,13 @@ import no.nav.familie.ef.infotrygd.utils.InfotrygdPeriodeUtil
 import org.springframework.stereotype.Service
 
 @Service
-class PeriodeService(private val periodeRepository: PeriodeRepository) {
+class PeriodeService(
+    private val periodeRepository: PeriodeRepository,
+) {
     fun hentPerioder(request: PeriodeRequest): Map<StønadType, List<Periode>> {
         val perioder =
-            periodeRepository.hentPerioder(request)
+            periodeRepository
+                .hentPerioder(request)
                 .filter { harOppdragIdEller0beløp(it.second) }
                 .groupBy({ it.first }) { it.second }
                 .toMutableMap()
@@ -28,18 +31,22 @@ class PeriodeService(private val periodeRepository: PeriodeRepository) {
     private fun harOppdragIdEller0beløp(periode: Periode) =
         periode.oppdragId != null || (periode.engangsbeløp == 0 && periode.månedsbeløp == 0)
 
-    fun hentSammenslåttePerioder(request: PeriodeRequest): Map<StønadType, List<Periode>> {
-        return hentPerioder(request).map { it.key to slåSammenPerioder(it.value) }.toMap()
-    }
+    fun hentSammenslåttePerioder(request: PeriodeRequest): Map<StønadType, List<Periode>> =
+        hentPerioder(request)
+            .map {
+                it.key to slåSammenPerioder(it.value)
+            }.toMap()
 
     private fun hentBarnetilsynPerioderMedBarn(perioderPerStønadstype: Map<StønadType, List<Periode>>): List<Periode> {
         val barnetilsynPerioder = perioderPerStønadstype.getOrDefault(BARNETILSYN, emptyList())
         val barnetilsynPeriodeBarnListe = periodeRepository.hentBarnForPerioder(barnetilsynPerioder)
 
-        return barnetilsynPerioder.groupBy { it.stønadId }
+        return barnetilsynPerioder
+            .groupBy { it.stønadId }
             .values
             .flatMap { perioder ->
-                perioder.sortedBy { it.vedtakId }
+                perioder
+                    .sortedBy { it.vedtakId }
                     .fold(emptyList()) { acc, periode ->
                         val barnIdenter = hentBarnIdenter(acc, periode, barnetilsynPeriodeBarnListe)
                         acc + periode.copy(barnIdenter = barnIdenter)
@@ -68,8 +75,10 @@ class PeriodeService(private val periodeRepository: PeriodeRepository) {
         barnIdenter: List<String>,
     ): List<String> {
         val last = acc.lastOrNull()
-        return if (periode.erFortsattInnvilget() && barnIdenter.isEmpty() &&
-            last != null && last.barnIdenter.isNotEmpty()
+        return if (periode.erFortsattInnvilget() &&
+            barnIdenter.isEmpty() &&
+            last != null &&
+            last.barnIdenter.isNotEmpty()
         ) {
             last.barnIdenter
         } else {
@@ -77,7 +86,5 @@ class PeriodeService(private val periodeRepository: PeriodeRepository) {
         }
     }
 
-    private fun slåSammenPerioder(perioder: List<Periode>): List<Periode> {
-        return InfotrygdPeriodeUtil.slåSammenInfotrygdperioder(perioder)
-    }
+    private fun slåSammenPerioder(perioder: List<Periode>): List<Periode> = InfotrygdPeriodeUtil.slåSammenInfotrygdperioder(perioder)
 }

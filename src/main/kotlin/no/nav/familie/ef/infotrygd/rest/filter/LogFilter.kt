@@ -59,9 +59,7 @@ class LogFilter(
         }
     }
 
-    override fun toString(): String {
-        return "${javaClass.simpleName} [applicationName=$applicationName]"
-    }
+    override fun toString(): String = "${javaClass.simpleName} [applicationName=$applicationName]"
 
     fun toMDC(
         key: String,

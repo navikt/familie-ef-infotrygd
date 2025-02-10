@@ -27,8 +27,8 @@ object InfotrygdPeriodeTestUtil {
         aktivitetstype: InfotrygdAktivitetstype? = InfotrygdAktivitetstype.BRUKERKONTAKT,
         kodeOvergangsstønad: InfotrygdOvergangsstønadKode? = InfotrygdOvergangsstønadKode.BARN_UNDER_1_3_ÅR,
         barnIdenter: List<String> = emptyList(),
-    ): Periode {
-        return Periode(
+    ): Periode =
+        Periode(
             personIdent = personIdent,
             kode = kode,
             sakstype = sakstype,
@@ -52,5 +52,4 @@ object InfotrygdPeriodeTestUtil {
             vedtakKodeResultat = "",
             oppdragId = 1,
         )
-    }
 }

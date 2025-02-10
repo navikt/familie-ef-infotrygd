@@ -12,7 +12,10 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 object InfotrygdPeriodeParser {
-    data class InfotrygdTestData(val input: List<Periode>, val output: List<InternPeriode>)
+    data class InfotrygdTestData(
+        val input: List<Periode>,
+        val output: List<InternPeriode>,
+    )
 
     private const val KEY_TYPE = "type"
     private const val KEY_STØNAD_ID = "stonad_id"

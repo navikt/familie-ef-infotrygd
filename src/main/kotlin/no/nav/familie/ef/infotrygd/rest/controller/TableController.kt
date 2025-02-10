@@ -18,13 +18,11 @@ class TableController(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @GetMapping(path = ["/tables"])
-    fun get(): Map<String, List<String>> {
-        return tableIntegrator.tables
-    }
+    fun get(): Map<String, List<String>> = tableIntegrator.tables
 
     @GetMapping(path = ["/tables2"])
-    fun get2(): Map<String, Any?> {
-        return tableIntegrator.tables.keys.associateWith {
+    fun get2(): Map<String, Any?> =
+        tableIntegrator.tables.keys.associateWith {
             try {
                 jdbcTemplate.queryForObject("select count(*) from $it", emptyMap<String, Any>(), Int::class.java)
             } catch (e: Exception) {
@@ -32,5 +30,4 @@ class TableController(
                 e.message
             }
         }
-    }
 }
