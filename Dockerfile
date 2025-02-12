@@ -7,5 +7,5 @@ ENV LC_ALL='nb_NO.UTF-8'
 ENV TZ='Europe/Oslo'
 ENV APP_NAME=familie-ef-proxy
 ENV JDK_JAVA_OPTIONS="-Xms270M -XX:MaxRAMPercentage=75"
-COPY ./target/familie-ef-infotrygd.jar /app/app.jar
+COPY ./build/libs/app.jar /app/app.jar
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
