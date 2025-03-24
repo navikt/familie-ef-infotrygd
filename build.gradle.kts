@@ -1,23 +1,23 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
-val mockkVersion = "1.13.16"
-val tokenSupportVersion = "5.0.16"
+val mockkVersion = "1.13.17"
+val tokenSupportVersion = "5.0.19"
 val springdocVersion = "1.8.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
-val kontrakterVersion = "3.0_20250113155636_bb71360"
+val kontrakterVersion = "3.0_20250312084645_ae52997"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 
 plugins {
-    val kotlinVersion = "2.1.10"
-    val springBootVersion = "3.4.2"
+    val kotlinVersion = "2.1.20"
+    val springBootVersion = "3.4.3"
     id("org.springframework.boot") version springBootVersion
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
-    id("org.cyclonedx.bom") version "2.1.0"
-    id("org.jlleitschuh.gradle.ktlint") version "12.1.2"
+    id("org.cyclonedx.bom") version "2.2.0"
+    id("org.jlleitschuh.gradle.ktlint") version "12.2.0"
 }
 
 group = "no.nav"
@@ -71,7 +71,7 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.10.0")
-    testImplementation("org.testcontainers:oracle-xe:1.20.4")
+    testImplementation("org.testcontainers:oracle-xe:1.20.6")
     testImplementation("com.h2database:h2")
     testImplementation("org.flywaydb:flyway-core")
     testImplementation("io.mockk:mockk-jvm:$mockkVersion")
