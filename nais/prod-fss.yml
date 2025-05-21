@@ -53,6 +53,14 @@ spec:
       rules:
         - application: familie-ef-sak
           cluster: prod-gcp
+  observability:
+    logging:
+      destinations:
+        - id: loki
+        - id: elastic
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   env:
     - name: APP_DATASOURCE_URL
       value: jdbc:oracle:thin:@a01dbfl037.adeo.no:1521/infotrygd_efp

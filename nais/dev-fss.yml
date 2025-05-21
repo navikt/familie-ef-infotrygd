@@ -55,6 +55,14 @@ spec:
           cluster: dev-gcp
         - application: familie-ef-sak-lokal
           cluster: dev-gcp
+  observability:
+    logging:
+      destinations:
+        - id: loki
+        - id: elastic
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   env:
     - name: APP_DATASOURCE_URL
       value: jdbc:oracle:thin:@a01dbfl033.adeo.no:1521/infotrygd_efq
