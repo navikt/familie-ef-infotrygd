@@ -32,7 +32,7 @@ jobs:
         with:
           team: teamfamilie
           tag: latest
-          byosbom: build/resources/main/META-INF/sbom/application.cdx.json
+          byosbom: build/reports/cyclonedx-direct/bom.json
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
   deploy:
