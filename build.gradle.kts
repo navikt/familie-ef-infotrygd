@@ -112,6 +112,15 @@ tasks.test {
     jvmArgs = listOf("-Dnet.bytebuddy.experimental=true")
 }
 
-tasks.cyclonedxBom {
-    setIncludeConfigs(listOf("runtimeClasspath", "compileClasspath"))
+// tasks.cyclonedxBom {
+//    setIncludeConfigs(listOf("runtimeClasspath", "compileClasspath"))
+// }
+
+tasks {
+    cyclonedxBom {
+        projectType = org.cyclonedx.model.Component.Type.APPLICATION
+        jsonOutput = file("build/reports/bom.json")
+        includeBomSerialNumber = true
+        includeLicenseText = true
+    }
 }
