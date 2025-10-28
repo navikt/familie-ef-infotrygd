@@ -1,23 +1,23 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
-val mockkVersion = "1.14.5"
-val tokenSupportVersion = "5.0.34"
+val mockkVersion = "1.14.6"
+val tokenSupportVersion = "5.0.37"
 val springdocVersion = "1.8.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
-val kontrakterVersion = "3.0_20250729084619_52723f6"
+val kontrakterVersion = "3.0_20251020145843_3354592"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 
 plugins {
-    val kotlinVersion = "2.2.0"
-    val springBootVersion = "3.5.4"
+    val kotlinVersion = "2.2.21"
+    val springBootVersion = "3.5.7"
     id("org.springframework.boot") version springBootVersion
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
-    id("org.cyclonedx.bom") version "2.3.1"
-    id("org.jlleitschuh.gradle.ktlint") version "13.0.0"
+    id("org.cyclonedx.bom") version "3.0.1"
+    id("org.jlleitschuh.gradle.ktlint") version "13.1.0"
 }
 
 group = "no.nav"
@@ -63,11 +63,11 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.springdoc:springdoc-openapi-ui:$springdocVersion")
     implementation("org.springdoc:springdoc-openapi-kotlin:$springdocVersion")
-    implementation("net.logstash.logback:logstash-logback-encoder:8.1")
+    implementation("net.logstash.logback:logstash-logback-encoder:9.0")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("org.postgresql:postgresql")
-    implementation("com.oracle.database.jdbc:ojdbc8:23.9.0.25.07")
+    implementation("com.oracle.database.jdbc:ojdbc8:23.26.0.0.0")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.10.0")
