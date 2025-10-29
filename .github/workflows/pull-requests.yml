@@ -2,8 +2,6 @@ name: Build-Deploy-Preprod
 
 on:
   workflow_dispatch:
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
   contents: "read"
@@ -32,7 +30,7 @@ jobs:
         with:
           team: teamfamilie
           tag: latest
-          byosbom: build/resources/main/META-INF/sbom/application.cdx.json
+          byosbom: build/reports/cyclonedx-direct/bom.json
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
   deploy-dev:
