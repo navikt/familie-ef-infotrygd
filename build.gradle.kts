@@ -2,10 +2,10 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 val mockkVersion = "1.14.6"
-val tokenSupportVersion = "5.0.37"
+val tokenSupportVersion = "5.0.39"
 val springdocVersion = "1.8.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
-val kontrakterVersion = "3.0_20251020145843_3354592"
+val kontrakterVersion = "3.0_20251030120445_40c2cd0"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 
 plugins {
@@ -67,7 +67,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("org.postgresql:postgresql")
-    implementation("com.oracle.database.jdbc:ojdbc8:23.9.0.25.07")
+    implementation("com.oracle.database.jdbc:ojdbc8:23.26.0.0.0")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.10.0")
