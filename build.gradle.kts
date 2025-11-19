@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 val mockkVersion = "1.14.6"
-val tokenSupportVersion = "5.0.39"
+val tokenSupportVersion = "5.0.40"
 val springdocVersion = "1.8.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
 val kontrakterVersion = "3.0_20251112142340_c5baa9c"
