@@ -53,6 +53,10 @@ spec:
       rules:
         - application: familie-ef-sak
           cluster: prod-gcp
+    outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
   observability:
     logging:
       destinations:
