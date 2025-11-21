@@ -55,6 +55,10 @@ spec:
           cluster: dev-gcp
         - application: familie-ef-sak-lokal
           cluster: dev-gcp
+    outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
   observability:
     logging:
       destinations:
