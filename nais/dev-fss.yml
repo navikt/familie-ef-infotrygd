@@ -41,8 +41,6 @@ spec:
     paths:
       - kvPath: /oracle/data/dev/creds/infotrygd_efq-user
         mountPath: /var/run/secrets/oracle/creds
-  secureLogs:
-    enabled: true
   azure:
     application:
       enabled: true
