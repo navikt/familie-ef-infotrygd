@@ -5,18 +5,15 @@ import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSøkRequest
 import no.nav.familie.ef.infotrygd.utils.reverserFnr
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.junit4.SpringRunner
 import java.time.LocalDate
 
-@RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @EnableMockOAuth2Server
@@ -29,7 +26,7 @@ internal class StønadServiceTest {
     private val startdato = LocalDate.now().minusDays(50)
     private val sluttdato = LocalDate.now().plusDays(50)
 
-    @Before
+    @BeforeEach
     fun setup() {
         // Legger inn en med opphør bak i tid
         jdbcTemplate.update("INSERT INTO T_LOPENR_FNR (PERSON_LOPENR, PERSONNR) VALUES (1, '$IDENT')")
@@ -81,7 +78,7 @@ internal class StønadServiceTest {
         )
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         listOf("T_LOPENR_FNR", "T_STONAD", "T_VEDTAK", "sa_sak_10").forEach {
             jdbcTemplate.update("TRUNCATE TABLE $it")

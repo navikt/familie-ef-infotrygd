@@ -5,7 +5,7 @@ import no.nav.familie.ef.infotrygd.testutils.InfotrygdPeriodeParser
 import no.nav.familie.ef.infotrygd.utils.InfotrygdPeriodeUtil
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 internal class InfotrygdPeriodeUtilCsvTest {
     /**
@@ -49,7 +49,7 @@ internal class InfotrygdPeriodeUtilCsvTest {
     }
 
     @Test
-    internal fun `enkel_forkortning_periode_158`() {
+    internal fun enkel_forkortning_periode_158() {
         val inputOutput = parseFil("infotrygd/enkel_forkortning_periode_158.csv")
         Assertions.assertThat(lagPerioder(inputOutput.input)).isEqualTo(inputOutput.output)
     }
@@ -73,7 +73,7 @@ internal class InfotrygdPeriodeUtilCsvTest {
     }
 
     @Test
-    internal fun `flere_duplikater_4131963`() {
+    internal fun flere_duplikater_4131963() {
         val inputOutput = parseFil("infotrygd/flere_duplikater_4131963.csv")
         Assertions.assertThat(lagPerioder(inputOutput.input)).isEqualTo(inputOutput.output)
     }

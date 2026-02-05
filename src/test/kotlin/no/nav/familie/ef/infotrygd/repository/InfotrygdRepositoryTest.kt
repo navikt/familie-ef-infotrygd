@@ -3,17 +3,14 @@ package no.nav.familie.ef.infotrygd.repository
 import no.nav.familie.ef.infotrygd.model.StønadType
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.After
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.junit4.SpringRunner
 import java.time.LocalDate
 
-@RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @EnableMockOAuth2Server
@@ -45,7 +42,7 @@ internal class InfotrygdRepositoryTest {
         )
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         listOf("T_LOPENR_FNR", "T_VEDTAK", "T_STONAD").forEach {
             jdbcTemplate.update("TRUNCATE TABLE $it")

@@ -1,7 +1,7 @@
 package no.nav.familie.ef.infotrygd.model.converters
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 internal class ReversedFoedselsNrConverterTest {
     private val dbValue = "54010150572"

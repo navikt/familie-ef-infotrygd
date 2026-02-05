@@ -1,7 +1,7 @@
 package no.nav.familie.ef.infotrygd.model.converters
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class ReversedLongFoedselsNrConverterTest {
     private val converter = ReversedLongFoedselNrConverter()

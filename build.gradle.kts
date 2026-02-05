@@ -2,10 +2,10 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 val mockkVersion = "1.14.7"
-val tokenSupportVersion = "5.0.39"
+val tokenValidationVersion = "6.0.2"
 val springdocVersion = "1.8.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
-val kontrakterVersion = "3.0_20251112142340_c5baa9c"
+val kontrakterVersjon = "4.0_20260204122732_558ee1d"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 
 plugins {
@@ -22,8 +22,8 @@ plugins {
 
 group = "no.nav"
 version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_21
-java.targetCompatibility = JavaVersion.VERSION_21
+java.sourceCompatibility = JavaVersion.VERSION_25
+java.targetCompatibility = JavaVersion.VERSION_25
 configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
@@ -44,8 +44,8 @@ repositories {
 
 dependencies {
 
+    runtimeOnly("org.postgresql:postgresql")
     implementation("nav-foedselsnummer:core:$navFoedselsnummerVersion")
-    testImplementation("nav-foedselsnummer:testutils:$navFoedselsnummerVersion")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
@@ -55,10 +55,9 @@ dependencies {
     implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("net.ttddyy:datasource-proxy:1.11.0")
-    implementation("no.nav.security:token-validation-spring:$tokenSupportVersion")
-    implementation("no.nav.familie.kontrakter:enslig-forsorger:$kontrakterVersion")
-    implementation("no.nav.familie.kontrakter:felles:$kontrakterVersion")
-    testImplementation("no.nav.security:token-validation-spring-test:$tokenSupportVersion")
+    implementation("no.nav.security:token-validation-spring:$tokenValidationVersion")
+    implementation("no.nav.familie.kontrakter:enslig-forsorger:$kontrakterVersjon")
+    implementation("no.nav.familie.kontrakter:felles:$kontrakterVersjon")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.springdoc:springdoc-openapi-ui:$springdocVersion")
@@ -66,15 +65,17 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:9.0")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    runtimeOnly("org.postgresql:postgresql")
     implementation("com.oracle.database.jdbc:ojdbc8:23.26.0.0.0")
+    implementation("org.springframework.boot:spring-boot-starter-flyway")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    testImplementation("nav-foedselsnummer:testutils:$navFoedselsnummerVersion")
+    testImplementation("no.nav.security:token-validation-spring-test:$tokenValidationVersion")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.10.0")
     testImplementation("org.testcontainers:oracle-xe:1.21.4")
     testImplementation("com.h2database:h2")
-    testImplementation("org.flywaydb:flyway-core")
     testImplementation("io.mockk:mockk-jvm:$mockkVersion")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 
 val inputFiles = project.fileTree(mapOf("dir" to "src", "include" to "**/*.kt"))
@@ -99,7 +100,7 @@ tasks.withType<KotlinJvmCompile> {
     dependsOn(tasks.ktlintFormat)
     compilerOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget.set(JvmTarget.JVM_21)
+        jvmTarget.set(JvmTarget.JVM_25)
     }
 }
 
@@ -110,6 +111,7 @@ extensions.findByName("buildScan")?.withGroovyBuilder {
 
 tasks.test {
     jvmArgs = listOf("-Dnet.bytebuddy.experimental=true")
+    useJUnitPlatform()
 }
 
 tasks {

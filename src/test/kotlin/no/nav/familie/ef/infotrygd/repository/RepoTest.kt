@@ -7,21 +7,21 @@ import io.mockk.slot
 import no.nav.familie.ef.infotrygd.integration.TableIntegrator
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.core.namedparam.SqlParameterSource
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.junit4.SpringRunner
+import kotlin.Throwable
 
 /**
  * Alle tabeller og kolonner som er brukt må være definiert slik att infotrygd-migreringsteamet hvet om hvilke tabeller som er i bruk
  */
-@RunWith(SpringRunner::class)
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @EnableMockOAuth2Server
@@ -40,18 +40,26 @@ class RepoTest {
 
     lateinit var sqlSlot: CapturingSlot<String>
 
-    @Before
+    @BeforeEach
     fun setUp() {
         hibernateTables = tableIntegrator.tables
         definedTables = hibernateTables.map { it.key to it.value.toMutableSet() }.toMap().toMutableMap()
 
         sqlSlot = slot()
-        every { jdbcTemplate.query(capture(sqlSlot), any<SqlParameterSource>(), any<RowMapper<*>>()) } returns emptyList()
+        every {
+            jdbcTemplate.query(
+                capture(sqlSlot),
+                any<SqlParameterSource>(),
+                any<RowMapper<*>>(),
+            )
+        } returns emptyList()
     }
 
-    @Test(expected = Throwable::class)
+    @Test
     fun `Når man kun sjekker en spørring feler testen`() {
-        verifiserAttAlleKolonnerFinnesOgErBrukt(listOf({ periodeRepository.hentPerioder(mockk(relaxed = true)) }))
+        assertThrows<Throwable> {
+            verifiserAttAlleKolonnerFinnesOgErBrukt(listOf({ periodeRepository.hentPerioder(mockk(relaxed = true)) }))
+        }
     }
 
     @Test

@@ -1,14 +1,11 @@
 package no.nav.familie.ef.infotrygd
 
-import org.junit.Ignore
 import org.junit.Rule
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.springframework.test.context.junit4.SpringRunner
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 import org.testcontainers.containers.OracleContainer
 
-@RunWith(SpringRunner::class)
-@Ignore
+@Disabled
 class OracleTest {
     @get:Rule
     val oracle =
