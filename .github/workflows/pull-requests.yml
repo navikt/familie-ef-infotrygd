@@ -21,7 +21,7 @@ jobs:
         env:
           GPR_API_KEY: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ./gradlew wrapper --gradle-version=9.3.0
+          ./gradlew wrapper --gradle-version=9.3.1
           ./gradlew test build --no-daemon
       - name: Generer SBOM
         run: ./gradlew cyclonedxBom
