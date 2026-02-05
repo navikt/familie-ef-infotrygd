@@ -26,7 +26,7 @@ class StønadControllerTest {
     @LocalServerPort
     private var port: Int = 0
 
-    //@Suppress("SpringJavaInjectionPointsAutowiringInspection")
+    // @Suppress("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private lateinit var mockOAuth2Server: MockOAuth2Server
 
