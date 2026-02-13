@@ -1,4 +1,7 @@
 server.port: 8080
+vault:
+  password: "/var/run/secrets/oracle/creds/password"
+  username: "/var/run/secrets/oracle/creds/username"
 
 spring:
   application:

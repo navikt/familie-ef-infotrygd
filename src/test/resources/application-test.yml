@@ -1,4 +1,6 @@
 spring:
+  flyway:
+    enabled: true
   jpa:
     database-platform: org.hibernate.dialect.OracleDialect
     hibernate:
@@ -6,8 +8,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
-  flyway:
-    enabled: true
   datasource:
     url: jdbc:h2:mem:testdb;MODE=Oracle;INIT=CREATE SCHEMA IF NOT EXISTS INFOTRYGD_Q0
     username: sa
@@ -28,3 +28,10 @@ no.nav.security.jwt:
       proxyurl: ~
 
 APP_DEFAULT_SCHEMA: INFOTRYGD_Q0
+
+AZURE_APP_CLIENT_ID: testid
+AZURE_APP_CLIENT_SECRET: testsecret
+
+vault:
+  password: "src/test/resources/vault/password"
+  username: "src/test/resources/vault/username"
