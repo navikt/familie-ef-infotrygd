@@ -1,6 +1,7 @@
 package no.nav.familie.ba.infotrygd.config
 
 import jakarta.validation.constraints.NotEmpty
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -15,6 +16,9 @@ import javax.sql.DataSource
 @Configuration
 @EnableConfigurationProperties(DatasourceConfiguration::class)
 class DatasourceConfig {
+
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     @Bean
     fun datasourceConfiguration(): DatasourceConfiguration = DatasourceConfiguration()
 
@@ -40,6 +44,9 @@ class DatasourceConfig {
         vaultDatasourceUsername: String,
         vaultDatasourcePassword: String,
     ): DataSource {
+
+        logger.info("Initializing datasource with url: ${datasourceConfiguration.url}, driverClassName: ${datasourceConfiguration.driverClassName}")
+        logger.info("Vault datasource username length: ${vaultDatasourceUsername.length}, Vault datasource password length: ${vaultDatasourcePassword.length}")
         val url = requireNotNull(datasourceConfiguration.url) { "spring.datasource.url is null" }
         val driverClassName = requireNotNull(datasourceConfiguration.driverClassName) { "spring.datasource.driverClassName is null" }
         val dataSourceBuilder = DataSourceBuilder.create()
