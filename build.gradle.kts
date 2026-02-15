@@ -1,16 +1,16 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
-val mockkVersion = "1.14.6"
-val tokenSupportVersion = "5.0.39"
+val mockkVersion = "1.14.9"
+val tokenSupportVersion = "6.0.2"
 val springdocVersion = "1.8.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
 val kontrakterVersion = "3.0_20251112142340_c5baa9c"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 
 plugins {
-    val kotlinVersion = "2.2.21"
-    val springBootVersion = "3.5.7"
+    val kotlinVersion = "2.3.10"
+    val springBootVersion = "4.0.2"
     id("org.springframework.boot") version springBootVersion
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("jvm") version kotlinVersion
@@ -67,11 +67,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("org.postgresql:postgresql")
-    implementation("com.oracle.database.jdbc:ojdbc8:23.26.0.0.0")
+    implementation("com.oracle.database.jdbc:ojdbc8:23.26.1.0.0")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.10.0")
-    testImplementation("org.testcontainers:oracle-xe:1.21.3")
+    testImplementation("org.testcontainers:oracle-xe:1.21.4")
     testImplementation("com.h2database:h2")
     testImplementation("org.flywaydb:flyway-core")
     testImplementation("io.mockk:mockk-jvm:$mockkVersion")
