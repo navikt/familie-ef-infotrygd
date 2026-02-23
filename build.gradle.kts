@@ -65,7 +65,7 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:9.0")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("com.oracle.database.jdbc:ojdbc8:23.26.0.0.0")
+    implementation("com.oracle.database.jdbc:23.26.1.0.0")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-flyway")
     testImplementation("nav-foedselsnummer:testutils:$navFoedselsnummerVersion")
