@@ -1,7 +1,6 @@
 FROM gcr.io/distroless/java21-debian12:nonroot
 
-COPY --chown=nonroot:nonroot target/familie-ef-infotrygd.jar /app/app.jar
-
+COPY --chown=nonroot:nonroot ./build/libs/familie-ef-infotrygd-0.0.1-SNAPSHOT.jar /app/app.jar
 WORKDIR /app
 
 ENV APP_NAME=familie-ef-infotrygd
