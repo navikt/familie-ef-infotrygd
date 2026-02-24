@@ -22,8 +22,8 @@ plugins {
 
 group = "no.nav"
 version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_25
-java.targetCompatibility = JavaVersion.VERSION_25
+java.sourceCompatibility = JavaVersion.VERSION_21
+java.targetCompatibility = JavaVersion.VERSION_21
 configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
@@ -100,7 +100,7 @@ tasks.withType<KotlinJvmCompile> {
     dependsOn(tasks.ktlintFormat)
     compilerOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget.set(JvmTarget.JVM_25)
+        jvmTarget.set(JvmTarget.JVM_21)
     }
 }
 

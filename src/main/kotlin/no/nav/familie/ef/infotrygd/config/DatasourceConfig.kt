@@ -15,23 +15,23 @@ import javax.sql.DataSource
 
 @Configuration
 @EnableConfigurationProperties(DatasourceConfiguration::class)
-class DatasourceConfig {
-
+open class DatasourceConfig {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @Bean
-    fun datasourceConfiguration(): DatasourceConfiguration = DatasourceConfiguration()
+    open fun datasourceConfiguration(): DatasourceConfiguration = DatasourceConfiguration()
 
     @Bean
-    fun vaultDatasourceUsername(
+    open fun vaultDatasourceUsername(
         @Value("\${vault.username}") filePath: String,
     ): String {
         val path = Paths.get(filePath)
-        return Files.readString(path)
+        val username = Files.readString(path)
+        return username
     }
 
     @Bean
-    fun vaultDatasourcePassword(
+    open fun vaultDatasourcePassword(
         @Value("\${vault.password}") filePath: String,
     ): String {
         val path = Paths.get(filePath)
@@ -39,19 +39,23 @@ class DatasourceConfig {
     }
 
     @Bean
-    fun datasource(
+    open fun datasource(
         datasourceConfiguration: DatasourceConfiguration,
         vaultDatasourceUsername: String,
         vaultDatasourcePassword: String,
     ): DataSource {
+        logger.info(
+            "Initializing datasource with url: ${datasourceConfiguration.url}, driverClassName: ${datasourceConfiguration.driverClassName}",
+        )
+        logger.info(
+            "Vault datasource username length: ${vaultDatasourceUsername.length}, Vault datasource password length: ${vaultDatasourcePassword.length}",
+        )
 
-        logger.info("Initializing datasource with url: ${datasourceConfiguration.url}, driverClassName: ${datasourceConfiguration.driverClassName}")
-        logger.info("Vault datasource username length: ${vaultDatasourceUsername.length}, Vault datasource password length: ${vaultDatasourcePassword.length}")
-        val url = requireNotNull(datasourceConfiguration.url) { "spring.datasource.url is null" }
-        val driverClassName = requireNotNull(datasourceConfiguration.driverClassName) { "spring.datasource.driverClassName is null" }
+        requireNotNull(datasourceConfiguration.url) { "spring.datasource.url is null" }
+        requireNotNull(datasourceConfiguration.driverClassName) { "spring.datasource.driverClassName is null" }
         val dataSourceBuilder = DataSourceBuilder.create()
-        dataSourceBuilder.driverClassName(driverClassName)
-        dataSourceBuilder.url(url)
+        dataSourceBuilder.driverClassName(datasourceConfiguration.driverClassName!!)
+        dataSourceBuilder.url(datasourceConfiguration.url!!)
         dataSourceBuilder.username(vaultDatasourceUsername)
         dataSourceBuilder.password(vaultDatasourcePassword)
         return dataSourceBuilder.build()
@@ -66,3 +70,72 @@ data class DatasourceConfiguration(
     @NotEmpty
     var driverClassName: String? = null,
 )
+
+//
+//
+// import jakarta.validation.constraints.NotEmpty
+// import org.slf4j.LoggerFactory
+// import org.springframework.beans.factory.annotation.Value
+// import org.springframework.boot.context.properties.ConfigurationProperties
+// import org.springframework.boot.context.properties.EnableConfigurationProperties
+// import org.springframework.boot.jdbc.DataSourceBuilder
+// import org.springframework.context.annotation.Bean
+// import org.springframework.context.annotation.Configuration
+// import org.springframework.validation.annotation.Validated
+// import java.nio.file.Files
+// import java.nio.file.Paths
+// import javax.sql.DataSource
+//
+// @Configuration
+// @EnableConfigurationProperties(DatasourceConfiguration::class)
+// class DatasourceConfig {
+//
+//    private val logger = LoggerFactory.getLogger(javaClass)
+//
+//    @Bean
+//    fun datasourceConfiguration(): DatasourceConfiguration = DatasourceConfiguration()
+//
+//    @Bean
+//    fun vaultDatasourceUsername(
+//        @Value("\${vault.username}") filePath: String,
+//    ): String {
+//        val path = Paths.get(filePath)
+//        return Files.readString(path)
+//    }
+//
+//    @Bean
+//    fun vaultDatasourcePassword(
+//        @Value("\${vault.password}") filePath: String,
+//    ): String {
+//        val path = Paths.get(filePath)
+//        return Files.readString(path)
+//    }
+//
+//    @Bean
+//    fun datasource(
+//        datasourceConfiguration: DatasourceConfiguration,
+//        vaultDatasourceUsername: String,
+//        vaultDatasourcePassword: String,
+//    ): DataSource {
+//
+//        logger.info("Initializing datasource with url: ${datasourceConfiguration.url}, driverClassName: ${datasourceConfiguration.driverClassName}")
+//        logger.info("Vault datasource username length: ${vaultDatasourceUsername.length}, Vault datasource password length: ${vaultDatasourcePassword.length}")
+//        val url = requireNotNull(datasourceConfiguration.url) { "spring.datasource.url is null" }
+//        val driverClassName = requireNotNull(datasourceConfiguration.driverClassName) { "spring.datasource.driverClassName is null" }
+//        val dataSourceBuilder = DataSourceBuilder.create()
+//        dataSourceBuilder.driverClassName(driverClassName)
+//        dataSourceBuilder.url(url)
+//        dataSourceBuilder.username(vaultDatasourceUsername)
+//        dataSourceBuilder.password(vaultDatasourcePassword)
+//        return dataSourceBuilder.build()
+//    }
+// }
+//
+// @ConfigurationProperties(prefix = "spring.datasource")
+// @Validated
+// data class DatasourceConfiguration(
+//    @NotEmpty
+//    var url: String? = null,
+//    @NotEmpty
+//    var driverClassName: String? = null,
+// )
