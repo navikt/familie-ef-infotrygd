@@ -33,7 +33,7 @@ spec:
       cpu: 20m
       memory: 256Mi
   ingresses: # Optional. List of ingress URLs that will route HTTP traffic to the application.
-    - https://familie-ef-infotrygd.intern.dev.nav.no
+    - https://familie-ef-infotrygd.dev.intern.nav.no
     - https://familie-ef-infotrygd.dev-fss-pub.nais.io
   webproxy: false # Optional. Expose web proxy configuration to the application using the HTTP_PROXY, HTTPS_PROXY and NO_PROXY environment variables.
   vault:

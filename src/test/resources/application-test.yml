@@ -3,10 +3,15 @@ spring:
     database-platform: org.hibernate.dialect.OracleDialect
     hibernate:
       ddl-auto: none
-    flyway:
-      enabled: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  flyway:
+    enabled: true
   datasource:
     url: jdbc:h2:mem:testdb;MODE=Oracle;INIT=CREATE SCHEMA IF NOT EXISTS INFOTRYGD_Q0
+    username: sa
+    password:
     driver-class-name: org.h2.Driver
   sql:
     init:
@@ -23,7 +28,3 @@ no.nav.security.jwt:
       proxyurl: ~
 
 APP_DEFAULT_SCHEMA: INFOTRYGD_Q0
-
-vault:
-  password: "src/test/resources/vault/password"
-  username: "src/test/resources/vault/username"

@@ -1,10 +1,9 @@
-FROM gcr.io/distroless/java21-debian12:nonroot
+FROM ghcr.io/navikt/baseimages/temurin:21
 
-COPY --chown=nonroot:nonroot ./build/libs/familie-ef-infotrygd-0.0.1-SNAPSHOT.jar /app/app.jar
-WORKDIR /app
+COPY init.sh /init-scripts/init.sh
 
-ENV APP_NAME=familie-ef-infotrygd
-ENV TZ="Europe/Oslo"
-# TLS Config works around an issue in OpenJDK... See: https://github.com/kubernetes-client/java/issues/854
-ENTRYPOINT [ "java", "-Djdk.tls.client.protocols=TLSv1.2", "-jar", "/app/app.jar" ]
+ENV JAVA_OPTS="${JAVA_OPTS} -Xms270M -XX:MaxRAMPercentage=75"
+
+COPY build/libs/familie-ef-infotrygd-0.0.1-SNAPSHOT.jar app.jar
+EXPOSE 8080
 
