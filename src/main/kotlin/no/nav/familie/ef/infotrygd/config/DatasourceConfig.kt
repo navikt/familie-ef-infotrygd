@@ -1,10 +1,10 @@
 package no.nav.familie.ef.infotrygd.config
 
+import com.zaxxer.hikari.HikariDataSource
 import jakarta.validation.constraints.NotEmpty
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
-import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.validation.annotation.Validated
@@ -39,16 +39,18 @@ class DatasourceConfig {
         datasourceConfiguration: DatasourceConfiguration,
         vaultDatasourceUsername: String,
         vaultDatasourcePassword: String,
+        @Value("\${spring.datasource.hikari.schema}") defaultschema: String,
     ): DataSource {
         requireNotNull(datasourceConfiguration.url) { "spring.datasource.url is null" }
         requireNotNull(datasourceConfiguration.driverClassName) { "spring.datasource.driverClassName is null" }
-        val dataSourceBuilder = DataSourceBuilder.create()
-        dataSourceBuilder.driverClassName(datasourceConfiguration.driverClassName)
-        dataSourceBuilder.url(datasourceConfiguration.url)
-        dataSourceBuilder.username(vaultDatasourceUsername)
-        dataSourceBuilder.password(vaultDatasourcePassword)
 
-        return dataSourceBuilder.build()
+        return HikariDataSource().apply {
+            jdbcUrl = datasourceConfiguration.url
+            driverClassName = datasourceConfiguration.driverClassName
+            username = vaultDatasourceUsername
+            password = vaultDatasourcePassword
+            schema = defaultschema
+        }
     }
 }
 
