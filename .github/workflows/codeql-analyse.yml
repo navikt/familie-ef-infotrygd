@@ -32,7 +32,7 @@ jobs:
         env:
           GPR_API_KEY: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ./gradlew wrapper --gradle-version=8.5
+          ./gradlew wrapper --gradle-version=9.3.1
           ./gradlew test build --no-daemon
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@cdefb33c0f6224e58673d9004f47f7cb3e328b89 # ratchet:github/codeql-action/analyze@v3
