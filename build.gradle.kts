@@ -72,7 +72,6 @@ dependencies {
     testImplementation("no.nav.security:token-validation-spring-test:$tokenValidationVersion")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.10.0")
-    // testImplementation("org.testcontainers:oracle-xe:1.21.4")
     testImplementation("com.h2database:h2")
     testImplementation("io.mockk:mockk-jvm:$mockkVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
