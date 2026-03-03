@@ -14,8 +14,7 @@ import java.time.LocalDate
 @Unprotected
 class DeleteMeTestController {
     @GetMapping(path = ["/springmappertest"])
-    fun finnSaker(
-    ): ResponseEntity<Any> {
+    fun finnSaker(): ResponseEntity<Any> {
         val infotrygdSak =
             InfotrygdSak(
                 personIdent = "12345678910",
