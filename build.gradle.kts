@@ -43,8 +43,6 @@ repositories {
 }
 
 dependencies {
-
-    runtimeOnly("org.postgresql:postgresql")
     implementation("nav-foedselsnummer:core:$navFoedselsnummerVersion")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-web")
