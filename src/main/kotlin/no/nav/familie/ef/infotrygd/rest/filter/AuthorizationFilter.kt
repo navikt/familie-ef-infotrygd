@@ -28,7 +28,6 @@ class AuthorizationFilter : OncePerRequestFilter() {
             path.startsWith("/swagger-ui/") ||
             path == "/tables" ||
             path == "/tables2" ||
-            path == "/springmappertest" ||
             path.startsWith("/swagger-resources") ||
             path.startsWith("/v2/api-docs")
     }
