@@ -1,7 +1,7 @@
 package no.nav.familie.ef.infotrygd.model.converters
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class AbstractCharConverterTest {
     private object Converter : AbstractCharConverter(5)

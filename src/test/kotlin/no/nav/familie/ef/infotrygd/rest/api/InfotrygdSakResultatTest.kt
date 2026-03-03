@@ -2,7 +2,7 @@ package no.nav.familie.ef.infotrygd.rest.api
 
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSakResultat.Companion.fraInfotrygdKode
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 internal class InfotrygdSakResultatTest {
     @Test

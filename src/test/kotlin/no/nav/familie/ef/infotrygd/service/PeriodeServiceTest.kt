@@ -11,8 +11,8 @@ import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSakstype
 import no.nav.familie.ef.infotrygd.rest.api.Periode
 import no.nav.familie.ef.infotrygd.rest.api.PeriodeRequest
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -26,7 +26,7 @@ internal class PeriodeServiceTest {
             stønadstyper = setOf(BARNETILSYN, OVERGANGSSTØNAD),
         )
 
-    @Before
+    @BeforeEach
     fun setUp() {
         every { periodeRepository.hentBarnForPerioder(any()) } returns emptyMap()
     }

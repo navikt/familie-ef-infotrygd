@@ -1,12 +1,13 @@
 package no.nav.familie.ef.infotrygd.integration
 
 import org.hibernate.boot.Metadata
+import org.hibernate.boot.spi.BootstrapContext
 import org.hibernate.engine.spi.SessionFactoryImplementor
 import org.hibernate.integrator.spi.Integrator
 import org.hibernate.jpa.boot.spi.IntegratorProvider
 import org.hibernate.mapping.Column
 import org.hibernate.service.spi.SessionFactoryServiceRegistry
-import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer
+import org.springframework.boot.hibernate.autoconfigure.HibernatePropertiesCustomizer
 import org.springframework.stereotype.Component
 
 @Component
@@ -20,13 +21,13 @@ class TableIntegrator : Integrator {
 
     override fun integrate(
         metadata: Metadata,
+        bootstrapContext: BootstrapContext,
         sessionFactory: SessionFactoryImplementor,
-        serviceRegistry: SessionFactoryServiceRegistry,
     ) {
         val result = mutableMapOf<String, List<String>>()
 
         for (
-        namespace in metadata!!
+        namespace in metadata
             .getDatabase()
             .getNamespaces()
         ) {

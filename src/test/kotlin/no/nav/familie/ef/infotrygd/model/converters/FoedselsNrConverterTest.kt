@@ -2,7 +2,7 @@ package no.nav.familie.ef.infotrygd.model.converters
 
 import no.nav.commons.foedselsnummer.FoedselsNr
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class FoedselsNrConverterTest {
     private val converter = FoedselNrConverter()
