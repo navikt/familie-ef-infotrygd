@@ -4,7 +4,6 @@ import no.nav.familie.ef.infotrygd.repository.SakRepository
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSakResponse
 import no.nav.familie.ef.infotrygd.rest.api.InfotrygdSøkRequest
 import no.nav.security.token.support.core.api.Unprotected
-import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -28,6 +27,11 @@ class DeleteMeSakController(
         if (request.personIdenter.isEmpty()) {
             return ResponseEntity.badRequest().build()
         }
-        return ResponseEntity.ok(InfotrygdSakResponse(sakRepository.finnSaker(request.personIdenter)))
+        val saker = sakRepository.finnSaker(request.personIdenter)
+        val infotrygdSaks = saker.map {
+            it.copy(id = null, personIdent = "12345678910")
+        }
+        val body = InfotrygdSakResponse(infotrygdSaks)
+        return ResponseEntity.ok(body)
     }
 }
