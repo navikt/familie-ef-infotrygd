@@ -37,7 +37,7 @@ class StønadControllerTest {
 
         val client = restClient(mockOAuth2Server, port)
 
-        val response = `kallStønadController`(client, request).responseBody()
+        val response = kallStønadController(client, request).responseBody()
 
         assertThat(response.vedtak).isEmpty()
         assertThat(response.saker).isEmpty()
