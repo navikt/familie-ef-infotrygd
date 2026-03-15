@@ -1,16 +1,16 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
-val mockkVersion = "1.14.7"
-val tokenValidationVersion = "6.0.2"
+val mockkVersion = "1.14.9"
+val tokenValidationVersion = "6.0.3"
 val springdocVersion = "1.8.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
 val kontrakterVersjon = "4.0_20260204122732_558ee1d"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 
 plugins {
-    val kotlinVersion = "2.3.0"
-    val springBootVersion = "4.0.2"
+    val kotlinVersion = "2.3.10"
+    val springBootVersion = "4.0.3"
     id("org.springframework.boot") version springBootVersion
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("jvm") version kotlinVersion
