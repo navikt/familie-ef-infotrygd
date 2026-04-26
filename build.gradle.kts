@@ -16,7 +16,7 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
-    id("org.cyclonedx.bom") version "3.2.2"
+    id("org.cyclonedx.bom") version "3.2.4"
     id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
 }
 
