@@ -5,7 +5,7 @@ val mockkVersion = "1.14.9"
 val tokenValidationVersion = "6.0.4"
 val springdocVersion = "1.8.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
-val kontrakterVersjon = "4.0_20260204122732_558ee1d"
+val kontrakterVersjon = "4.0_20260505124916_025d466"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 
 plugins {
@@ -16,7 +16,7 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
-    id("org.cyclonedx.bom") version "3.2.2"
+    id("org.cyclonedx.bom") version "3.2.4"
     id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
 }
 
