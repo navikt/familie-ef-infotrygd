@@ -51,13 +51,12 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("io.micrometer:micrometer-core")
     implementation("io.micrometer:micrometer-registry-prometheus")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("net.ttddyy:datasource-proxy:1.11.0")
     implementation("no.nav.security:token-validation-spring:$tokenValidationVersion")
     implementation("no.nav.familie.kontrakter:enslig-forsorger:$kontrakterVersjon")
     implementation("no.nav.familie.kontrakter:felles:$kontrakterVersjon")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib")
     implementation("org.springdoc:springdoc-openapi-ui:$springdocVersion")
     implementation("org.springdoc:springdoc-openapi-kotlin:$springdocVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:9.0")
@@ -73,6 +72,14 @@ dependencies {
     testImplementation("com.h2database:h2")
     testImplementation("io.mockk:mockk-jvm:$mockkVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+
+    // Kritisk sårbarhet importert via
+    constraints {
+        implementation("org.apache.tomcat.embed:tomcat-embed-core:11.0.22")
+        implementation("io.netty:netty-codec-dns:4.2.13.Final")
+        implementation("io.netty:netty-codec-http:4.2.13.Final")
+    }
+
 }
 
 val inputFiles = project.fileTree(mapOf("dir" to "src", "include" to "**/*.kt"))
