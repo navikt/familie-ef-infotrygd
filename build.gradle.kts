@@ -20,9 +20,10 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
 }
 
+// Pga kritisk sårbarhet: legger til extra for å tvinge bruk av sikker versjon av netty og tomcat
+// Kan fjernes etter oppdatering av spring boot verson > 4.0.6
 extra["netty.version"] = "4.2.13.Final"
 extra["tomcat.version"] = "11.0.22"
-
 
 group = "no.nav"
 version = "0.0.1-SNAPSHOT"
@@ -76,14 +77,6 @@ dependencies {
     testImplementation("com.h2database:h2")
     testImplementation("io.mockk:mockk-jvm:$mockkVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-
-    // Kritisk sårbarhet importert via
-    constraints {
-        implementation("org.apache.tomcat.embed:tomcat-embed-core:11.0.22")
-        implementation("io.netty:netty-codec-dns:4.2.13.Final")
-        implementation("io.netty:netty-codec-http:4.2.13.Final")
-    }
-
 }
 
 val inputFiles = project.fileTree(mapOf("dir" to "src", "include" to "**/*.kt"))
