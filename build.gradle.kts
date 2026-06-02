@@ -20,6 +20,10 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
 }
 
+extra["netty.version"] = "4.2.13.Final"
+extra["tomcat.version"] = "11.0.22"
+
+
 group = "no.nav"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_21
