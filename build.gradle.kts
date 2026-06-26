@@ -5,7 +5,7 @@ val mockkVersion = "1.14.11"
 val tokenValidationVersion = "6.0.10"
 val springdocVersion = "1.8.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
-val kontrakterVersjon = "4.0_20260609150326_d2259dc"
+val kontrakterVersjon = "4.0_20260622094658_80ca90e"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 
 plugins {
