@@ -2,10 +2,10 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 val mockkVersion = "1.14.11"
-val tokenValidationVersion = "6.0.10"
+val tokenValidationVersion = "6.0.11"
 val springdocVersion = "1.8.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
-val kontrakterVersjon = "4.0_20260622094658_80ca90e"
+val kontrakterVersjon = "4.0_20260702124405_ce34af2"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 
 plugins {
