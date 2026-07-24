@@ -31,7 +31,7 @@ spec:
       memory: 512Mi  # app will be killed if exceeding these limits
     requests: # App is guaranteed the requested resources and  will be scheduled on nodes with at least this amount of resources available
       cpu: 20m
-      memory: 256Mi
+      memory: 512Mi
   ingresses: # Optional. List of ingress URLs that will route HTTP traffic to the application.
     - https://familie-ef-infotrygd.intern.dev.nav.no
     - https://familie-ef-infotrygd.dev-fss-pub.nais.io
