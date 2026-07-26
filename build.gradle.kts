@@ -2,21 +2,21 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 val mockkVersion = "1.14.11"
-val tokenValidationVersion = "6.0.10"
+val tokenValidationVersion = "6.0.11"
 val springdocVersion = "1.8.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
-val kontrakterVersjon = "4.0_20260622094658_80ca90e"
+val kontrakterVersjon = "4.0_20260702124405_ce34af2"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 
 plugins {
-    val kotlinVersion = "2.4.0"
+    val kotlinVersion = "2.4.10"
     val springBootVersion = "4.1.0"
     id("org.springframework.boot") version springBootVersion
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
-    id("org.cyclonedx.bom") version "3.2.4"
+    id("org.cyclonedx.bom") version "3.3.0"
     id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
 }
 
