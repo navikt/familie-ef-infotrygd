@@ -2,21 +2,21 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 val mockkVersion = "1.14.11"
-val tokenValidationVersion = "6.0.10"
+val tokenValidationVersion = "6.0.12"
 val springdocVersion = "1.8.0"
 val navFoedselsnummerVersion = "1.0-SNAPSHOT.6"
-val kontrakterVersjon = "4.0_20260622094658_80ca90e"
+val kontrakterVersjon = "4.0_20260821102510_33ea755"
 val mainClass = "no.nav.familie.ef.infotrygd.Main"
 
 plugins {
-    val kotlinVersion = "2.4.0"
+    val kotlinVersion = "2.4.10"
     val springBootVersion = "4.1.0"
     id("org.springframework.boot") version springBootVersion
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
-    id("org.cyclonedx.bom") version "3.2.4"
+    id("org.cyclonedx.bom") version "3.4.1"
     id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
 }
 
@@ -67,7 +67,7 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:9.0")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("com.oracle.database.jdbc:ojdbc8:23.26.2.0.0")
+    implementation("com.oracle.database.jdbc:ojdbc8:23.26.3.0.0")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-flyway")
     testImplementation("nav-foedselsnummer:testutils:$navFoedselsnummerVersion")
