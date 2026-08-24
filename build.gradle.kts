@@ -22,7 +22,7 @@ plugins {
 
 // Pga kritisk sårbarhet: legger til extra for å tvinge bruk av sikker versjon av netty og tomcat
 // Kan fjernes etter oppdatering av spring boot verson > 4.0.6
-extra["netty.version"] = "4.2.13.Final"
+extra["netty.version"] = "4.2.15.Final"
 extra["tomcat.version"] = "11.0.22"
 
 group = "no.nav"
